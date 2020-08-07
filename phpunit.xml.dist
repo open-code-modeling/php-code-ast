@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        colors="true"
+        cacheResult="true"
+        stopOnFailure="false"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        failOnRisky="true"
+        failOnWarning="true"
+>
+    <testsuite name="Open Code Modeling Code AST - Test Suite">
+        <directory suffix=".php">./tests</directory>
+    </testsuite>
+
+    <filter>
+        <whitelist>
+            <directory>./src/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

@@ -1,0 +1,67 @@
+{
+    "name": "open-code-modeling/php-code-ast",
+    "description": "Open Code Modeling PHP Code AST",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Sandro Keil",
+            "homepage": "https://sandro-keil.de",
+            "role": "maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/open-code-modeling/php-code-ast/issues",
+        "source": "https://github.com/open-code-modeling/php-code-ast"
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenCodeModeling\\CodeAst\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OpenCodeModelingTest\\CodeAst\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.3 || ^8.0",
+        "nikic/php-parser": "^4.2"
+    },
+    "require-dev": {
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpstan/phpstan": "^0.12.33",
+        "phpstan/phpstan-strict-rules": "^0.12.4",
+        "phpunit/phpunit": "^9.2.6",
+        "prooph/php-cs-fixer-config": "^0.3",
+        "roave/security-advisories": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "check": [
+            "@cs",
+            "@docheader",
+            "@test"
+        ],
+        "docheader": "vendor/bin/docheader check src/ tests/",
+        "cs": "php-cs-fixer fix src -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix src -v --diff",
+        "test": "vendor/bin/phpunit",
+        "analyse": "php vendor/bin/phpstan.phar analyse --no-interaction"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+        }
+    },
+    "archive": {
+        "exclude": [
+            ".coveralls.yml",
+            ".travis.yml",
+            "build",
+            "phpunit.xml*",
+            "tests"
+        ]
+    }
+}
