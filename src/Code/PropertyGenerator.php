@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Code;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
 
@@ -24,6 +25,11 @@ use PhpParser\Node\Stmt\Property;
 final class PropertyGenerator extends AbstractMemberGenerator
 {
     /**
+     * @var TypeGenerator|null
+     */
+    private $type;
+
+    /**
      * @var ValueGenerator
      */
     private $defaultValue;
@@ -31,29 +37,53 @@ final class PropertyGenerator extends AbstractMemberGenerator
     /**
      * @var bool
      */
-    private $omitDefaultValue = false;
+    private $typed = false;
 
-    /**
-     * @param string $name
-     * @param ValueGenerator|string|array $defaultValue
-     * @param int $flags
-     */
-    public function __construct($name = null, $defaultValue = null, $flags = self::FLAG_PRIVATE)
-    {
+    public function __construct(
+        string $name = null,
+        string $type = null,
+        $defaultValue = null,
+        bool $typed = false,
+        int $flags = self::FLAG_PRIVATE
+    ) {
         if (null !== $name) {
             $this->setName($name);
         }
+
+        if (null !== $type) {
+            $this->setType($type);
+        }
+
         if (null !== $defaultValue) {
             $this->setDefaultValue($defaultValue);
         }
+
+        $this->typed = $typed;
+
         if ($flags !== self::FLAG_PUBLIC) {
             $this->setFlags($flags);
         }
     }
 
     /**
+     * @param string $type
+     * @return ParameterGenerator
+     */
+    public function setType($type): self
+    {
+        $this->type = TypeGenerator::fromTypeString($type);
+
+        return $this;
+    }
+
+    public function getType(): TypeGenerator
+    {
+        return $this->type;
+    }
+
+    /**
      * @param ValueGenerator|mixed $defaultValue
-     * @param string                       $defaultValueType
+     * @param string $defaultValueType
      *
      * @return PropertyGenerator
      */
@@ -61,7 +91,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         $defaultValue,
         $defaultValueType = ValueGenerator::TYPE_AUTO
     ): self {
-        if (! $defaultValue instanceof ValueGenerator) {
+        if (!$defaultValue instanceof ValueGenerator) {
             $defaultValue = new ValueGenerator($defaultValue, $defaultValueType);
         }
 
@@ -80,6 +110,17 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
     public function generate(): Property
     {
+        $propComment = <<<EOF
+/**
+ * @var {$this->type->type()}
+ */
+EOF;
+        $attributes = [];
+
+        if ($this->typed === false) {
+            $attributes = ['comments' => [new Doc($propComment)]];
+        }
+
         return new Property(
             $this->flags,
             [
@@ -87,7 +128,9 @@ final class PropertyGenerator extends AbstractMemberGenerator
                     $this->name,
                     $this->defaultValue ? $this->defaultValue->generate() : null
                 ),
-            ]
+            ],
+            $attributes,
+            $this->typed ? $this->type->type() : null
         );
     }
 }
