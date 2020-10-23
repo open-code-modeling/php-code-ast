@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace OpenCodeModeling\CodeAst\Code;
 
 use OpenCodeModeling\CodeAst\Exception;
-use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 
 /**

@@ -65,11 +65,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         }
     }
 
-    /**
-     * @param string $type
-     * @return ParameterGenerator
-     */
-    public function setType($type): self
+    public function setType(string $type): self
     {
         $this->type = TypeGenerator::fromTypeString($type);
 
@@ -91,7 +87,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         $defaultValue,
         $defaultValueType = ValueGenerator::TYPE_AUTO
     ): self {
-        if (!$defaultValue instanceof ValueGenerator) {
+        if (! $defaultValue instanceof ValueGenerator) {
             $defaultValue = new ValueGenerator($defaultValue, $defaultValueType);
         }
 

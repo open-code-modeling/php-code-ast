@@ -45,6 +45,7 @@ class ClassFile extends NodeVisitorAbstract
                 $this->classExists = $node->name->name === $this->classGenerator->getName();
             }
         }
+
         return null;
     }
 
