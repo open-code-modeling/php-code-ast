@@ -108,6 +108,11 @@ final class TypeGenerator
     {
     }
 
+    public function type(): string
+    {
+        return $this->type;
+    }
+
     public function generate(): NodeAbstract
     {
         $nullable = $this->nullable ? '?' : '';
