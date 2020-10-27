@@ -31,7 +31,7 @@ final class ClassConstant extends NodeVisitorAbstract
 
     public static function forClassConstant(
         string $constantName,
-        string $constantValue,
+        $constantValue,
         int $flags = ClassConstGenerator::FLAG_PUBLIC
     ): ClassConstant {
         return new self(
@@ -56,8 +56,8 @@ final class ClassConstant extends NodeVisitorAbstract
                             return null;
                         }
                         $stmt->stmts = \array_merge(
-                            $this->lineGenerator->generate(),
-                            $stmt->stmts
+                            $stmt->stmts,
+                            $this->lineGenerator->generate()
                         );
                     }
                 }
@@ -66,8 +66,8 @@ final class ClassConstant extends NodeVisitorAbstract
                     return null;
                 }
                 $node->stmts = \array_merge(
-                    $this->lineGenerator->generate(),
-                    $node->stmts
+                    $node->stmts,
+                    $this->lineGenerator->generate()
                 );
             }
         }
