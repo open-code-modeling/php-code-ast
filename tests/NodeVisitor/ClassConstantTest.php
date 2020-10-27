@@ -40,7 +40,7 @@ final class ClassConstantTest extends TestCase
      */
     public function it_generates_constant_for_class_for_empty_file(): void
     {
-        $ast = $this->parser->parse('<?php');
+        $ast = $this->parser->parse('');
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new StrictType());
@@ -87,7 +87,7 @@ EOF;
      */
     public function it_generates_constant_for_class_with_namespace_for_empty_file(): void
     {
-        $ast = $this->parser->parse('<?php');
+        $ast = $this->parser->parse('');
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new StrictType());
