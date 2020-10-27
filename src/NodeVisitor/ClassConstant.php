@@ -10,9 +10,11 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\NodeVisitor;
 
+use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\IdentifierGenerator;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
 final class ClassConstant extends NodeVisitorAbstract
@@ -27,53 +29,62 @@ final class ClassConstant extends NodeVisitorAbstract
         $this->lineGenerator = $lineGenerator;
     }
 
-    public function enterNode(Node $node)
+    public static function forClassConstant(
+        string $constantName,
+        string $constantValue,
+        int $flags = ClassConstGenerator::FLAG_PUBLIC
+    ): ClassConstant {
+        return new self(
+            new IdentifierGenerator(
+                $constantName,
+                new ClassConstGenerator($constantName, $constantValue, $flags)
+            )
+        );
+    }
+
+    public function afterTraverse(array $nodes): ?array
     {
-        if ($node instanceof Class_) {
-            if ($definitions = $this->constant($node)) {
+        $newNodes = [];
+
+        foreach ($nodes as $node) {
+            $newNodes[] = $node;
+
+            if ($node instanceof Namespace_) {
+                foreach ($node->stmts as $stmt) {
+                    if ($stmt instanceof Class_) {
+                        if ($this->checkConstantExists($stmt)) {
+                            return null;
+                        }
+                        $stmt->stmts = \array_merge(
+                            $this->lineGenerator->generate(),
+                            $stmt->stmts
+                        );
+                    }
+                }
+            } elseif ($node instanceof Class_) {
+                if ($this->checkConstantExists($node)) {
+                    return null;
+                }
                 $node->stmts = \array_merge(
-                    $definitions,
+                    $this->lineGenerator->generate(),
                     $node->stmts
                 );
-
-                return $node;
             }
         }
 
-        return null;
+        return $newNodes;
     }
 
-    private function isAlreadyDefined(
-        string $lineIdentifier,
-        Class_ $node
-    ): bool {
-        $alreadyDefined = false;
-
-        foreach ($node->stmts as $stmt) {
-            if (! $stmt instanceof Node\Stmt\ClassConst) {
-                continue;
-            }
-
-            if ($lineIdentifier === $stmt->consts[0]->name->name) {
-                $alreadyDefined = true;
-                break;
-            }
-        }
-
-        return $alreadyDefined;
-    }
-
-    private function constant(Class_ $node): ?array
+    private function checkConstantExists(Class_ $node): bool
     {
-        $isAlreadyDefined = $this->isAlreadyDefined(
-            $this->lineGenerator->getIdentifier(),
-            $node
-        );
-
-        if ($isAlreadyDefined === false) {
-            return $this->lineGenerator->generate();
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof Node\Stmt\ClassConst
+                && $stmt->consts[0]->name->name === $this->lineGenerator->getIdentifier()
+            ) {
+                return true;
+            }
         }
 
-        return null;
+        return false;
     }
 }
