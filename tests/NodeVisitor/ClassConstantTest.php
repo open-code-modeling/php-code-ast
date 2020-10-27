@@ -9,6 +9,8 @@ use OpenCodeModeling\CodeAst\Code\ClassGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassConstant;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassFile;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
+use OpenCodeModeling\CodeAst\NodeVisitor\ClassUseTrait;
+use OpenCodeModeling\CodeAst\NodeVisitor\NamespaceUse;
 use OpenCodeModeling\CodeAst\NodeVisitor\StrictType;
 use OpenCodeModeling\JsonSchemaToPhpAst\ValueObject\BooleanFactory;
 use PhpParser\NodeTraverser;
@@ -136,6 +138,40 @@ namespace My\Awesome\Service;
 class TestClass
 {
     private const TYPE_STRING = 'string';
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
+    public function it_preserves_order_of_registered_visitors()
+    {
+        $ast = $this->parser->parse('');
+
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new StrictType());
+        $nodeTraverser->addVisitor(new ClassNamespace('My\\Awesome\\Service'));
+        $nodeTraverser->addVisitor(new NamespaceUse('My\\Awesome\\ServiceTrait'));
+        $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
+        $nodeTraverser->addVisitor(new ClassUseTrait('ServiceTrait'));
+        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_STRING', 'string'));
+        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_INT', 3));
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use My\Awesome\ServiceTrait;
+class TestClass
+{
+    use ServiceTrait;
+    public const TYPE_STRING = 'string';
+    public const TYPE_INT = 3;
 }
 EOF;
 
