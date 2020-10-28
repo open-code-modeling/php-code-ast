@@ -20,7 +20,7 @@ use PhpParser\Node\Stmt\Class_;
  * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-code/blob/master/LICENSE.md New BSD License
  */
-abstract class AbstractMemberGenerator implements StatementGenerator
+abstract class AbstractMemberGenerator implements \OpenCodeModeling\CodeAst\StatementGenerator
 {
     /**#@+
      * @const int Flags for construction usage

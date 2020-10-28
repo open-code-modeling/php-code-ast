@@ -12,7 +12,6 @@ use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassUseTrait;
 use OpenCodeModeling\CodeAst\NodeVisitor\NamespaceUse;
 use OpenCodeModeling\CodeAst\NodeVisitor\StrictType;
-use OpenCodeModeling\JsonSchemaToPhpAst\ValueObject\BooleanFactory;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
