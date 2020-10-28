@@ -29,6 +29,7 @@
         "nikic/php-parser": "^4.2"
     },
     "require-dev": {
+        "laminas/laminas-filter": "^2.9",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.33",
         "phpstan/phpstan-strict-rules": "^0.12.4",
