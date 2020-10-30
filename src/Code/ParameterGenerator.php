@@ -48,6 +48,11 @@ final class ParameterGenerator
     private $variadic = false;
 
     /**
+     * @var string
+     */
+    private $typeDocBlockHint;
+
+    /**
      * @param string $name
      * @param string|null $type
      * @param mixed $defaultValue
@@ -170,6 +175,22 @@ final class ParameterGenerator
     public function getVariadic(): bool
     {
         return $this->variadic;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeDocBlockHint(): ?string
+    {
+        return $this->typeDocBlockHint;
+    }
+
+    /**
+     * @param string $typeDocBlockHint
+     */
+    public function setTypeDocBlockHint(string $typeDocBlockHint): void
+    {
+        $this->typeDocBlockHint = $typeDocBlockHint;
     }
 
     public function generate(): Node\Param

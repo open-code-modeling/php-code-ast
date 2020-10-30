@@ -50,6 +50,7 @@ final class InterfaceMethodTest extends TestCase
             new BodyGenerator($this->parser, "return 'test';") // will be removed by visitor
         );
         $this->method->setReturnType('string');
+        $this->method->setTyped(true);
     }
 
     /**

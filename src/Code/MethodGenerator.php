@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace OpenCodeModeling\CodeAst\Code;
 
 use OpenCodeModeling\CodeAst\Exception;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\ClassMethod;
 
 /**
@@ -37,6 +38,16 @@ final class MethodGenerator extends AbstractMemberGenerator
      * @var null|TypeGenerator
      */
     private $returnType;
+
+    /**
+     * @var bool
+     */
+    private $typed = false;
+
+    /**
+     * @var string|null
+     */
+    private $docBlockComment;
 
     /**
      * @param string $name
@@ -143,9 +154,70 @@ final class MethodGenerator extends AbstractMemberGenerator
         return $this->returnType;
     }
 
+    public function docBlockComment(): ?string
+    {
+        return $this->docBlockComment;
+    }
+
+    public function setDocBlockComment(?string $docBlockComment): void
+    {
+        $this->docBlockComment = $docBlockComment;
+    }
+
+    /**
+     * @return bool
+     */
+    public function typed(): bool
+    {
+        return $this->typed;
+    }
+
+    /**
+     * @param bool $typed
+     */
+    public function setTyped(bool $typed): void
+    {
+        $this->typed = $typed;
+    }
+
     public function generate(): ClassMethod
     {
-        return new ClassMethod($this->getName(),
+        $docBlockTypes = [];
+
+        foreach ($this->getParameters() as $parameter) {
+            $type = $parameter->getType()->isNullable()
+                ? $parameter->getType()->type() . '|null'
+                : $parameter->getType()->type();
+
+            if ($typeHint = $parameter->getTypeDocBlockHint()) {
+                $type = $typeHint;
+            }
+
+            $docBlockTypes[] = '@var ' . $type .  ' $' . $parameter->getName();
+        }
+
+        $methodComment = "/**\n";
+
+        if ($this->docBlockComment) {
+            $multiLineDocBlockComment = \trim(\preg_replace("/\n/", "\n * ", $this->docBlockComment));
+
+            $methodComment .= " * {$multiLineDocBlockComment}\n *";
+        }
+
+        foreach ($docBlockTypes as $docBlockType) {
+            $methodComment .= "\n * " . $docBlockType;
+        }
+
+        $methodComment = \preg_replace("/ \* \n/", " *\n", $methodComment) . "\n */";
+
+        $attributes = [];
+
+        if ($this->typed === false || $this->docBlockComment) {
+            $attributes = ['comments' => [new Doc($methodComment)]];
+        }
+
+        return new ClassMethod(
+            $this->getName(),
             [
                 'flags' => $this->flags,
                 'params' => \array_map(
@@ -156,7 +228,8 @@ final class MethodGenerator extends AbstractMemberGenerator
                 ),
                 'stmts' => $this->body ? $this->body->generate() : null,
                 'returnType' => $this->returnType ? $this->returnType->generate() : null,
-            ]
+            ],
+            $attributes
         );
     }
 

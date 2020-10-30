@@ -37,7 +37,17 @@ final class PropertyGenerator extends AbstractMemberGenerator
     /**
      * @var bool
      */
-    private $typed = false;
+    private $typed;
+
+    /**
+     * @var string|null
+     */
+    private $docBlockComment;
+
+    /**
+     * @var string
+     */
+    private $typeDocBlockHint;
 
     public function __construct(
         string $name = null,
@@ -77,6 +87,16 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->type;
     }
 
+    public function docBlockComment(): ?string
+    {
+        return $this->docBlockComment;
+    }
+
+    public function setDocBlockComment(?string $docBlockComment): void
+    {
+        $this->docBlockComment = $docBlockComment;
+    }
+
     /**
      * @param ValueGenerator|mixed $defaultValue
      * @param string $defaultValueType
@@ -104,20 +124,52 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->defaultValue;
     }
 
+    /**
+     * @return string
+     */
+    public function getTypeDocBlockHint(): ?string
+    {
+        return $this->typeDocBlockHint;
+    }
+
+    /**
+     * @param string $typeDocBlockHint
+     */
+    public function setTypeDocBlockHint(string $typeDocBlockHint): void
+    {
+        $this->typeDocBlockHint = $typeDocBlockHint;
+    }
+
     public function generate(): Property
     {
         $docBlockType = $this->type->isNullable()
-            ? $this->type->type()
-            : $this->type->type() . '|null';
+            ? $this->type->type() . '|null'
+            : $this->type->type();
+
+        if ($typeHint = $this->getTypeDocBlockHint()) {
+            $docBlockType = $typeHint;
+        }
 
         $propComment = <<<EOF
 /**
  * @var {$docBlockType}
  */
 EOF;
+        if ($this->docBlockComment) {
+            $multiLineDocBlockComment = \trim(\preg_replace("/\n/", "\n * ", $this->docBlockComment));
+
+            $propComment = <<<EOF
+/**
+ * {$multiLineDocBlockComment}
+ *
+ * @var {$docBlockType}
+ */
+EOF;
+        }
+
         $attributes = [];
 
-        if ($this->typed === false) {
+        if ($this->typed === false || $this->docBlockComment) {
             $attributes = ['comments' => [new Doc($propComment)]];
         }
 
