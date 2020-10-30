@@ -106,9 +106,13 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
     public function generate(): Property
     {
+        $docBlockType = $this->type->isNullable()
+            ? $this->type->type()
+            : $this->type->type() . '|null';
+
         $propComment = <<<EOF
 /**
- * @var {$this->type->type()}
+ * @var {$docBlockType}
  */
 EOF;
         $attributes = [];
@@ -126,7 +130,7 @@ EOF;
                 ),
             ],
             $attributes,
-            $this->typed ? $this->type->type() : null
+            $this->typed ? $this->type->generate() : null
         );
     }
 }

@@ -48,14 +48,14 @@ final class ParameterGenerator
     private $variadic = false;
 
     /**
-     * @param  string $name
-     * @param  string $type
-     * @param  mixed $defaultValue
-     * @param  bool $passByReference
+     * @param string $name
+     * @param string|null $type
+     * @param mixed $defaultValue
+     * @param bool $passByReference
      */
     public function __construct(
-        $name,
-        $type = null,
+        string $name,
+        string $type = null,
         $defaultValue = null,
         bool $passByReference = false
     ) {

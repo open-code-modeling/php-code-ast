@@ -69,7 +69,7 @@ final class TypeGenerator
      *
      * @throws InvalidArgumentException
      */
-    public static function fromTypeString($type): TypeGenerator
+    public static function fromTypeString(string $type): TypeGenerator
     {
         [$nullable, $trimmedNullable] = self::trimNullable($type);
         [$wasTrimmed, $trimmedType] = self::trimType($trimmedNullable);
@@ -97,7 +97,7 @@ final class TypeGenerator
 
         $instance = new self();
 
-        $instance->type = $trimmedType;
+        $instance->type = $isInternalPhpType ? $trimmedType : $trimmedNullable;
         $instance->nullable = $nullable;
         $instance->isInternalPhpType = $isInternalPhpType;
 
@@ -113,27 +113,18 @@ final class TypeGenerator
         return $this->type;
     }
 
-    public function generate(): NodeAbstract
+    public function isNullable(): bool
     {
-        $nullable = $this->nullable ? '?' : '';
-
-        // TODO nullable
-
-        if ($this->isInternalPhpType) {
-            return new Node\Identifier(\strtolower($this->type));
-//            return $nullable . strtolower($this->type);
-        }
-
-        return new Node\Name($this->type);
-//        return $nullable . '\\' . $this->type;
+        return $this->nullable;
     }
 
-    /**
-     * @return string the cleaned type string
-     */
-    public function __toString(): string
+    public function generate(): NodeAbstract
     {
-        return \ltrim($this->generate(), '?\\');
+        $type = $this->isInternalPhpType
+            ? new Node\Identifier(\strtolower($this->type))
+            : new Node\Name($this->type);
+
+        return $this->nullable ? new Node\NullableType($type) : $type;
     }
 
     /**
@@ -142,7 +133,7 @@ final class TypeGenerator
      * @return bool[]|string[] ordered tuple, first key represents whether the type is nullable, second is the
      *                         trimmed string
      */
-    private static function trimNullable($type): array
+    private static function trimNullable(string $type): array
     {
         if (0 === \strpos($type, '?')) {
             return [true, \substr($type, 1)];
@@ -157,7 +148,7 @@ final class TypeGenerator
      * @return bool[]|string[] ordered tuple, first key represents whether the values was trimmed, second is the
      *                         trimmed string
      */
-    private static function trimType($type): array
+    private static function trimType(string $type): array
     {
         if (0 === \strpos($type, '\\')) {
             return [true, \substr($type, 1)];
@@ -171,7 +162,7 @@ final class TypeGenerator
      *
      * @return bool
      */
-    private static function isInternalPhpType($type): bool
+    private static function isInternalPhpType(string $type): bool
     {
         return \in_array(\strtolower($type), self::$internalPhpTypes, true);
     }
