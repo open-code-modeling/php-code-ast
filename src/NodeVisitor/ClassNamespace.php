@@ -14,7 +14,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 
-class ClassNamespace extends NodeVisitorAbstract
+final class ClassNamespace extends NodeVisitorAbstract
 {
     /**
      * @var string

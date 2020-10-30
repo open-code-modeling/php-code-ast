@@ -17,7 +17,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
-class ClassMethod extends NodeVisitorAbstract
+final class ClassMethod extends NodeVisitorAbstract
 {
     /**
      * @var MethodGenerator

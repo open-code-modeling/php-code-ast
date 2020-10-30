@@ -17,7 +17,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
-class Property extends NodeVisitorAbstract
+final class Property extends NodeVisitorAbstract
 {
     /**
      * @var PropertyGenerator
@@ -27,6 +27,18 @@ class Property extends NodeVisitorAbstract
     public function __construct(PropertyGenerator $propertyGenerator)
     {
         $this->propertyGenerator = $propertyGenerator;
+    }
+
+    public static function forClassProperty(
+        string $name = null,
+        string $type = null,
+        $defaultValue = null,
+        bool $typed = false,
+        int $flags = PropertyGenerator::FLAG_PRIVATE
+    ): self {
+        return new self(
+            new PropertyGenerator($name, $type, $defaultValue, $typed, $flags)
+        );
     }
 
     public function afterTraverse(array $nodes): ?array

@@ -15,7 +15,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
-class ClassImplements extends NodeVisitorAbstract
+final class ClassImplements extends NodeVisitorAbstract
 {
     /**
      * @var string[]

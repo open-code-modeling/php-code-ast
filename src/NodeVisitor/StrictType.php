@@ -14,7 +14,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 
-class StrictType extends NodeVisitorAbstract
+final class StrictType extends NodeVisitorAbstract
 {
     public function afterTraverse(array $nodes)
     {

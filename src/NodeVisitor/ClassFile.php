@@ -15,7 +15,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
-class ClassFile extends NodeVisitorAbstract
+final class ClassFile extends NodeVisitorAbstract
 {
     /**
      * @var bool

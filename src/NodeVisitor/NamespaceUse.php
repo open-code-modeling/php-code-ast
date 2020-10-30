@@ -15,7 +15,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
-class NamespaceUse extends NodeVisitorAbstract
+final class NamespaceUse extends NodeVisitorAbstract
 {
     /**
      * @var array
