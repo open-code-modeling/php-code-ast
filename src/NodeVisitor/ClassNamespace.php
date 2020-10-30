@@ -39,13 +39,19 @@ final class ClassNamespace extends NodeVisitorAbstract
         }
 
         $newNodes = [];
+        $strictTypeFound = false;
 
         foreach ($nodes as $node) {
             $newNodes[] = $node;
 
             if ($this->isNodeStrictType($node)) {
+                $strictTypeFound = true;
                 $newNodes[] = $this->builderFactory->namespace($this->namespace)->getNode();
             }
+        }
+
+        if ($strictTypeFound === false) {
+            $newNodes[] = $this->builderFactory->namespace($this->namespace)->getNode();
         }
 
         return $newNodes;
