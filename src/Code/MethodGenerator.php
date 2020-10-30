@@ -29,7 +29,7 @@ final class MethodGenerator extends AbstractMemberGenerator
     private $parameters = [];
 
     /**
-     * @var BodyGenerator
+     * @var BodyGenerator|null
      */
     private $body;
 
@@ -42,10 +42,10 @@ final class MethodGenerator extends AbstractMemberGenerator
      * @param string $name
      * @param array $parameters
      * @param int $flags
-     * @param BodyGenerator $body
+     * @param BodyGenerator|null $body
      */
     public function __construct(
-        $name,
+        string $name,
         array $parameters = [],
         $flags = self::FLAG_PUBLIC,
         BodyGenerator $body = null
@@ -154,9 +154,17 @@ final class MethodGenerator extends AbstractMemberGenerator
                     },
                     $this->getParameters()
                 ),
-                'stmts' => $this->body ? $this->body->generate() : [],
+                'stmts' => $this->body ? $this->body->generate() : null,
                 'returnType' => $this->returnType ? $this->returnType->generate() : null,
             ]
         );
+    }
+
+    public function withoutBody(): self
+    {
+        $self = clone $this;
+        $self->body = null;
+
+        return $self;
     }
 }
