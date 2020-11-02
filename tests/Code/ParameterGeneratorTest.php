@@ -68,4 +68,20 @@ PHP;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$parameter->generate()]));
     }
+
+    /**
+     * @test
+     */
+    public function it_works_without_type()
+    {
+        $parameter = new ParameterGenerator('myParameter');
+
+        $expectedOutput = <<<PHP
+<?php
+
+\$myParameter
+PHP;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$parameter->generate()]));
+    }
 }

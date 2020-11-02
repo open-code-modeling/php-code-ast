@@ -88,7 +88,7 @@ final class ParameterGenerator
         return $this;
     }
 
-    public function getType(): TypeGenerator
+    public function getType(): ?TypeGenerator
     {
         return $this->type;
     }

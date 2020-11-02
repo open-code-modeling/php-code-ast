@@ -59,6 +59,33 @@ EOF;
     /**
      * @test
      */
+    public function it_generates_method_with_mixed_type_doc_block(): void
+    {
+        $method = new MethodGenerator(
+            'setType',
+            [
+                new ParameterGenerator('type'),
+            ]
+        );
+        $method->setDocBlockComment('Sets an awesome type');
+
+        $expectedOutput = <<<'EOF'
+<?php
+
+/**
+ * Sets an awesome type
+ *
+ * @var mixed $type
+ */
+public function setType($type);
+EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
+    }
+
+    /**
+     * @test
+     */
     public function it_generates_method_with_array_type_doc_block(): void
     {
         $parameter = new ParameterGenerator('items', 'array');

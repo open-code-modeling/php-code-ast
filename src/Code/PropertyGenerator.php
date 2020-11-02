@@ -82,7 +82,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this;
     }
 
-    public function getType(): TypeGenerator
+    public function getType(): ?TypeGenerator
     {
         return $this->type;
     }
