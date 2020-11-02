@@ -185,7 +185,7 @@ final class MethodGenerator extends AbstractMemberGenerator
         $docBlockTypes = [];
 
         foreach ($this->getParameters() as $parameter) {
-            if(null === $parameter->getType()) {
+            if (null === $parameter->getType()) {
                 $type = 'mixed';
             } else {
                 $type = $parameter->getType()->isNullable()
