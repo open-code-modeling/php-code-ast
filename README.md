@@ -88,3 +88,36 @@ final class TestClass extends BaseClass implements \Iterator, Bar
 ```
 
 Now, change the body of the `toInt()` method to something else. You will see that your changes will *NOT* be overwritten.
+
+### Reverse usage
+
+It is also possible to create a factory class from parsed PHP AST. You can create an instance of `OpenCodeModeling\CodeAst\Factory\ClassFactory` by 
+calling `OpenCodeModeling\CodeAst\Factory\ClassFactory::fromNodes()`.
+
+```php
+<?php
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use Foo\Bar;
+final class TestClass extends BaseClass implements \Iterator, Bar
+{
+    private const PRIV = 'private';
+}
+EOF;
+
+
+$ast = $parser->parse($expected);
+
+$classFactory = OpenCodeModeling\CodeAst\Factory\ClassFactory::fromNodes(...$ast);
+
+$classFactory->getName(); // TestClass
+$classFactory->getExtends(); // BaseClass
+$classFactory->isFinal(); // true
+$classFactory->isStrict(); // true
+$classFactory->isAbstract(); // false
+
+```

@@ -17,6 +17,7 @@ use OpenCodeModeling\CodeAst\NodeVisitor\ClassImplements;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
 use OpenCodeModeling\CodeAst\NodeVisitor\NamespaceUse;
 use OpenCodeModeling\CodeAst\NodeVisitor\StrictType;
+use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 
@@ -29,10 +30,10 @@ final class ClassFactory
     private $name;
 
     /** @var bool */
-    private $strict;
+    private $strict = false;
 
     /** @var bool */
-    private $typed;
+    private $typed = false;
 
     /** @var bool */
     private $final = false;
@@ -40,7 +41,7 @@ final class ClassFactory
     /** @var bool */
     private $abstract = false;
 
-    /** @var string */
+    /** @var string|null */
     private $extends;
 
     /** @var string[] */
@@ -49,8 +50,22 @@ final class ClassFactory
     /** @var string[] */
     private $namespaceUse = [];
 
+    /** @var ClassConstFactory[] */
+    private $constants = [];
+
     private function __construct()
     {
+    }
+
+    public static function fromNodes(Node ...$nodes): self
+    {
+        $self = new self();
+
+        foreach ($nodes as $node) {
+            $self->unpackNode($node);
+        }
+
+        return $self;
     }
 
     public static function fromScratch(
@@ -110,6 +125,72 @@ final class ClassFactory
         return $this;
     }
 
+    public function setConstants(ClassConstFactory ...$constants): self
+    {
+        $this->constants = $constants;
+
+        return $this;
+    }
+
+    public function getNamespace(): ?string
+    {
+        return $this->namespace;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function isStrict(): bool
+    {
+        return $this->strict;
+    }
+
+    public function isTyped(): bool
+    {
+        return $this->typed;
+    }
+
+    public function isFinal(): bool
+    {
+        return $this->final;
+    }
+
+    public function isAbstract(): bool
+    {
+        return $this->abstract;
+    }
+
+    public function getExtends(): ?string
+    {
+        return $this->extends;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getImplements(): array
+    {
+        return $this->implements;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getNamespaceUse(): array
+    {
+        return $this->namespaceUse;
+    }
+
+    /**
+     * @return ClassConstFactory[]
+     */
+    public function getConstants(): array
+    {
+        return $this->constants;
+    }
+
     /**
      * @return NodeVisitor[]
      */
@@ -137,8 +218,67 @@ final class ClassFactory
         if ($this->implements) {
             $visitors[] = new ClassImplements(...$this->implements);
         }
+        if (\count($this->constants) > 0) {
+            \array_push(
+                $visitors,
+                ...\array_map(
+                    static function (ClassConstFactory $const) {
+                        return $const->generate();
+                    },
+                    $this->constants
+                )
+            );
+        }
 
         return $visitors;
+    }
+
+    private function unpackNode(Node $node): void
+    {
+        switch (true) {
+            case $node instanceof Node\Stmt\Declare_:
+                if ($node->declares[0]->key->name === 'strict_types') {
+                    $this->strict = true;
+                }
+                break;
+            case $node instanceof Node\Stmt\Namespace_:
+                $this->namespace = $node->name->toString();
+
+                foreach ($node->stmts as $stmt) {
+                    $this->unpackNode($stmt);
+                }
+                break;
+            case $node instanceof Node\Stmt\Use_:
+                foreach ($node->uses as $use) {
+                    $this->unpackNode($use);
+                }
+                break;
+            case $node instanceof Node\Stmt\UseUse:
+                $this->namespaceUse[] = $node->name->toString();
+                break;
+            case $node instanceof Node\Stmt\Class_:
+                $this->name = $node->name->name;
+                $this->final = $node->isFinal();
+                $this->extends = $node->extends ? $node->extends->toString() : null;
+
+                foreach ($node->stmts as $stmt) {
+                    $this->unpackNode($stmt);
+                }
+                $this->implements = \array_map(
+                    static function (Node\Name $name) {
+                        return $name instanceof Node\Name\FullyQualified
+                            ? '\\' . $name->toString()
+                            : $name->toString();
+                    },
+                    $node->implements
+                );
+                break;
+            case $node instanceof Node\Stmt\ClassConst:
+                $this->constants[] = ClassConstFactory::fromNode($node);
+                break;
+            default:
+                break;
+        }
     }
 
     private function classGenerator(): ClassGenerator

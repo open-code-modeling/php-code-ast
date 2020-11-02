@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Factory;
 
+use OpenCodeModeling\CodeAst\Factory\ClassConstFactory;
 use OpenCodeModeling\CodeAst\Factory\ClassFactory;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -41,7 +42,8 @@ final class ClassFactoryTest extends TestCase
             ->setFinal(true)
             ->setExtends('BaseClass')
             ->setNamespaceUse('Foo\\Bar')
-            ->setImplements('\\Iterator', 'Bar');
+            ->setImplements('\\Iterator', 'Bar')
+            ->setConstants(ClassConstFactory::fromScratch('PRIV', 'private')->setPrivate());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser);
@@ -55,9 +57,47 @@ namespace My\Awesome\Service;
 use Foo\Bar;
 final class TestClass extends BaseClass implements \Iterator, Bar
 {
+    private const PRIV = 'private';
 }
 EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_class_for_empty_file_from_template(): void
+    {
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use Foo\Bar;
+final class TestClass extends BaseClass implements \Iterator, Bar
+{
+    const FIRST = 1;
+    private const PRIV = 'private';
+    protected const PROT = 'protected';
+    public const PUB = 'public';
+}
+EOF;
+
+        $ast = $this->parser->parse($expected);
+
+        $classFactory = ClassFactory::fromNodes(...$ast);
+
+        $this->assertSame('TestClass', $classFactory->getName());
+        $this->assertSame('BaseClass', $classFactory->getExtends());
+        $this->assertTrue($classFactory->isFinal());
+        $this->assertTrue($classFactory->isStrict());
+        $this->assertFalse($classFactory->isAbstract());
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }
 }
