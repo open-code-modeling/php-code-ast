@@ -32,6 +32,57 @@ final class MethodGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function it_generates_method_without_doc_block_if_typed(): void
+    {
+        $method = new MethodGenerator(
+            'setType',
+            [
+                new ParameterGenerator('type', '?string'),
+            ]
+        );
+        $method->setTyped(true);
+        $method->setReturnType('void');
+
+        $expectedOutput = <<<'EOF'
+<?php
+
+public function setType(?string $type) : void;
+EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_method_with_doc_block_comment_if_typed(): void
+    {
+        $method = new MethodGenerator(
+            'setType',
+            [
+                new ParameterGenerator('type', '?string'),
+            ]
+        );
+        $method->setTyped(true);
+        $method->setDocBlockComment('Sets an awesome type');
+
+        $expectedOutput = <<<'EOF'
+<?php
+
+/**
+ * Sets an awesome type
+ *
+ * @var string|null $type
+ */
+public function setType(?string $type);
+EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
+    }
+
+    /**
+     * @test
+     */
     public function it_generates_method_with_doc_block(): void
     {
         $method = new MethodGenerator(
@@ -41,6 +92,7 @@ final class MethodGeneratorTest extends TestCase
             ]
         );
         $method->setDocBlockComment('Sets an awesome type');
+        $method->setTyped(true);
 
         $expectedOutput = <<<'EOF'
 <?php
