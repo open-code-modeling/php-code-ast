@@ -240,7 +240,7 @@ final class MethodGenerator extends AbstractMemberGenerator
             return ['comments' => [new Doc($this->docBlock->generate())]];
         }
 
-        if ($this->typed === false || $this->docBlockComment || $this->returnTypeDocBlockHint) {
+        if ($this->typed === false || $this->docBlockComment !== null || $this->returnTypeDocBlockHint !== null) {
             $docBlock = new DocBlock($this->docBlockComment);
 
             foreach ($this->getParameters() as $parameter) {
@@ -260,10 +260,10 @@ final class MethodGenerator extends AbstractMemberGenerator
             if ($this->returnType) {
                 $returnType = $this->returnType->type();
             }
-            if ($this->returnTypeDocBlockHint) {
+            if ($this->returnTypeDocBlockHint !== null) {
                 $returnType = $this->returnTypeDocBlockHint;
             }
-            if ($returnType) {
+            if ($returnType !== null) {
                 $docBlock->addTag(new ReturnTag($returnType));
             }
 

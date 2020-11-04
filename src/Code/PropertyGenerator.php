@@ -180,7 +180,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
             return ['comments' => [new Doc($this->docBlock->generate())]];
         }
 
-        if ($this->typed === false || $this->docBlockComment) {
+        if ($this->typed === false || $this->docBlockComment !== null) {
             $docBlockType = new VarTag($this->type->types());
 
             if ($typeHint = $this->getTypeDocBlockHint()) {
