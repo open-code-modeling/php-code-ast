@@ -63,6 +63,12 @@ final class DocBlock
             $comment .= ' * ' . $tag->generate() . "\n";
         }
 
-        return \preg_replace("/ \* \n/", " *\n", $comment) . "\n */";
+        $comment = \preg_replace("/ \* \n/", " *\n", $comment);
+
+        if (\count($this->tags) === 0) {
+            return \trim($comment) . '/';
+        }
+
+        return $comment . "\n */";
     }
 }

@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Code;
 
+use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
+use OpenCodeModeling\CodeAst\Code\DocBlock\Tag\VarTag;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
@@ -49,6 +51,11 @@ final class PropertyGenerator extends AbstractMemberGenerator
      */
     private $typeDocBlockHint;
 
+    /**
+     * @var DocBlock|null
+     */
+    private $docBlock;
+
     public function __construct(
         string $name = null,
         string $type = null,
@@ -87,7 +94,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->type;
     }
 
-    public function docBlockComment(): ?string
+    public function getDocBlockComment(): ?string
     {
         return $this->docBlockComment;
     }
@@ -95,6 +102,16 @@ final class PropertyGenerator extends AbstractMemberGenerator
     public function setDocBlockComment(?string $docBlockComment): void
     {
         $this->docBlockComment = $docBlockComment;
+    }
+
+    /**
+     * Ignores generation of the doc block and uses provided doc block instead.
+     *
+     * @param DocBlock $docBlock
+     */
+    public function overrideDocBlock(DocBlock $docBlock): void
+    {
+        $this->docBlock = $docBlock;
     }
 
     /**
@@ -142,37 +159,6 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
     public function generate(): Property
     {
-        $docBlockType = $this->type->isNullable()
-            ? $this->type->type() . '|null'
-            : $this->type->type();
-
-        if ($typeHint = $this->getTypeDocBlockHint()) {
-            $docBlockType = $typeHint;
-        }
-
-        $propComment = <<<EOF
-/**
- * @var {$docBlockType}
- */
-EOF;
-        if ($this->docBlockComment) {
-            $multiLineDocBlockComment = \trim(\preg_replace("/\n/", "\n * ", $this->docBlockComment));
-
-            $propComment = <<<EOF
-/**
- * {$multiLineDocBlockComment}
- *
- * @var {$docBlockType}
- */
-EOF;
-        }
-
-        $attributes = [];
-
-        if ($this->typed === false || $this->docBlockComment) {
-            $attributes = ['comments' => [new Doc($propComment)]];
-        }
-
         return new Property(
             $this->flags,
             [
@@ -181,8 +167,30 @@ EOF;
                     $this->defaultValue ? $this->defaultValue->generate() : null
                 ),
             ],
-            $attributes,
+            $this->generateAttributes(),
             $this->typed ? $this->type->generate() : null
         );
+    }
+
+    private function generateAttributes(): array
+    {
+        $attributes = [];
+
+        if ($this->docBlock) {
+            return ['comments' => [new Doc($this->docBlock->generate())]];
+        }
+
+        if ($this->typed === false || $this->docBlockComment) {
+            $docBlockType = new VarTag($this->type->types());
+
+            if ($typeHint = $this->getTypeDocBlockHint()) {
+                $docBlockType->setTypes($typeHint);
+            }
+            $docBlock = new DocBlock($this->docBlockComment, $docBlockType);
+
+            $attributes = ['comments' => [new Doc($docBlock->generate())]];
+        }
+
+        return $attributes;
     }
 }
