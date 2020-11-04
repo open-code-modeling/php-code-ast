@@ -42,8 +42,8 @@
     "scripts": {
         "check": [
             "@cs",
-            "@docheader",
-            "@test"
+            "@test",
+            "@analyse"
         ],
         "docheader": "vendor/bin/docheader check src/ tests/",
         "cs": "php-cs-fixer fix src -v --diff --dry-run",
