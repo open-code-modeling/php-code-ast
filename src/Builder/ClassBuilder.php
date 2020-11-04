@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace OpenCodeModeling\CodeAst\Factory;
+namespace OpenCodeModeling\CodeAst\Builder;
 
 use OpenCodeModeling\CodeAst\Code\ClassGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassExtends;
@@ -21,7 +21,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 
-final class ClassFactory
+final class ClassBuilder
 {
     /** @var string|null */
     private $namespace;
@@ -50,7 +50,7 @@ final class ClassFactory
     /** @var string[] */
     private $namespaceUse = [];
 
-    /** @var ClassConstFactory[] */
+    /** @var ClassConstBuilder[] */
     private $constants = [];
 
     private function __construct()
@@ -125,7 +125,7 @@ final class ClassFactory
         return $this;
     }
 
-    public function setConstants(ClassConstFactory ...$constants): self
+    public function setConstants(ClassConstBuilder ...$constants): self
     {
         $this->constants = $constants;
 
@@ -184,7 +184,7 @@ final class ClassFactory
     }
 
     /**
-     * @return ClassConstFactory[]
+     * @return ClassConstBuilder[]
      */
     public function getConstants(): array
     {
@@ -222,7 +222,7 @@ final class ClassFactory
             \array_push(
                 $visitors,
                 ...\array_map(
-                    static function (ClassConstFactory $const) {
+                    static function (ClassConstBuilder $const) {
                         return $const->generate();
                     },
                     $this->constants
@@ -274,7 +274,7 @@ final class ClassFactory
                 );
                 break;
             case $node instanceof Node\Stmt\ClassConst:
-                $this->constants[] = ClassConstFactory::fromNode($node);
+                $this->constants[] = ClassConstBuilder::fromNode($node);
                 break;
             default:
                 break;

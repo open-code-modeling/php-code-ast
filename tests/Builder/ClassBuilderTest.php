@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace OpenCodeModelingTest\CodeAst\Factory;
+namespace OpenCodeModelingTest\CodeAst\Builder;
 
-use OpenCodeModeling\CodeAst\Factory\ClassConstFactory;
-use OpenCodeModeling\CodeAst\Factory\ClassFactory;
+use OpenCodeModeling\CodeAst\Builder\ClassConstBuilder;
+use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 
-final class ClassFactoryTest extends TestCase
+final class ClassBuilderTest extends TestCase
 {
     /**
      * @var Parser
@@ -37,13 +37,13 @@ final class ClassFactoryTest extends TestCase
     {
         $ast = $this->parser->parse('');
 
-        $classFactory = ClassFactory::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
         $classFactory
             ->setFinal(true)
             ->setExtends('BaseClass')
             ->setNamespaceUse('Foo\\Bar')
             ->setImplements('\\Iterator', 'Bar')
-            ->setConstants(ClassConstFactory::fromScratch('PRIV', 'private')->setPrivate());
+            ->setConstants(ClassConstBuilder::fromScratch('PRIV', 'private')->setPrivate());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser);
@@ -87,7 +87,7 @@ EOF;
 
         $ast = $this->parser->parse($expected);
 
-        $classFactory = ClassFactory::fromNodes(...$ast);
+        $classFactory = ClassBuilder::fromNodes(...$ast);
 
         $this->assertSame('TestClass', $classFactory->getName());
         $this->assertSame('BaseClass', $classFactory->getExtends());

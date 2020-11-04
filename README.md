@@ -20,7 +20,7 @@ $printer = new PhpParser\PrettyPrinter\Standard(['shortArraySyntax' => true]);
 
 $ast = $parser->parse('');
 
-$classFactory = OpenCodeModeling\CodeAst\Factory\ClassFactory::fromScratch('TestClass', 'My\\Awesome\\Service');
+$classFactory = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
 $classFactory
     ->setFinal(true)
     ->setExtends('BaseClass')
@@ -112,7 +112,7 @@ EOF;
 
 $ast = $parser->parse($expected);
 
-$classFactory = OpenCodeModeling\CodeAst\Factory\ClassFactory::fromNodes(...$ast);
+$classFactory = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromNodes(...$ast);
 
 $classFactory->getName(); // TestClass
 $classFactory->getExtends(); // BaseClass

@@ -8,14 +8,14 @@
 
 declare(strict_types=1);
 
-namespace OpenCodeModeling\CodeAst\Factory;
+namespace OpenCodeModeling\CodeAst\Builder;
 
 use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassConstant;
 use PhpParser\Node;
 use PhpParser\NodeVisitor;
 
-final class ClassConstFactory
+final class ClassConstBuilder
 {
     /** @var string */
     private $name;
