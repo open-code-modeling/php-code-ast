@@ -118,6 +118,22 @@ final class TypeGenerator
         return $this->nullable;
     }
 
+    /**
+     * Normally only one type. Additionally the type null if nullable.
+     *
+     * @return string[]
+     */
+    public function types(): array
+    {
+        $types = [$this->type];
+
+        if ($this->nullable) {
+            $types[] = 'null';
+        }
+
+        return $types;
+    }
+
     public function generate(): NodeAbstract
     {
         $type = $this->isInternalPhpType

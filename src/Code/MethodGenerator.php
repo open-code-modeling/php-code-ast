@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Code;
 
+use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
+use OpenCodeModeling\CodeAst\Code\DocBlock\Tag\ParamTag;
+use OpenCodeModeling\CodeAst\Code\DocBlock\Tag\ReturnTag;
 use OpenCodeModeling\CodeAst\Exception;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -48,6 +51,16 @@ final class MethodGenerator extends AbstractMemberGenerator
      * @var string|null
      */
     private $docBlockComment;
+
+    /**
+     * @var string|null
+     */
+    private $returnTypeDocBlockHint;
+
+    /**
+     * @var DocBlock|null
+     */
+    private $docBlock;
 
     /**
      * @param string $name
@@ -154,7 +167,7 @@ final class MethodGenerator extends AbstractMemberGenerator
         return $this->returnType;
     }
 
-    public function docBlockComment(): ?string
+    public function getDocBlockComment(): ?string
     {
         return $this->docBlockComment;
     }
@@ -164,10 +177,20 @@ final class MethodGenerator extends AbstractMemberGenerator
         $this->docBlockComment = $docBlockComment;
     }
 
+    public function getReturnTypeDocBlockHint(): ?string
+    {
+        return $this->returnTypeDocBlockHint;
+    }
+
+    public function setReturnTypeDocBlockHint(?string $typeDocBlockHint): void
+    {
+        $this->returnTypeDocBlockHint = $typeDocBlockHint;
+    }
+
     /**
      * @return bool
      */
-    public function typed(): bool
+    public function getTyped(): bool
     {
         return $this->typed;
     }
@@ -180,46 +203,18 @@ final class MethodGenerator extends AbstractMemberGenerator
         $this->typed = $typed;
     }
 
+    /**
+     * Ignores generation of the doc block and uses provided doc block instead.
+     *
+     * @param DocBlock $docBlock
+     */
+    public function overrideDocBlock(DocBlock $docBlock): void
+    {
+        $this->docBlock = $docBlock;
+    }
+
     public function generate(): ClassMethod
     {
-        $docBlockTypes = [];
-
-        foreach ($this->getParameters() as $parameter) {
-            if (null === $parameter->getType()) {
-                $type = 'mixed';
-            } else {
-                $type = $parameter->getType()->isNullable()
-                    ? $parameter->getType()->type() . '|null'
-                    : $parameter->getType()->type();
-            }
-
-            if ($typeHint = $parameter->getTypeDocBlockHint()) {
-                $type = $typeHint;
-            }
-
-            $docBlockTypes[] = '@var ' . $type .  ' $' . $parameter->getName();
-        }
-
-        $methodComment = "/**\n";
-
-        if ($this->docBlockComment) {
-            $multiLineDocBlockComment = \trim(\preg_replace("/\n/", "\n * ", $this->docBlockComment));
-
-            $methodComment .= " * {$multiLineDocBlockComment}\n *";
-        }
-
-        foreach ($docBlockTypes as $docBlockType) {
-            $methodComment .= "\n * " . $docBlockType;
-        }
-
-        $methodComment = \preg_replace("/ \* \n/", " *\n", $methodComment) . "\n */";
-
-        $attributes = [];
-
-        if ($this->typed === false || $this->docBlockComment) {
-            $attributes = ['comments' => [new Doc($methodComment)]];
-        }
-
         return new ClassMethod(
             $this->getName(),
             [
@@ -233,8 +228,49 @@ final class MethodGenerator extends AbstractMemberGenerator
                 'stmts' => $this->body ? $this->body->generate() : null,
                 'returnType' => $this->returnType ? $this->returnType->generate() : null,
             ],
-            $attributes
+            $this->generateAttributes()
         );
+    }
+
+    private function generateAttributes(): array
+    {
+        $attributes = [];
+
+        if ($this->docBlock) {
+            return ['comments' => [new Doc($this->docBlock->generate())]];
+        }
+
+        if ($this->typed === false || $this->docBlockComment || $this->returnTypeDocBlockHint) {
+            $docBlock = new DocBlock($this->docBlockComment);
+
+            foreach ($this->getParameters() as $parameter) {
+                if (null === $parameter->getType()) {
+                    $types = 'mixed';
+                } else {
+                    $types = $parameter->getType()->types();
+                }
+                if ($typeHint = $parameter->getTypeDocBlockHint()) {
+                    $types = $typeHint;
+                }
+                $docBlock->addTag(new ParamTag($parameter->getName(), $types));
+            }
+
+            $returnType = null;
+
+            if ($this->returnType) {
+                $returnType = $this->returnType->type();
+            }
+            if ($this->returnTypeDocBlockHint) {
+                $returnType = $this->returnTypeDocBlockHint;
+            }
+            if ($returnType) {
+                $docBlock->addTag(new ReturnTag($returnType));
+            }
+
+            $attributes = ['comments' => [new Doc($docBlock->generate())]];
+        }
+
+        return $attributes;
     }
 
     public function withoutBody(): self
