@@ -51,7 +51,7 @@ final class ClassConstant extends NodeVisitorAbstract
 
             if ($node instanceof Namespace_) {
                 foreach ($node->stmts as $stmt) {
-                    if ($stmt instanceof Class_) {
+                    if ($stmt instanceof Class_ || $stmt instanceof Node\Stmt\Interface_) {
                         if ($this->checkConstantExists($stmt)) {
                             return null;
                         }
@@ -61,7 +61,7 @@ final class ClassConstant extends NodeVisitorAbstract
                         );
                     }
                 }
-            } elseif ($node instanceof Class_) {
+            } elseif ($node instanceof Class_ || $node instanceof Node\Stmt\Interface_) {
                 if ($this->checkConstantExists($node)) {
                     return null;
                 }
@@ -75,7 +75,7 @@ final class ClassConstant extends NodeVisitorAbstract
         return $newNodes;
     }
 
-    private function checkConstantExists(Class_ $node): bool
+    private function checkConstantExists($node): bool
     {
         foreach ($node->stmts as $stmt) {
             if ($stmt instanceof Node\Stmt\ClassConst
