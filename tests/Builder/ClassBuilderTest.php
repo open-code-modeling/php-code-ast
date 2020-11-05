@@ -43,6 +43,7 @@ final class ClassBuilderTest extends TestCase
             ->setExtends('BaseClass')
             ->setNamespaceUse('Foo\\Bar')
             ->setImplements('\\Iterator', 'Bar')
+            ->setUseTrait('\\My\\TestTrait')
             ->setConstants(ClassConstBuilder::fromScratch('PRIV', 'private')->setPrivate());
 
         $nodeTraverser = new NodeTraverser();
@@ -57,6 +58,7 @@ namespace My\Awesome\Service;
 use Foo\Bar;
 final class TestClass extends BaseClass implements \Iterator, Bar
 {
+    use \My\TestTrait;
     private const PRIV = 'private';
 }
 EOF;
@@ -78,6 +80,7 @@ namespace My\Awesome\Service;
 use Foo\Bar;
 final class TestClass extends BaseClass implements \Iterator, Bar
 {
+    use \My\TestTrait;
     const FIRST = 1;
     private const PRIV = 'private';
     protected const PROT = 'protected';
@@ -94,6 +97,7 @@ EOF;
         $this->assertTrue($classFactory->isFinal());
         $this->assertTrue($classFactory->isStrict());
         $this->assertFalse($classFactory->isAbstract());
+        $this->assertSame(['\\My\\TestTrait'], $classFactory->getUseTrait());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser);

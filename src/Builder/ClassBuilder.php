@@ -15,6 +15,7 @@ use OpenCodeModeling\CodeAst\NodeVisitor\ClassExtends;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassFile;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassImplements;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
+use OpenCodeModeling\CodeAst\NodeVisitor\ClassUseTrait;
 use OpenCodeModeling\CodeAst\NodeVisitor\NamespaceUse;
 use OpenCodeModeling\CodeAst\NodeVisitor\StrictType;
 use PhpParser\Node;
@@ -49,6 +50,9 @@ final class ClassBuilder
 
     /** @var string[] */
     private $namespaceUse = [];
+
+    /** @var string[] */
+    private $traits = [];
 
     /** @var ClassConstBuilder[] */
     private $constants = [];
@@ -125,6 +129,13 @@ final class ClassBuilder
         return $this;
     }
 
+    public function setUseTrait(string ...$traits): self
+    {
+        $this->traits = $traits;
+
+        return $this;
+    }
+
     public function setConstants(ClassConstBuilder ...$constants): self
     {
         $this->constants = $constants;
@@ -184,6 +195,14 @@ final class ClassBuilder
     }
 
     /**
+     * @return string[]
+     */
+    public function getUseTrait(): array
+    {
+        return $this->traits;
+    }
+
+    /**
      * @return ClassConstBuilder[]
      */
     public function getConstants(): array
@@ -218,6 +237,10 @@ final class ClassBuilder
         if ($this->implements) {
             $visitors[] = new ClassImplements(...$this->implements);
         }
+        if ($this->traits) {
+            $visitors[] = new ClassUseTrait(...$this->traits);
+        }
+
         if (\count($this->constants) > 0) {
             \array_push(
                 $visitors,
@@ -254,12 +277,19 @@ final class ClassBuilder
                 }
                 break;
             case $node instanceof Node\Stmt\UseUse:
-                $this->namespaceUse[] = $node->name->toString();
+                $this->namespaceUse[] = $node->name instanceof Node\Name\FullyQualified
+                    ? '\\' . $node->name->toString()
+                    : $node->name->toString();
                 break;
             case $node instanceof Node\Stmt\Class_:
                 $this->name = $node->name->name;
                 $this->final = $node->isFinal();
-                $this->extends = $node->extends ? $node->extends->toString() : null;
+
+                if ($node->extends !== null) {
+                    $this->extends = $node->extends instanceof Node\Name\FullyQualified
+                        ? '\\' . $node->extends->toString()
+                        : $node->extends->toString();
+                }
 
                 foreach ($node->stmts as $stmt) {
                     $this->unpackNode($stmt);
@@ -271,6 +301,16 @@ final class ClassBuilder
                             : $name->toString();
                     },
                     $node->implements
+                );
+                break;
+            case $node instanceof Node\Stmt\TraitUse:
+                $this->traits = \array_map(
+                    static function (Node\Name $name) {
+                        return $name instanceof Node\Name\FullyQualified
+                            ? '\\' . $name->toString()
+                            : $name->toString();
+                    },
+                    $node->traits
                 );
                 break;
             case $node instanceof Node\Stmt\ClassConst:
