@@ -44,11 +44,12 @@ final class ClassConstBuilder
         return $self;
     }
 
-    public static function fromScratch(string $name, $value): self
+    public static function fromScratch(string $name, $value, $visibility = ClassConstGenerator::FLAG_PUBLIC): self
     {
         $self = new self();
         $self->name = $name;
         $self->value = $value;
+        $self->visibility = $visibility;
 
         return $self;
     }
