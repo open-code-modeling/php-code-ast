@@ -57,6 +57,9 @@ final class ClassBuilder
     /** @var ClassConstBuilder[] */
     private $constants = [];
 
+    /** @var ClassPropertyBuilder[] */
+    private $properties = [];
+
     private function __construct()
     {
     }
@@ -143,6 +146,13 @@ final class ClassBuilder
         return $this;
     }
 
+    public function setProperties(ClassPropertyBuilder ...$properties): self
+    {
+        $this->properties = $properties;
+
+        return $this;
+    }
+
     public function getNamespace(): ?string
     {
         return $this->namespace;
@@ -211,6 +221,14 @@ final class ClassBuilder
     }
 
     /**
+     * @return ClassPropertyBuilder[]
+     */
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+    /**
      * @return NodeVisitor[]
      */
     public function generate(): array
@@ -249,6 +267,17 @@ final class ClassBuilder
                         return $const->generate();
                     },
                     $this->constants
+                )
+            );
+        }
+        if (\count($this->properties) > 0) {
+            \array_push(
+                $visitors,
+                ...\array_map(
+                    static function (ClassPropertyBuilder $property) {
+                        return $property->generate();
+                    },
+                    $this->properties
                 )
             );
         }
@@ -315,6 +344,9 @@ final class ClassBuilder
                 break;
             case $node instanceof Node\Stmt\ClassConst:
                 $this->constants[] = ClassConstBuilder::fromNode($node);
+                break;
+            case $node instanceof Node\Stmt\Property:
+                $this->properties[] = ClassPropertyBuilder::fromNode($node);
                 break;
             default:
                 break;

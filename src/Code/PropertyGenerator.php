@@ -47,7 +47,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
     private $docBlockComment;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $typeDocBlockHint;
 
@@ -107,9 +107,9 @@ final class PropertyGenerator extends AbstractMemberGenerator
     /**
      * Ignores generation of the doc block and uses provided doc block instead.
      *
-     * @param DocBlock $docBlock
+     * @param DocBlock|null $docBlock
      */
-    public function overrideDocBlock(DocBlock $docBlock): void
+    public function overrideDocBlock(?DocBlock $docBlock): void
     {
         $this->docBlock = $docBlock;
     }
@@ -149,10 +149,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->typeDocBlockHint;
     }
 
-    /**
-     * @param string $typeDocBlockHint
-     */
-    public function setTypeDocBlockHint(string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
     }
