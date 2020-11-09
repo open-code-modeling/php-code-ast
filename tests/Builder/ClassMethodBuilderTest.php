@@ -179,4 +179,76 @@ EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }
+
+    /**
+     * @test
+     */
+    public function it_supports_sort_of_class_methods(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public function b() : void
+    {
+    }
+    public function a() : void
+    {
+    }
+    public function d() : void
+    {
+    }
+    public function c() : void
+    {
+    }
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+
+        $classFactory->sortMethods(function (ClassMethodBuilder $a, ClassMethodBuilder $b) {
+            return $a->getName() <=> $b->getName();
+        });
+
+        $methods = $classFactory->getMethods();
+        $this->assertCount(4, $methods);
+        $this->assertSame('a', $methods[0]->getName());
+        $this->assertSame('b', $methods[1]->getName());
+        $this->assertSame('c', $methods[2]->getName());
+        $this->assertSame('d', $methods[3]->getName());
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public function a() : void
+    {
+    }
+    public function b() : void
+    {
+    }
+    public function c() : void
+    {
+    }
+    public function d() : void
+    {
+    }
+}
+EOF;
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
 }

@@ -248,6 +248,71 @@ final class ClassBuilder
     }
 
     /**
+     * Uses usort internally
+     *
+     * @param callable $sort (ClassConstBuilder $a, ClassConstBuilder $b)
+     * @return $this
+     */
+    public function sortConstants(callable $sort): self
+    {
+        \usort($this->constants, $sort);
+
+        return $this;
+    }
+
+    /**
+     * Uses usort internally
+     *
+     * @param callable $sort (ClassPropertyBuilder $a, ClassPropertyBuilder $b)
+     * @return $this
+     */
+    public function sortProperties(callable $sort): self
+    {
+        \usort($this->properties, $sort);
+
+        return $this;
+    }
+
+    /**
+     * Uses usort internally
+     *
+     * @param callable $sort (ClassMethodBuilder $a, ClassMethodBuilder $b)
+     * @return $this
+     */
+    public function sortMethods(callable $sort): self
+    {
+        \usort($this->methods, $sort);
+
+        return $this;
+    }
+
+    /**
+     * Uses usort internally
+     *
+     * @param callable $sort (string $a, string $b)
+     * @return $this
+     */
+    public function sortTraits(callable $sort): self
+    {
+        \usort($this->traits, $sort);
+
+        return $this;
+    }
+
+    /**
+     * Uses usort internally
+     *
+     * @param callable $sort (string $a, string $b)
+     * @return $this
+     */
+    public function sortNamespaceUse(callable $sort): self
+    {
+        \usort($this->namespaceUse, $sort);
+
+        return $this;
+    }
+
+    /**
      * @param Parser $parser
      * @return NodeVisitor[]
      */

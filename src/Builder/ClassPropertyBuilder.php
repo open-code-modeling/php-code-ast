@@ -62,7 +62,7 @@ final class ClassPropertyBuilder
 
         $self->name = $node->props[0]->name->name;
         $self->defaultValue = $node->props[0]->default;
-        $self->type = $node->type->toString();
+        $self->type = $node->type ? $node->type->toString() : null;
         $self->visibility = $node->flags;
 
         if ($self->type !== null) {
