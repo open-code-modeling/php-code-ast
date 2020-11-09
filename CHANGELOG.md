@@ -2,27 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.8.0 - TBD
+## 0.8.0 - 2020-11-09
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.8.0](https://github.com/open-code-modeling/php-code-ast/milestone/5)
 
-- Nothing.
 
-### Deprecated
 
-- Nothing.
+### 0.8.0
 
-### Removed
+- Total issues resolved: **8**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-- Nothing.
+#### enhancement
 
-### Fixed
+ - [24: Support final and abstract in ClassMethodBuilder](https://github.com/open-code-modeling/php-code-ast/issues/24) thanks to @sandrokeil
+ - [20: Allow sort of constants, properties, methods, traits and namespace imports in ClassBuilder](https://github.com/open-code-modeling/php-code-ast/issues/20) thanks to @sandrokeil
+ - [18: Use CS for tests folder](https://github.com/open-code-modeling/php-code-ast/issues/18) thanks to @sandrokeil
+ - [17: Add high level API for methods](https://github.com/open-code-modeling/php-code-ast/issues/17) thanks to @sandrokeil
 
-- Nothing.
+#### bug
+
+ - [23: Multiple traits are not unpacked from node](https://github.com/open-code-modeling/php-code-ast/issues/23) thanks to @sandrokeil
+ - [22: Append traits instead of prepend in ClassUseTrait visitor](https://github.com/open-code-modeling/php-code-ast/issues/22) thanks to @sandrokeil
+ - [21: Append namespace imports instead of prepend in NamespaceUse visitor](https://github.com/open-code-modeling/php-code-ast/issues/21) thanks to @sandrokeil
+ - [19: Only generate property var doc block if type / comment is set](https://github.com/open-code-modeling/php-code-ast/issues/19) thanks to @sandrokeil
 
 ## 0.7.0 - 2020-11-06
 
