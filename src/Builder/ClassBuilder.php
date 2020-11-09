@@ -50,7 +50,7 @@ final class ClassBuilder
     private $implements = [];
 
     /** @var string[] */
-    private $namespaceUse = [];
+    private $namespaceImports = [];
 
     /** @var string[] */
     private $traits = [];
@@ -129,18 +129,45 @@ final class ClassBuilder
         return $this;
     }
 
-    public function setNamespaceUse(string ...$namespaces): self
+    public function setNamespace(string $namespace): self
     {
-        $this->namespaceUse = $namespaces;
+        $this->namespace = $namespace;
 
         return $this;
     }
 
-    public function setUseTrait(string ...$traits): self
+    public function setNamespaceImports(string ...$namespaceImports): self
+    {
+        $this->namespaceImports = $namespaceImports;
+
+        return $this;
+    }
+
+    /**
+     * @deprecated Use setNamespaceImports()
+     * @param string ...$namespaces
+     * @return self
+     */
+    public function setNamespaceUse(string ...$namespaces): self
+    {
+        return $this->setNamespaceImports(...$namespaces);
+    }
+
+    public function setTraits(string ...$traits): self
     {
         $this->traits = $traits;
 
         return $this;
+    }
+
+    /**
+     * @deprecated Use setTraits()
+     * @param string ...$traits
+     * @return self
+     */
+    public function setUseTrait(string ...$traits): self
+    {
+        return $this->setTraits(...$traits);
     }
 
     public function setConstants(ClassConstBuilder ...$constants): self
@@ -208,17 +235,35 @@ final class ClassBuilder
     }
 
     /**
+     * @deprecated Use namespaceImports()
      * @return string[]
      */
     public function getNamespaceUse(): array
     {
-        return $this->namespaceUse;
+        return $this->namespaceImports;
     }
 
     /**
      * @return string[]
      */
+    public function getNamespaceImports(): array
+    {
+        return $this->namespaceImports;
+    }
+
+    /**
+     * @deprecated Use getTraits()
+     * @return string[]
+     */
     public function getUseTrait(): array
+    {
+        return $this->traits;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTraits(): array
     {
         return $this->traits;
     }
@@ -305,11 +350,21 @@ final class ClassBuilder
      * @param callable $sort (string $a, string $b)
      * @return $this
      */
-    public function sortNamespaceUse(callable $sort): self
+    public function sortNamespaceImports(callable $sort): self
     {
-        \usort($this->namespaceUse, $sort);
+        \usort($this->namespaceImports, $sort);
 
         return $this;
+    }
+
+    /**
+     * @deprecated Use sortNamespaceImports()
+     * @param callable $sort
+     * @return $this
+     */
+    public function sortNamespaceUse(callable $sort): self
+    {
+        return $this->sortNamespaceImports($sort);
     }
 
     /**
@@ -328,8 +383,8 @@ final class ClassBuilder
         if ($this->namespace) {
             $visitors[] = new ClassNamespace($this->namespace);
         }
-        if ($this->namespaceUse) {
-            $visitors[] = new NamespaceUse(...$this->namespaceUse);
+        if ($this->namespaceImports) {
+            $visitors[] = new NamespaceUse(...$this->namespaceImports);
         }
 
         $visitors[] = new ClassFile($this->classGenerator());
@@ -402,7 +457,7 @@ final class ClassBuilder
                 }
                 break;
             case $node instanceof Node\Stmt\UseUse:
-                $this->namespaceUse[] = $node->name instanceof Node\Name\FullyQualified
+                $this->namespaceImports[] = $node->name instanceof Node\Name\FullyQualified
                     ? '\\' . $node->name->toString()
                     : $node->name->toString();
                 break;

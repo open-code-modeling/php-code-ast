@@ -24,7 +24,7 @@ $classFactory = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromScratch('Test
 $classFactory
     ->setFinal(true)
     ->setExtends('BaseClass')
-    ->setNamespaceUse('Foo\\Bar')
+    ->setNamespaceImports('Foo\\Bar')
     ->setImplements('\\Iterator', 'Bar');
 
 $nodeTraverser = new PhpParser\NodeTraverser();

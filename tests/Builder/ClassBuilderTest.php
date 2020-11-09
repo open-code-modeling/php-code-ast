@@ -47,9 +47,9 @@ final class ClassBuilderTest extends TestCase
         $classFactory
             ->setFinal(true)
             ->setExtends('BaseClass')
-            ->setNamespaceUse('Foo\\Bar')
+            ->setNamespaceImports('Foo\\Bar')
             ->setImplements('\\Iterator', 'Bar')
-            ->setUseTrait('\\My\\TestTrait')
+            ->setTraits('\\My\\TestTrait')
             ->setConstants(ClassConstBuilder::fromScratch('PRIV', 'private')->setPrivate());
 
         $nodeTraverser = new NodeTraverser();
@@ -103,7 +103,7 @@ EOF;
         $this->assertTrue($classFactory->isFinal());
         $this->assertTrue($classFactory->isStrict());
         $this->assertFalse($classFactory->isAbstract());
-        $this->assertSame(['\\My\\TestTrait'], $classFactory->getUseTrait());
+        $this->assertSame(['\\My\\TestTrait'], $classFactory->getTraits());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -191,11 +191,11 @@ EOF;
 
         $classFactory = ClassBuilder::fromNodes(...$ast);
 
-        $classFactory->sortNamespaceUse(function (string $a, string $b) {
+        $classFactory->sortNamespaceImports(function (string $a, string $b) {
             return $a <=> $b;
         });
 
-        $namespaceUse = $classFactory->getNamespaceUse();
+        $namespaceUse = $classFactory->getNamespaceImports();
         $this->assertCount(4, $namespaceUse);
         $this->assertSame('My\\A', $namespaceUse[0]);
         $this->assertSame('My\\B', $namespaceUse[1]);
@@ -250,7 +250,7 @@ EOF;
             return $a <=> $b;
         });
 
-        $useTrait = $classFactory->getUseTrait();
+        $useTrait = $classFactory->getTraits();
         $this->assertCount(4, $useTrait);
         $this->assertSame('My\\A', $useTrait[0]);
         $this->assertSame('My\\B', $useTrait[1]);
