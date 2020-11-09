@@ -47,7 +47,6 @@ final class NamespaceUse extends NodeVisitorAbstract
             $newNodes[] = $node;
 
             if ($node instanceof Stmt\Namespace_) {
-                $stmts = $node->stmts;
                 foreach ($imports as $import) {
                     if (\is_array($import)) {
                         $useNamespace = $this->builderFactory->use($import[0]);
@@ -55,10 +54,8 @@ final class NamespaceUse extends NodeVisitorAbstract
                     } else {
                         $useNamespace = $this->builderFactory->use($import);
                     }
-
-                    \array_unshift($stmts, $useNamespace->getNode());
+                    $node->stmts[] = $useNamespace->getNode(); // @phpstan-ignore-line
                 }
-                $node->stmts = $stmts; // @phpstan-ignore-line
             }
         }
 
