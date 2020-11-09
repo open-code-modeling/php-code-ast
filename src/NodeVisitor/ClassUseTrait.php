@@ -42,7 +42,7 @@ final class ClassUseTrait extends NodeVisitorAbstract
 
             if ($node instanceof Stmt\Class_) {
                 foreach ($traits as $trait) {
-                    \array_unshift($node->stmts, new Stmt\TraitUse([new Name($trait)]));
+                    $node->stmts[] = new Stmt\TraitUse([new Name($trait)]);
                 }
             }
 
@@ -50,7 +50,7 @@ final class ClassUseTrait extends NodeVisitorAbstract
                 foreach ($node->stmts as $stmt) {
                     if ($stmt instanceof Stmt\Class_) {
                         foreach ($traits as $trait) {
-                            \array_unshift($stmt->stmts, new Stmt\TraitUse([new Name($trait)]));
+                            $stmt->stmts[] = new Stmt\TraitUse([new Name($trait)]);
                         }
                     }
                 }
