@@ -1,19 +1,22 @@
 <?php
 
+/**
+ * @see       https://github.com/open-code-modeling/php-code-ast for the canonical source repository
+ * @copyright https://github.com/open-code-modeling/php-code-ast/blob/master/COPYRIGHT.md
+ * @license   https://github.com/open-code-modeling/php-code-ast/blob/master/LICENSE.md MIT License
+ */
+
 declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\NodeVisitor;
 
 use OpenCodeModeling\CodeAst\Code\BodyGenerator;
-use OpenCodeModeling\CodeAst\Code\ClassGenerator;
 use OpenCodeModeling\CodeAst\Code\InterfaceGenerator;
 use OpenCodeModeling\CodeAst\Code\MethodGenerator;
 use OpenCodeModeling\CodeAst\Code\ParameterGenerator;
-use OpenCodeModeling\CodeAst\NodeVisitor\ClassFile;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
 use OpenCodeModeling\CodeAst\NodeVisitor\InterfaceFile;
 use OpenCodeModeling\CodeAst\NodeVisitor\InterfaceMethod;
-use OpenCodeModeling\CodeAst\NodeVisitor\Property;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -155,5 +158,4 @@ EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
     }
-
 }

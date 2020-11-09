@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @see       https://github.com/open-code-modeling/php-code-ast for the canonical source repository
+ * @copyright https://github.com/open-code-modeling/php-code-ast/blob/master/COPYRIGHT.md
+ * @license   https://github.com/open-code-modeling/php-code-ast/blob/master/LICENSE.md MIT License
+ */
+
 declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\NodeVisitor;
@@ -62,7 +68,7 @@ final class InterfaceExtendsTest extends TestCase
         $nodeTraverser->addVisitor(new InterfaceFile(new InterfaceGenerator('TestInterface')));
         $nodeTraverser->addVisitor(new InterfaceExtends(...$interfaces));
 
-        $extends = implode(', ', $interfaces);
+        $extends = \implode(', ', $interfaces);
 
         $expected = <<<EOF
 <?php
@@ -88,7 +94,7 @@ EOF;
         $nodeTraverser->addVisitor(new InterfaceFile(new InterfaceGenerator('TestInterface')));
         $nodeTraverser->addVisitor(new InterfaceExtends(...$interfaces));
 
-        $extends = implode(', ', $interfaces);
+        $extends = \implode(', ', $interfaces);
 
         $expected = <<<EOF
 <?php
@@ -115,7 +121,7 @@ EOF;
         $nodeTraverser->addVisitor(new InterfaceFile(new InterfaceGenerator('TestInterface')));
         $nodeTraverser->addVisitor(new InterfaceExtends(...$interfaces));
 
-        $extends = implode(', ', $interfaces);
+        $extends = \implode(', ', $interfaces);
 
         $expected = <<<EOF
 <?php
@@ -149,7 +155,7 @@ EOF;
         $nodeTraverser->addVisitor(new InterfaceFile(new InterfaceGenerator('TestInterface')));
         $nodeTraverser->addVisitor(new InterfaceExtends(...$interfaces));
 
-        $extends = implode(', ', $interfaces);
+        $extends = \implode(', ', $interfaces);
 
         $expected = <<<EOF
 <?php
@@ -185,7 +191,7 @@ EOF;
         $nodeTraverser->addVisitor(new InterfaceFile(new InterfaceGenerator('TestInterface')));
         $nodeTraverser->addVisitor(new InterfaceExtends(...$interfaces));
 
-        $extends = implode(', ', $interfaces);
+        $extends = \implode(', ', $interfaces);
 
         $expected = <<<EOF
 <?php
@@ -199,5 +205,4 @@ EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
     }
-
 }

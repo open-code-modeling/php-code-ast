@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @see       https://github.com/open-code-modeling/php-code-ast for the canonical source repository
+ * @copyright https://github.com/open-code-modeling/php-code-ast/blob/master/COPYRIGHT.md
+ * @license   https://github.com/open-code-modeling/php-code-ast/blob/master/LICENSE.md MIT License
+ */
+
 declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Code;
@@ -226,7 +232,6 @@ remaining essentially unchanged.
 It is a long established fact that a reader will be distracted by the readable content of a page when looking at
 its layout.
 EOF;
-
 
         $method = new MethodGenerator(
             'setType',

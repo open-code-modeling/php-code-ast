@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * @see       https://github.com/open-code-modeling/php-code-ast for the canonical source repository
+ * @copyright https://github.com/open-code-modeling/php-code-ast/blob/master/COPYRIGHT.md
+ * @license   https://github.com/open-code-modeling/php-code-ast/blob/master/LICENSE.md MIT License
+ */
+
 declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Builder;
 
-use OpenCodeModeling\CodeAst\Builder\ClassConstBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
+use OpenCodeModeling\CodeAst\Builder\ClassConstBuilder;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
