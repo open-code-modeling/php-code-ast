@@ -364,13 +364,16 @@ final class ClassBuilder
                 );
                 break;
             case $node instanceof Node\Stmt\TraitUse:
-                $this->traits = \array_map(
-                    static function (Node\Name $name) {
-                        return $name instanceof Node\Name\FullyQualified
-                            ? '\\' . $name->toString()
-                            : $name->toString();
-                    },
-                    $node->traits
+                \array_push(
+                    $this->traits,
+                    ...\array_map(
+                        static function (Node\Name $name) {
+                            return $name instanceof Node\Name\FullyQualified
+                                ? '\\' . $name->toString()
+                                : $name->toString();
+                        },
+                        $node->traits
+                    )
                 );
                 break;
             case $node instanceof Node\Stmt\ClassConst:
