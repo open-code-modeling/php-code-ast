@@ -57,6 +57,12 @@ final class ClassMethodBuilder
      */
     private $docBlock;
 
+    /** @var bool */
+    private $final = false;
+
+    /** @var bool */
+    private $abstract = false;
+
     private function __construct()
     {
     }
@@ -68,6 +74,8 @@ final class ClassMethodBuilder
         $self->name = $node->name->toString();
         $self->returnType = $node->returnType ? $node->returnType->toString() : null;
         $self->visibility = $node->flags;
+        $self->abstract = ($node->flags & MethodGenerator::FLAG_ABSTRACT) > 0;
+        $self->final = ($node->flags & MethodGenerator::FLAG_FINAL) > 0;
 
         foreach ($node->params as $param) {
             $self->parameters[] = ParameterBuilder::fromNode($param);
@@ -182,6 +190,30 @@ final class ClassMethodBuilder
         $this->docBlock = $docBlock;
     }
 
+    public function setFinal(bool $final): self
+    {
+        $this->final = $final;
+
+        return $this;
+    }
+
+    public function setAbstract(bool $abstract): self
+    {
+        $this->abstract = $abstract;
+
+        return $this;
+    }
+
+    public function isFinal(): bool
+    {
+        return $this->final;
+    }
+
+    public function isAbstract(): bool
+    {
+        return $this->abstract;
+    }
+
     public function generate(Parser $parser): NodeVisitor
     {
         return new ClassMethod($this->methodGenerator($parser));
@@ -191,7 +223,18 @@ final class ClassMethodBuilder
     {
         $flags = $this->visibility;
 
-        $body = new BodyGenerator($parser, $this->body);
+        if ($this->final) {
+            $flags |= MethodGenerator::FLAG_FINAL;
+        }
+        if ($this->abstract) {
+            $flags |= MethodGenerator::FLAG_ABSTRACT;
+        }
+
+        $body = null;
+
+        if (false === $this->isAbstract()) {
+            $body = new BodyGenerator($parser, $this->body);
+        }
 
         $methodGenerator = new MethodGenerator(
             $this->name,

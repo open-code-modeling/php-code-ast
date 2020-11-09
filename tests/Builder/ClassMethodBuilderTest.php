@@ -45,7 +45,22 @@ final class ClassMethodBuilderTest extends TestCase
         $ast = $this->parser->parse('');
 
         $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
-        $classFactory->setMethods(ClassMethodBuilder::fromScratch('setActive')->setReturnType('void'));
+        $classFactory->setMethods(
+            ClassMethodBuilder::fromScratch('setActive')->setReturnType('void'),
+            ClassMethodBuilder::fromScratch('doSomething')->setReturnType('void')->setFinal(true)
+        );
+
+        $methods = $classFactory->getMethods();
+
+        $this->assertCount(2, $methods);
+
+        $this->assertSame('setActive', $methods[0]->getName());
+        $this->assertFalse($methods[0]->isAbstract());
+        $this->assertFalse($methods[0]->isFinal());
+
+        $this->assertSame('doSomething', $methods[1]->getName());
+        $this->assertFalse($methods[1]->isAbstract());
+        $this->assertTrue($methods[1]->isFinal());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -61,6 +76,45 @@ class TestClass
     public function setActive() : void
     {
     }
+    public final function doSomething() : void
+    {
+    }
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_abstract_method_for_empty_class(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory->setMethods(ClassMethodBuilder::fromScratch('setActive')->setReturnType('void')->setAbstract(true));
+
+        $methods = $classFactory->getMethods();
+
+        $this->assertCount(1, $methods);
+
+        $this->assertSame('setActive', $methods[0]->getName());
+        $this->assertTrue($methods[0]->isAbstract());
+        $this->assertFalse($methods[0]->isFinal());
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public abstract function setActive() : void;
 }
 EOF;
 
@@ -83,6 +137,48 @@ class TestClass
     public function setActive() : void
     {
     }
+    public final function doSomething() : void
+    {
+    }
+}
+EOF;
+
+        $ast = $this->parser->parse($expected);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+
+        $methods = $classFactory->getMethods();
+
+        $this->assertCount(2, $methods);
+
+        $this->assertSame('setActive', $methods[0]->getName());
+        $this->assertFalse($methods[0]->isAbstract());
+        $this->assertFalse($methods[0]->isFinal());
+
+        $this->assertSame('doSomething', $methods[1]->getName());
+        $this->assertFalse($methods[1]->isAbstract());
+        $this->assertTrue($methods[1]->isFinal());
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_abstract_method_for_empty_class_from_template(): void
+    {
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public abstract function setActive() : void;
 }
 EOF;
 
@@ -95,6 +191,8 @@ EOF;
         $this->assertCount(1, $methods);
 
         $this->assertSame('setActive', $methods[0]->getName());
+        $this->assertTrue($methods[0]->isAbstract());
+        $this->assertFalse($methods[0]->isFinal());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
