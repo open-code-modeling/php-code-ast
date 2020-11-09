@@ -206,9 +206,9 @@ final class MethodGenerator extends AbstractMemberGenerator
     /**
      * Ignores generation of the doc block and uses provided doc block instead.
      *
-     * @param DocBlock $docBlock
+     * @param DocBlock|null $docBlock
      */
-    public function overrideDocBlock(DocBlock $docBlock): void
+    public function overrideDocBlock(?DocBlock $docBlock): void
     {
         $this->docBlock = $docBlock;
     }

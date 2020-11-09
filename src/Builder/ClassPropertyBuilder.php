@@ -72,7 +72,7 @@ final class ClassPropertyBuilder
         return $self;
     }
 
-    public static function fromScratch(string $name, $type, bool $typed = true): self
+    public static function fromScratch(string $name, string $type, bool $typed = true): self
     {
         $self = new self();
         $self->name = $name;

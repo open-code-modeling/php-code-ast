@@ -47,7 +47,7 @@ final class ClassBuilderTest extends TestCase
             ->setConstants(ClassConstBuilder::fromScratch('PRIV', 'private')->setPrivate());
 
         $nodeTraverser = new NodeTraverser();
-        $classFactory->injectVisitors($nodeTraverser);
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
 
         $expected = <<<'EOF'
 <?php
@@ -100,7 +100,7 @@ EOF;
         $this->assertSame(['\\My\\TestTrait'], $classFactory->getUseTrait());
 
         $nodeTraverser = new NodeTraverser();
-        $classFactory->injectVisitors($nodeTraverser);
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }

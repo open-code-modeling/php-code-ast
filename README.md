@@ -29,7 +29,7 @@ $classFactory
 
 $nodeTraverser = new PhpParser\NodeTraverser();
 
-$classFactory->injectVisitors($nodeTraverser);
+$classFactory->injectVisitors($nodeTraverser, $parser);
 
 print_r($printer->prettyPrintFile($nodeTraverser->traverse($ast)));
 ```

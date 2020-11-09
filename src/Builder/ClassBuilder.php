@@ -21,6 +21,7 @@ use OpenCodeModeling\CodeAst\NodeVisitor\StrictType;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
+use PhpParser\Parser;
 
 final class ClassBuilder
 {
@@ -60,6 +61,9 @@ final class ClassBuilder
     /** @var ClassPropertyBuilder[] */
     private $properties = [];
 
+    /** @var ClassMethodBuilder[] */
+    private $methods = [];
+
     private function __construct()
     {
     }
@@ -90,9 +94,9 @@ final class ClassBuilder
         return $self;
     }
 
-    public function injectVisitors(NodeTraverser $nodeTraverser): void
+    public function injectVisitors(NodeTraverser $nodeTraverser, Parser $parser): void
     {
-        foreach ($this->generate() as $visitor) {
+        foreach ($this->generate($parser) as $visitor) {
             $nodeTraverser->addVisitor($visitor);
         }
     }
@@ -149,6 +153,13 @@ final class ClassBuilder
     public function setProperties(ClassPropertyBuilder ...$properties): self
     {
         $this->properties = $properties;
+
+        return $this;
+    }
+
+    public function setMethods(ClassMethodBuilder ...$methods): self
+    {
+        $this->methods = $methods;
 
         return $this;
     }
@@ -229,9 +240,18 @@ final class ClassBuilder
     }
 
     /**
+     * @return ClassMethodBuilder[]
+     */
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+    /**
+     * @param Parser $parser
      * @return NodeVisitor[]
      */
-    public function generate(): array
+    public function generate(Parser $parser): array
     {
         /** @var NodeVisitor[] $visitors */
         $visitors = [];
@@ -278,6 +298,17 @@ final class ClassBuilder
                         return $property->generate();
                     },
                     $this->properties
+                )
+            );
+        }
+        if (\count($this->methods) > 0) {
+            \array_push(
+                $visitors,
+                ...\array_map(
+                    static function (ClassMethodBuilder $method) use ($parser) {
+                        return $method->generate($parser);
+                    },
+                    $this->methods
                 )
             );
         }
@@ -347,6 +378,9 @@ final class ClassBuilder
                 break;
             case $node instanceof Node\Stmt\Property:
                 $this->properties[] = ClassPropertyBuilder::fromNode($node);
+                break;
+            case $node instanceof Node\Stmt\ClassMethod:
+                $this->methods[] = ClassMethodBuilder::fromNode($node);
                 break;
             default:
                 break;

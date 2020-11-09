@@ -48,7 +48,7 @@ final class ParameterGenerator
     private $variadic = false;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $typeDocBlockHint;
 
@@ -186,9 +186,9 @@ final class ParameterGenerator
     }
 
     /**
-     * @param string $typeDocBlockHint
+     * @param string|null $typeDocBlockHint
      */
-    public function setTypeDocBlockHint(string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
     }

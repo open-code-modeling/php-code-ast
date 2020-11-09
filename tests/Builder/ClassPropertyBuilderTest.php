@@ -41,7 +41,7 @@ final class ClassPropertyBuilderTest extends TestCase
         $classFactory->setProperties(ClassPropertyBuilder::fromScratch('aggregateId', 'string'));
 
         $nodeTraverser = new NodeTraverser();
-        $classFactory->injectVisitors($nodeTraverser);
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
 
         $expected = <<<'EOF'
 <?php
@@ -87,7 +87,7 @@ EOF;
         $this->assertSame('string', $properties[0]->getType());
 
         $nodeTraverser = new NodeTraverser();
-        $classFactory->injectVisitors($nodeTraverser);
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }
