@@ -69,7 +69,7 @@ final class ClassBuilder
     }
 
     public static function fromScratch(
-        string $className,
+        ?string $className,
         string $namespace = null,
         bool $typed = true,
         bool $strict = true
@@ -135,6 +135,11 @@ final class ClassBuilder
     public function getNamespace(): ?string
     {
         return $this->namespace;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
     }
 
     public function getName(): ?string
