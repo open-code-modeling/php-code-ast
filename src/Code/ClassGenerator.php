@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Code;
 
-use PhpParser\Builder;
 use PhpParser\Node\Stmt\Class_;
 
 /**
@@ -37,11 +36,11 @@ final class ClassGenerator implements StatementGenerator
     private $flags = 0;
 
     /**
-     * @param  string $name
+     * @param  string|null $name
      * @param  array|string $flags
      */
     public function __construct(
-        $name,
+        ?string $name,
         $flags = null
     ) {
         $this->setName($name);
@@ -53,19 +52,15 @@ final class ClassGenerator implements StatementGenerator
 
     public function generate(): Class_
     {
-        $classBuilder = new Builder\Class_($this->name);
-        $node = $classBuilder->getNode();
-
-        $node->flags = $this->flags;
-
-        return $node;
+        return new Class_(
+            $this->name,
+            [
+                'flags' => $this->flags,
+            ]
+        );
     }
 
-    /**
-     * @param  string $name
-     * @return self
-     */
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
