@@ -56,7 +56,7 @@ final class ClassPropertyBuilder
     {
     }
 
-    public static function fromNode(Node\Stmt\Property $node): self
+    public static function fromNode(Node\Stmt\Property $node, bool $typed = true): self
     {
         $self = new self();
 
@@ -64,10 +64,7 @@ final class ClassPropertyBuilder
         $self->defaultValue = $node->props[0]->default;
         $self->type = $node->type ? $node->type->toString() : null;
         $self->visibility = $node->flags;
-
-        if ($self->type !== null) {
-            $self->typed = true;
-        }
+        $self->typed = $typed;
 
         return $self;
     }
@@ -91,6 +88,13 @@ final class ClassPropertyBuilder
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
     }
 
     public function isTyped(): bool
@@ -124,9 +128,11 @@ final class ClassPropertyBuilder
         return $this->docBlockComment;
     }
 
-    public function setDocBlockComment(?string $docBlockComment): void
+    public function setDocBlockComment(?string $docBlockComment): self
     {
         $this->docBlockComment = $docBlockComment;
+
+        return $this;
     }
 
     public function getTypeDocBlockHint(): string
@@ -134,9 +140,11 @@ final class ClassPropertyBuilder
         return $this->typeDocBlockHint;
     }
 
-    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function getDocBlock(): ?DocBlock
@@ -144,9 +152,11 @@ final class ClassPropertyBuilder
         return $this->docBlock;
     }
 
-    public function overrideDocBlock(?DocBlock $docBlock): void
+    public function overrideDocBlock(?DocBlock $docBlock): self
     {
         $this->docBlock = $docBlock;
+
+        return $this;
     }
 
     public function generate(): NodeVisitor

@@ -95,9 +95,11 @@ final class ParameterBuilder
     /**
      * @param mixed $defaultValue
      */
-    public function setDefaultValue($defaultValue): void
+    public function setDefaultValue($defaultValue): self
     {
         $this->defaultValue = $defaultValue;
+
+        return $this;
     }
 
     public function isPassedByReference(): bool
@@ -105,9 +107,11 @@ final class ParameterBuilder
         return $this->passedByReference;
     }
 
-    public function setPassedByReference(bool $passedByReference): void
+    public function setPassedByReference(bool $passedByReference): self
     {
         $this->passedByReference = $passedByReference;
+
+        return $this;
     }
 
     public function isVariadic(): bool
@@ -115,9 +119,18 @@ final class ParameterBuilder
         return $this->variadic;
     }
 
-    public function setVariadic(bool $variadic): void
+    public function setVariadic(bool $variadic): self
     {
         $this->variadic = $variadic;
+
+        return $this;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getName(): string

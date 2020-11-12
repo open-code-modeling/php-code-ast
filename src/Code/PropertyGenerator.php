@@ -165,7 +165,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
                 ),
             ],
             $this->generateAttributes(),
-            $this->typed ? $this->type->generate() : null
+            $this->typed && null !== $this->type ? $this->type->generate() : null
         );
     }
 
