@@ -56,7 +56,7 @@ final class ClassPropertyBuilder
     {
     }
 
-    public static function fromNode(Node\Stmt\Property $node): self
+    public static function fromNode(Node\Stmt\Property $node, bool $typed = true): self
     {
         $self = new self();
 
@@ -64,10 +64,7 @@ final class ClassPropertyBuilder
         $self->defaultValue = $node->props[0]->default;
         $self->type = $node->type ? $node->type->toString() : null;
         $self->visibility = $node->flags;
-
-        if ($self->type !== null) {
-            $self->typed = true;
-        }
+        $self->typed = $typed;
 
         return $self;
     }

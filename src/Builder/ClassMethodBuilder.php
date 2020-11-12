@@ -69,8 +69,12 @@ final class ClassMethodBuilder
     {
     }
 
-    public static function fromNode(Node\Stmt\ClassMethod $node): self
+    public static function fromNode(Node\Stmt\ClassMethod $node, bool $typed = true, PrettyPrinterAbstract $printer = null): self
     {
+        if (null === $printer) {
+            $printer = new Standard(['shortArraySyntax' => true]);
+        }
+
         $self = new self();
 
         $self->name = $node->name->toString();
@@ -83,8 +87,10 @@ final class ClassMethodBuilder
             $self->parameters[] = ParameterBuilder::fromNode($param);
         }
 
-        if ($self->returnType !== null) {
-            $self->typed = true;
+        $self->typed = $typed;
+
+        if (null !== $node->stmts) {
+            $self->body = $printer->prettyPrint($node->stmts);
         }
 
         return $self;
