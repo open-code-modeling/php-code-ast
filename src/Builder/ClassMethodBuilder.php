@@ -19,6 +19,8 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\Parser;
+use PhpParser\PrettyPrinter\Standard;
+use PhpParser\PrettyPrinterAbstract;
 
 final class ClassMethodBuilder
 {
@@ -134,6 +136,13 @@ final class ClassMethodBuilder
         return $this->parameters;
     }
 
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
+    }
+
     public function isTyped(): bool
     {
         return $this->typed;
@@ -165,9 +174,11 @@ final class ClassMethodBuilder
         return $this->docBlockComment;
     }
 
-    public function setDocBlockComment(?string $docBlockComment): void
+    public function setDocBlockComment(?string $docBlockComment): self
     {
         $this->docBlockComment = $docBlockComment;
+
+        return $this;
     }
 
     public function getReturnTypeDocBlockHint(): string
@@ -175,9 +186,11 @@ final class ClassMethodBuilder
         return $this->returnTypeDocBlockHint;
     }
 
-    public function setReturnTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setReturnTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->returnTypeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function getDocBlock(): ?DocBlock
@@ -185,9 +198,11 @@ final class ClassMethodBuilder
         return $this->docBlock;
     }
 
-    public function overrideDocBlock(?DocBlock $docBlock): void
+    public function overrideDocBlock(?DocBlock $docBlock): self
     {
         $this->docBlock = $docBlock;
+
+        return $this;
     }
 
     public function setFinal(bool $final): self

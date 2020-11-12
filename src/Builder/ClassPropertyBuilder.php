@@ -93,6 +93,13 @@ final class ClassPropertyBuilder
         return $this->type;
     }
 
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
+    }
+
     public function isTyped(): bool
     {
         return $this->typed;
@@ -124,9 +131,11 @@ final class ClassPropertyBuilder
         return $this->docBlockComment;
     }
 
-    public function setDocBlockComment(?string $docBlockComment): void
+    public function setDocBlockComment(?string $docBlockComment): self
     {
         $this->docBlockComment = $docBlockComment;
+
+        return $this;
     }
 
     public function getTypeDocBlockHint(): string
@@ -134,9 +143,11 @@ final class ClassPropertyBuilder
         return $this->typeDocBlockHint;
     }
 
-    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function getDocBlock(): ?DocBlock
@@ -144,9 +155,11 @@ final class ClassPropertyBuilder
         return $this->docBlock;
     }
 
-    public function overrideDocBlock(?DocBlock $docBlock): void
+    public function overrideDocBlock(?DocBlock $docBlock): self
     {
         $this->docBlock = $docBlock;
+
+        return $this;
     }
 
     public function generate(): NodeVisitor

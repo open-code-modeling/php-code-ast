@@ -116,6 +116,13 @@ final class InterfaceBuilder
         return $this->strict;
     }
 
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
+    }
+
     public function isTyped(): bool
     {
         return $this->typed;

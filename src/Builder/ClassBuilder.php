@@ -196,9 +196,11 @@ final class ClassBuilder
         return $this->namespace;
     }
 
-    public function setName(?string $name): void
+    public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -209,6 +211,13 @@ final class ClassBuilder
     public function isStrict(): bool
     {
         return $this->strict;
+    }
+
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
     }
 
     public function isTyped(): bool
