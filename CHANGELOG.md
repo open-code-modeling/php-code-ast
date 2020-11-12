@@ -2,27 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.8.2 - TBD
+## 0.8.2 - 2020-11-12
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.8.2](https://github.com/open-code-modeling/php-code-ast/milestone/12)
 
-- Nothing.
+0.8.x bugfix release (patch)
 
-### Deprecated
+### 0.8.2
 
-- Nothing.
+- Total issues resolved: **2**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-### Removed
+#### bug
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [32: Fix typed and body detection](https://github.com/open-code-modeling/php-code-ast/issues/32) thanks to @sandrokeil
+ - [31: Use fluent setter methods for builder classes](https://github.com/open-code-modeling/php-code-ast/issues/31) thanks to @sandrokeil
 
 ## 0.8.1 - 2020-11-11
 
