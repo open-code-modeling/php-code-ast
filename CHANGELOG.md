@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+
 ## 0.9.0 - TBD
 
 ### Added
@@ -23,6 +24,25 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 0.8.3 - 2020-11-13
+
+
+-----
+
+### Release Notes for [0.8.3](https://github.com/open-code-modeling/php-code-ast/milestone/13)
+
+0.8.x bugfix release (patch)
+
+### 0.8.3
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
+
+#### bug
+
+ - [34: Fix namespace and trait imports](https://github.com/open-code-modeling/php-code-ast/issues/34) thanks to @sandrokeil
 
 ## 0.8.2 - 2020-11-12
 
