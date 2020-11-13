@@ -398,7 +398,7 @@ final class ClassBuilder
             $visitors[] = new ClassNamespace($this->namespace);
         }
         if ($this->namespaceImports) {
-            $visitors[] = new NamespaceUse(...$this->namespaceImports);
+            $visitors[] = new NamespaceUse(...\array_reverse($this->namespaceImports));
         }
 
         $visitors[] = new ClassFile($this->classGenerator());
@@ -410,7 +410,7 @@ final class ClassBuilder
             $visitors[] = new ClassImplements(...$this->implements);
         }
         if ($this->traits) {
-            $visitors[] = new ClassUseTrait(...$this->traits);
+            $visitors[] = new ClassUseTrait(...\array_reverse($this->traits));
         }
 
         if (\count($this->constants) > 0) {
