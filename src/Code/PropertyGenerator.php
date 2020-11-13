@@ -180,7 +180,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         if ($this->typed === false || $this->docBlockComment !== null || $this->typeDocBlockHint !== null) {
             $docBlockType = null;
 
-            if ($this->type) {
+            if ($this->type !== null) {
                 $docBlockType = new VarTag($this->type->types());
             }
             if ($typeHint = $this->getTypeDocBlockHint()) {
@@ -188,20 +188,14 @@ final class PropertyGenerator extends AbstractMemberGenerator
             }
             $docBlock = null;
 
-            if ($this->docBlockComment) {
+            if ($docBlockType !== null) {
                 $docBlock = new DocBlock($this->docBlockComment);
-
-                if ($docBlockType !== null) {
-                    $docBlock->addTag($docBlockType);
-                }
-            }
-            if ($this->docBlockComment === null && $docBlockType !== null) {
-                $docBlock = new DocBlock($this->docBlockComment, $docBlockType);
+                $docBlock->addTag($docBlockType);
+            } elseif ($this->docBlockComment !== null) {
+                $docBlock = new DocBlock($this->docBlockComment);
             }
 
             if ($docBlock !== null) {
-                $docBlock = new DocBlock($this->docBlockComment, $docBlockType);
-
                 $attributes = ['comments' => [new Doc($docBlock->generate())]];
             }
         }

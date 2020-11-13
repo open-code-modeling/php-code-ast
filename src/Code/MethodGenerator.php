@@ -257,7 +257,7 @@ final class MethodGenerator extends AbstractMemberGenerator
 
             $returnType = null;
 
-            if ($this->returnType) {
+            if ($this->returnType !== null) {
                 $returnType = $this->returnType->type();
             }
             if ($this->returnTypeDocBlockHint !== null) {
