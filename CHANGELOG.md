@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+
+## 0.9.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.8.3 - 2020-11-13
 
 
@@ -67,7 +90,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Release Notes for [0.8.0](https://github.com/open-code-modeling/php-code-ast/milestone/5)
 
-
+Feature release (minor)
 
 ### 0.8.0
 
@@ -94,6 +117,8 @@ All notable changes to this project will be documented in this file, in reverse 
 -----
 ### Release Notes for [0.7.0](https://github.com/open-code-modeling/php-code-ast/milestone/4)
 
+Feature release (minor)
+
 ### 0.7.0
 
 - Total issues resolved: **1**
@@ -108,6 +133,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 -----
 ### Release Notes for [0.6.0](https://github.com/open-code-modeling/php-code-ast/milestone/3)
+
+Feature release (minor)
 
 ### 0.6.0
 
@@ -125,6 +152,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 -----
 ### Release Notes for [0.5.0](https://github.com/open-code-modeling/php-code-ast/milestone/2)
+
+Feature release (minor)
 
 ### 0.5.0
 
