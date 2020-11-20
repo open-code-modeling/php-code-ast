@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.8.6 - TBD
+## 0.8.6 - 2020-11-20
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.8.6](https://github.com/open-code-modeling/php-code-ast/milestone/16)
 
-- Nothing.
+0.8.x bugfix release (patch)
 
-### Deprecated
+### 0.8.6
 
-- Nothing.
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-### Removed
+#### bug
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [41: Fix value detection in ClassConstBuilder ](https://github.com/open-code-modeling/php-code-ast/issues/41) thanks to @sandrokeil
 
 ## 0.8.5 - 2020-11-20
 
