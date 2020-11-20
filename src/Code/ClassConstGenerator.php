@@ -56,7 +56,7 @@ final class ClassConstGenerator extends AbstractMemberGenerator
         return $this->value;
     }
 
-    public function generate(): \PhpParser\Node\Stmt\ClassConst
+    public function generate(): Node\Stmt\ClassConst
     {
         return new Node\Stmt\ClassConst(
             [

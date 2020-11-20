@@ -99,9 +99,11 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->docBlockComment;
     }
 
-    public function setDocBlockComment(?string $docBlockComment): void
+    public function setDocBlockComment(?string $docBlockComment): self
     {
         $this->docBlockComment = $docBlockComment;
+
+        return $this;
     }
 
     /**
@@ -146,9 +148,11 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->typeDocBlockHint;
     }
 
-    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function generate(): Property

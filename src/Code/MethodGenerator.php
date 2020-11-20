@@ -172,9 +172,11 @@ final class MethodGenerator extends AbstractMemberGenerator
         return $this->docBlockComment;
     }
 
-    public function setDocBlockComment(?string $docBlockComment): void
+    public function setDocBlockComment(?string $docBlockComment): self
     {
         $this->docBlockComment = $docBlockComment;
+
+        return $this;
     }
 
     public function getReturnTypeDocBlockHint(): ?string
@@ -182,25 +184,23 @@ final class MethodGenerator extends AbstractMemberGenerator
         return $this->returnTypeDocBlockHint;
     }
 
-    public function setReturnTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setReturnTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->returnTypeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getTyped(): bool
     {
         return $this->typed;
     }
 
-    /**
-     * @param bool $typed
-     */
-    public function setTyped(bool $typed): void
+    public function setTyped(bool $typed): self
     {
         $this->typed = $typed;
+
+        return $this;
     }
 
     /**

@@ -77,11 +77,7 @@ final class ParameterGenerator
         }
     }
 
-    /**
-     * @param  string $type
-     * @return ParameterGenerator
-     */
-    public function setType($type): self
+    public function setType(string $type): self
     {
         $this->type = TypeGenerator::fromTypeString($type);
 
@@ -99,7 +95,7 @@ final class ParameterGenerator
      */
     public function setName(string $name): self
     {
-        $this->name = (string) $name;
+        $this->name = $name;
 
         return $this;
     }
@@ -185,9 +181,11 @@ final class ParameterGenerator
     /**
      * @param string|null $typeDocBlockHint
      */
-    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function generate(): Node\Param
