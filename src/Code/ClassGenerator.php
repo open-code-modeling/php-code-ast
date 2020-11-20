@@ -37,7 +37,7 @@ final class ClassGenerator implements StatementGenerator
 
     /**
      * @param  string|null $name
-     * @param  array|string $flags
+     * @param  array|int $flags
      */
     public function __construct(
         ?string $name,

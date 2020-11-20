@@ -33,7 +33,7 @@ final class ParameterGenerator
     private $type;
 
     /**
-     * @var ValueGenerator
+     * @var ValueGenerator|null
      */
     private $defaultValue;
 
@@ -117,7 +117,7 @@ final class ParameterGenerator
      *
      * Certain variables are difficult to express
      *
-     * @param  null|bool|string|int|float|array|ValueGenerator $defaultValue
+     * @param  ValueGenerator|mixed $defaultValue
      * @return ParameterGenerator
      */
     public function setDefaultValue($defaultValue): self
@@ -130,10 +130,7 @@ final class ParameterGenerator
         return $this;
     }
 
-    /**
-     * @return ValueGenerator
-     */
-    public function getDefaultValue(): ValueGenerator
+    public function getDefaultValue(): ?ValueGenerator
     {
         return $this->defaultValue;
     }
@@ -195,6 +192,7 @@ final class ParameterGenerator
 
     public function generate(): Node\Param
     {
+        // @phpstan-ignore-next-line
         return new Node\Param(
             new Node\Expr\Variable($this->name),
             $this->defaultValue ? $this->defaultValue->generate() : null,

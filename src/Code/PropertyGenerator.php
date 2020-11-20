@@ -32,7 +32,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
     private $type;
 
     /**
-     * @var ValueGenerator
+     * @var ValueGenerator|null
      */
     private $defaultValue;
 
@@ -133,10 +133,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this;
     }
 
-    /**
-     * @return ValueGenerator
-     */
-    public function getDefaultValue(): ValueGenerator
+    public function getDefaultValue(): ?ValueGenerator
     {
         return $this->defaultValue;
     }
@@ -156,6 +153,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
     public function generate(): Property
     {
+        // @phpstan-ignore-next-line
         return new Property(
             $this->flags,
             [

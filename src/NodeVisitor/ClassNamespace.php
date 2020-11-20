@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace OpenCodeModeling\CodeAst\NodeVisitor;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 
@@ -57,7 +58,7 @@ final class ClassNamespace extends NodeVisitorAbstract
         return $newNodes;
     }
 
-    private function isNodeStrictType(Stmt $node): bool
+    private function isNodeStrictType(Node $node): bool
     {
         return $node instanceof Stmt\Declare_
             && \strtolower($node->declares[0]->key->name) === 'strict_types';

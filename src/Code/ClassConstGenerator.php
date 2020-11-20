@@ -21,7 +21,7 @@ final class ClassConstGenerator extends AbstractMemberGenerator
 
     /**
      * @param string $name
-     * @param ValueGenerator|string|array $value
+     * @param ValueGenerator|mixed $value
      * @param int $flags
      */
     public function __construct(string $name, $value, $flags = self::FLAG_PUBLIC)
