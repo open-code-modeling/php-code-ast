@@ -38,8 +38,15 @@ final class ClassConstBuilder
         $self = new self();
 
         $self->name = $node->consts[0]->name->name;
-        // @phpstan-ignore-next-line
-        $self->value = $node->consts[0]->value->value;
+
+        if ($node->consts[0]->value instanceof Node\Scalar) {
+            // @phpstan-ignore-next-line
+            $self->value = $node->consts[0]->value->value;
+        } else {
+            // use node expression
+            $self->value = $node->consts[0]->value;
+        }
+
         $self->visibility = $node->flags;
 
         return $self;
