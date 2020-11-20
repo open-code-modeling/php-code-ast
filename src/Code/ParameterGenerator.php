@@ -190,11 +190,10 @@ final class ParameterGenerator
 
     public function generate(): Node\Param
     {
-        // @phpstan-ignore-next-line
         return new Node\Param(
             new Node\Expr\Variable($this->name),
             $this->defaultValue ? $this->defaultValue->generate() : null,
-            $this->type ? $this->type->generate() : null,
+            $this->type ? $this->type->generate() : null, // @phpstan-ignore-line
             $this->passedByReference,
             $this->variadic
         );

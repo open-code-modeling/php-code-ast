@@ -157,7 +157,6 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
     public function generate(): Property
     {
-        // @phpstan-ignore-next-line
         return new Property(
             $this->flags,
             [
@@ -167,6 +166,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
                 ),
             ],
             $this->generateAttributes(),
+            // @phpstan-ignore-next-line
             $this->typed && null !== $this->type ? $this->type->generate() : null
         );
     }
