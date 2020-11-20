@@ -32,7 +32,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
     private $type;
 
     /**
-     * @var ValueGenerator
+     * @var ValueGenerator|null
      */
     private $defaultValue;
 
@@ -99,9 +99,11 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->docBlockComment;
     }
 
-    public function setDocBlockComment(?string $docBlockComment): void
+    public function setDocBlockComment(?string $docBlockComment): self
     {
         $this->docBlockComment = $docBlockComment;
+
+        return $this;
     }
 
     /**
@@ -133,10 +135,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this;
     }
 
-    /**
-     * @return ValueGenerator
-     */
-    public function getDefaultValue(): ValueGenerator
+    public function getDefaultValue(): ?ValueGenerator
     {
         return $this->defaultValue;
     }
@@ -149,9 +148,11 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this->typeDocBlockHint;
     }
 
-    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function generate(): Property
@@ -165,6 +166,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
                 ),
             ],
             $this->generateAttributes(),
+            // @phpstan-ignore-next-line
             $this->typed && null !== $this->type ? $this->type->generate() : null
         );
     }

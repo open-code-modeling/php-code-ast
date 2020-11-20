@@ -24,6 +24,27 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 0.8.5 - 2020-11-20
+
+
+-----
+
+### Release Notes for [0.8.5](https://github.com/open-code-modeling/php-code-ast/milestone/15)
+
+0.8.x bugfix release (patch)
+
+### 0.8.5
+
+- Total issues resolved: **2**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
+
+#### bug
+
+ - [39: Fix missing fluent interface for setter](https://github.com/open-code-modeling/php-code-ast/issues/39) thanks to @sandrokeil
+ - [38: Fix PHPStan issues level 5](https://github.com/open-code-modeling/php-code-ast/issues/38) thanks to @sandrokeil
+
+
 ## 0.8.4 - 2020-11-20
 
 
