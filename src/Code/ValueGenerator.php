@@ -153,7 +153,9 @@ final class ValueGenerator
             case 'string':
                 return self::TYPE_STRING;
             case 'double':
+                return self::TYPE_DOUBLE;
             case 'float':
+                return self::TYPE_FLOAT;
             case 'integer':
                 return self::TYPE_NUMBER;
             case 'array':
@@ -184,7 +186,7 @@ final class ValueGenerator
                 return new Node\Expr\ConstFetch(new Node\Name('null'));
             case self::TYPE_BOOLEAN:
             case self::TYPE_BOOL:
-                return new Node\Expr\ConstFetch(new Node\Name($this->value));
+                return new Node\Expr\ConstFetch(new Node\Name($this->value ? 'true' : 'false'));
             case self::TYPE_STRING:
                 return new Node\Scalar\String_($this->value);
             case self::TYPE_NUMBER:
@@ -210,8 +212,11 @@ final class ValueGenerator
                     $arrayItems,
                     ['kind' => Node\Expr\Array_::KIND_SHORT]
                 );
-                break;
             case self::TYPE_OTHER:
+                if ($this->value instanceof Node\Expr) {
+                    return $this->value;
+                }
+                // no break
             default:
                 throw new Exception\RuntimeException(
                     \sprintf('Type "%s" is unknown or cannot be used as property default value.', \get_class($value))

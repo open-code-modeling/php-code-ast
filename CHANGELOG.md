@@ -2,7 +2,6 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-
 ## 0.9.0 - TBD
 
 ### Added
@@ -24,6 +23,26 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 0.8.4 - 2020-11-20
+
+
+-----
+
+### Release Notes for [0.8.4](https://github.com/open-code-modeling/php-code-ast/milestone/14)
+
+0.8.x bugfix release (patch)
+
+### 0.8.4
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
+
+#### bug
+
+ - [36: Boolean, float and double values not working properly in Code\ValueGenerator](https://github.com/open-code-modeling/php-code-ast/issues/36) thanks to @sandrokeil
+
 
 ## 0.8.3 - 2020-11-13
 
