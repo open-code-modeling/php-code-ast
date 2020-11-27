@@ -46,7 +46,9 @@ final class ClassMethodBuilderTest extends TestCase
 
         $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
         $classFactory->setMethods(
-            ClassMethodBuilder::fromScratch('setActive')->setReturnType('void'),
+            ClassMethodBuilder::fromScratch('setActive')->setReturnType('void')
+        );
+        $classFactory->addMethod(
             ClassMethodBuilder::fromScratch('doSomething')->setReturnType('void')->setFinal(true)
         );
 
@@ -54,13 +56,13 @@ final class ClassMethodBuilderTest extends TestCase
 
         $this->assertCount(2, $methods);
 
-        $this->assertSame('setActive', $methods[0]->getName());
-        $this->assertFalse($methods[0]->isAbstract());
-        $this->assertFalse($methods[0]->isFinal());
+        $this->assertSame('setActive', $methods['setActive']->getName());
+        $this->assertFalse($methods['setActive']->isAbstract());
+        $this->assertFalse($methods['setActive']->isFinal());
 
-        $this->assertSame('doSomething', $methods[1]->getName());
-        $this->assertFalse($methods[1]->isAbstract());
-        $this->assertTrue($methods[1]->isFinal());
+        $this->assertSame('doSomething', $methods['doSomething']->getName());
+        $this->assertFalse($methods['doSomething']->isAbstract());
+        $this->assertTrue($methods['doSomething']->isFinal());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -99,9 +101,9 @@ EOF;
 
         $this->assertCount(1, $methods);
 
-        $this->assertSame('setActive', $methods[0]->getName());
-        $this->assertTrue($methods[0]->isAbstract());
-        $this->assertFalse($methods[0]->isFinal());
+        $this->assertSame('setActive', $methods['setActive']->getName());
+        $this->assertTrue($methods['setActive']->isAbstract());
+        $this->assertFalse($methods['setActive']->isFinal());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -147,7 +149,7 @@ EOF;
 
         $classFactory = ClassBuilder::fromNodes(...$ast);
 
-        $methods = $classFactory->getMethods();
+        $methods = \array_values($classFactory->getMethods());
 
         $this->assertCount(2, $methods);
 
@@ -186,7 +188,7 @@ EOF;
 
         $classFactory = ClassBuilder::fromNodes(...$ast);
 
-        $methods = $classFactory->getMethods();
+        $methods = \array_values($classFactory->getMethods());
 
         $this->assertCount(1, $methods);
 
@@ -256,7 +258,7 @@ EOF;
 
         $classFactory = ClassBuilder::fromNodes(...$ast);
 
-        $methods = $classFactory->getMethods();
+        $methods = \array_values($classFactory->getMethods());
 
         $this->assertCount(1, $methods);
         $this->assertCount(1, $methods[0]->getParameters());
@@ -314,7 +316,7 @@ EOF;
             return $a->getName() <=> $b->getName();
         });
 
-        $methods = $classFactory->getMethods();
+        $methods = \array_values($classFactory->getMethods());
         $this->assertCount(4, $methods);
         $this->assertSame('a', $methods[0]->getName());
         $this->assertSame('b', $methods[1]->getName());
@@ -343,6 +345,58 @@ class TestClass
     }
 }
 EOF;
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_removes_method(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public function setActive() : void
+    {
+    }
+    public final function doSomething() : void
+    {
+    }
+}
+EOF;
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public function setActive() : void
+    {
+    }
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+
+        $methods = $classFactory->getMethods();
+
+        $this->assertCount(2, $methods);
+
+        $this->assertSame('doSomething', $methods['doSomething']->getName());
+        $classFactory->removeMethod($methods['doSomething']->getName());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);

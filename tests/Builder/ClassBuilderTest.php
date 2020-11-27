@@ -103,7 +103,7 @@ EOF;
         $this->assertTrue($classFactory->isFinal());
         $this->assertTrue($classFactory->isStrict());
         $this->assertFalse($classFactory->isAbstract());
-        $this->assertSame(['\\My\\TestTrait'], $classFactory->getTraits());
+        $this->assertSame(['\\My\\TestTrait' => '\\My\\TestTrait'], $classFactory->getTraits());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -141,10 +141,10 @@ EOF;
 
         $constants = $classFactory->getConstants();
         $this->assertCount(4, $constants);
-        $this->assertSame('FIRST', $constants[0]->getName());
-        $this->assertSame('PRIV', $constants[1]->getName());
-        $this->assertSame('PROT', $constants[2]->getName());
-        $this->assertSame('PUB', $constants[3]->getName());
+        $this->assertSame('FIRST', $constants['FIRST']->getName());
+        $this->assertSame('PRIV', $constants['PRIV']->getName());
+        $this->assertSame('PROT', $constants['PROT']->getName());
+        $this->assertSame('PUB', $constants['PUB']->getName());
 
         $expected = <<<'EOF'
 <?php
@@ -157,6 +157,48 @@ final class TestClass
     const FIRST = 1;
     private const PRIV = 'private';
     protected const PROT = 'protected';
+    public const PUB = 'public';
+}
+EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_adding_of_class_constants(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    protected const PROT = 'protected';
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $classFactory->addConstant(ClassConstBuilder::fromScratch('FIRST', 1));
+        $classFactory->addConstant(ClassConstBuilder::fromScratch('PUB', 'public'));
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    protected const PROT = 'protected';
+    public const FIRST = 1;
     public const PUB = 'public';
 }
 EOF;
@@ -197,10 +239,10 @@ EOF;
 
         $namespaceUse = $classFactory->getNamespaceImports();
         $this->assertCount(4, $namespaceUse);
-        $this->assertSame('My\\A', $namespaceUse[0]);
-        $this->assertSame('My\\B', $namespaceUse[1]);
-        $this->assertSame('My\\C', $namespaceUse[2]);
-        $this->assertSame('My\\D', $namespaceUse[3]);
+        $this->assertSame('My\\A', $namespaceUse['My\\A']);
+        $this->assertSame('My\\B', $namespaceUse['My\\B']);
+        $this->assertSame('My\\C', $namespaceUse['My\\C']);
+        $this->assertSame('My\\D', $namespaceUse['My\\D']);
 
         $expected = <<<'EOF'
 <?php
@@ -212,6 +254,103 @@ use My\A;
 use My\B;
 use My\C;
 use My\D;
+final class TestClass
+{
+}
+EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_adding_namespace_imports(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use My\C;
+use My\B;
+
+final class TestClass
+{
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+
+        $classFactory->addNamespaceImport('My\A', 'My\C', 'My\B', 'My\D');
+
+        $namespaceUse = \array_values($classFactory->getNamespaceImports());
+        $this->assertCount(4, $namespaceUse);
+        $this->assertSame('My\\C', $namespaceUse[0]);
+        $this->assertSame('My\\B', $namespaceUse[1]);
+        $this->assertSame('My\\A', $namespaceUse[2]);
+        $this->assertSame('My\\D', $namespaceUse[3]);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use My\A;
+use My\D;
+use My\C;
+use My\B;
+final class TestClass
+{
+}
+EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse($code))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_removing_namespace_imports(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use My\C;
+use My\B;
+
+final class TestClass
+{
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $classFactory->removeNamespaceImport('My\A', 'My\C');
+
+        $namespaceUse = $classFactory->getNamespaceImports();
+        $this->assertCount(1, $namespaceUse);
+        $this->assertSame('My\\B', $namespaceUse['My\\B']);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+use My\B;
 final class TestClass
 {
 }
@@ -250,7 +389,7 @@ EOF;
             return $a <=> $b;
         });
 
-        $useTrait = $classFactory->getTraits();
+        $useTrait = \array_values($classFactory->getTraits());
         $this->assertCount(4, $useTrait);
         $this->assertSame('My\\A', $useTrait[0]);
         $this->assertSame('My\\B', $useTrait[1]);
@@ -269,6 +408,46 @@ final class TestClass
     use My\B;
     use My\C;
     use My\D;
+}
+EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_adding_of_traits(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    use My\D;
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $classFactory->addTrait('My\\A');
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    use My\D;
+    use My\A;
 }
 EOF;
         $nodeTraverser = new NodeTraverser();

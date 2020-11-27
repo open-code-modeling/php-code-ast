@@ -89,8 +89,8 @@ EOF;
 
         $this->assertCount(1, $properties);
 
-        $this->assertSame('aggregateId', $properties[0]->getName());
-        $this->assertSame('string', $properties[0]->getType());
+        $this->assertSame('aggregateId', $properties['aggregateId']->getName());
+        $this->assertSame('string', $properties['aggregateId']->getType());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -126,7 +126,7 @@ EOF;
             return $a->getName() <=> $b->getName();
         });
 
-        $properties = $classFactory->getProperties();
+        $properties = \array_values($classFactory->getProperties());
         $this->assertCount(4, $properties);
         $this->assertSame('a', $properties[0]->getName());
         $this->assertSame('b', $properties[1]->getName());
@@ -145,6 +145,52 @@ class TestClass
     private $b;
     private $c;
     private $d;
+}
+EOF;
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_adding_of_class_properties(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    private $a;
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $classFactory->addProperty(ClassPropertyBuilder::fromScratch('a', 'string'));
+        $classFactory->addProperty(ClassPropertyBuilder::fromScratch('b', 'string'));
+        $classFactory->addProperty(ClassPropertyBuilder::fromScratch('c', 'string'));
+        $classFactory->addProperty(ClassPropertyBuilder::fromScratch('d', 'string'));
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    private string $a;
+    private string $b;
+    private string $c;
+    private string $d;
 }
 EOF;
 

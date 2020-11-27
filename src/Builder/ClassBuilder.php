@@ -129,6 +129,21 @@ final class ClassBuilder
         return $this;
     }
 
+    /**
+     * Adds an implement definition which not already exists
+     *
+     * @param string ...$implements
+     * @return $this
+     */
+    public function addImplement(string ...$implements): self
+    {
+        foreach ($implements as $implement) {
+            $this->implements[$implement] = $implement;
+        }
+
+        return $this;
+    }
+
     public function setNamespace(string $namespace): self
     {
         $this->namespace = $namespace;
@@ -136,9 +151,49 @@ final class ClassBuilder
         return $this;
     }
 
+    /**
+     * Replacing will not work on existing files
+     *
+     * @param string ...$namespaceImports
+     * @return $this
+     */
     public function setNamespaceImports(string ...$namespaceImports): self
     {
-        $this->namespaceImports = $namespaceImports;
+        $this->namespaceImports = [];
+
+        foreach ($namespaceImports as $namespaceImport) {
+            $this->namespaceImports[$namespaceImport] = $namespaceImport;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a namespace import which not already exists
+     *
+     * @param string ...$namespaceImports
+     * @return $this
+     */
+    public function addNamespaceImport(string ...$namespaceImports): self
+    {
+        foreach ($namespaceImports as $namespaceImport) {
+            $this->namespaceImports[$namespaceImport] = $namespaceImport;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removing will not work on existing files
+     *
+     * @param string ...$namespaceImports
+     * @return $this
+     */
+    public function removeNamespaceImport(string ...$namespaceImports): self
+    {
+        foreach ($namespaceImports as $namespaceImport) {
+            unset($this->namespaceImports[$namespaceImport]);
+        }
 
         return $this;
     }
@@ -153,9 +208,49 @@ final class ClassBuilder
         return $this->setNamespaceImports(...$namespaces);
     }
 
+    /**
+     * Replacing will not work on existing files
+     *
+     * @param string ...$traits
+     * @return $this
+     */
     public function setTraits(string ...$traits): self
     {
-        $this->traits = $traits;
+        $this->traits = [];
+
+        foreach ($traits as $trait) {
+            $this->traits[$trait] = $trait;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a trait which not already exists
+     *
+     * @param string ...$traits
+     * @return $this
+     */
+    public function addTrait(string ...$traits): self
+    {
+        foreach ($traits as $trait) {
+            $this->traits[$trait] = $trait;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removing will not work on existing files
+     *
+     * @param string ...$traits
+     * @return $this
+     */
+    public function removeTrait(string ...$traits): self
+    {
+        foreach ($traits as $trait) {
+            unset($this->traits[$trait]);
+        }
 
         return $this;
     }
@@ -170,6 +265,12 @@ final class ClassBuilder
         return $this->setTraits(...$traits);
     }
 
+    /**
+     * Replacing will not work on existing files
+     *
+     * @param ClassConstBuilder ...$constants
+     * @return $this
+     */
     public function setConstants(ClassConstBuilder ...$constants): self
     {
         $this->constants = $constants;
@@ -177,16 +278,120 @@ final class ClassBuilder
         return $this;
     }
 
+    /**
+     * Adds a constant which not already exists
+     *
+     * @param ClassConstBuilder ...$constants
+     * @return $this
+     */
+    public function addConstant(ClassConstBuilder ...$constants): self
+    {
+        foreach ($constants as $constant) {
+            $this->constants[$constant->getName()] = $constant;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removing will not work on existing files
+     *
+     * @param string ...$constants
+     * @return $this
+     */
+    public function removeConstant(string ...$constants): self
+    {
+        foreach ($constants as $constant) {
+            unset($this->constants[$constant]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Replacing will not work on existing files
+     *
+     * @param ClassPropertyBuilder ...$properties
+     * @return $this
+     */
     public function setProperties(ClassPropertyBuilder ...$properties): self
     {
-        $this->properties = $properties;
+        $this->properties = [];
+
+        foreach ($properties as $property) {
+            $this->properties[$property->getName()] = $property;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a property which not already exists
+     *
+     * @param ClassPropertyBuilder ...$properties
+     * @return $this
+     */
+    public function addProperty(ClassPropertyBuilder ...$properties): self
+    {
+        foreach ($properties as $property) {
+            $this->properties[$property->getName()] = $property;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removing will not work on existing files
+     *
+     * @param string ...$propertyNames
+     * @return $this
+     */
+    public function removeProperty(string ...$propertyNames): self
+    {
+        foreach ($propertyNames as $propertyName) {
+            unset($this->properties[$propertyName]);
+        }
 
         return $this;
     }
 
     public function setMethods(ClassMethodBuilder ...$methods): self
     {
-        $this->methods = $methods;
+        $this->methods = [];
+
+        foreach ($methods as $method) {
+            $this->methods[$method->getName()] = $method;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a method and overrides existing method if any.
+     *
+     * @param ClassMethodBuilder ...$methods
+     * @return $this
+     */
+    public function addMethod(ClassMethodBuilder ...$methods): self
+    {
+        foreach ($methods as $method) {
+            $this->methods[$method->getName()] = $method;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removing will not work on existing files
+     *
+     * @param string ...$methodNames
+     * @return $this
+     */
+    public function removeMethod(string ...$methodNames): self
+    {
+        foreach ($methodNames as $methodName) {
+            unset($this->methods[$methodName]);
+        }
 
         return $this;
     }
@@ -206,6 +411,13 @@ final class ClassBuilder
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function setStrict(bool $strict): self
+    {
+        $this->strict = $strict;
+
+        return $this;
     }
 
     public function isStrict(): bool
@@ -307,66 +519,66 @@ final class ClassBuilder
     }
 
     /**
-     * Uses usort internally
+     * Uses uasort internally
      *
      * @param callable $sort (ClassConstBuilder $a, ClassConstBuilder $b)
      * @return $this
      */
     public function sortConstants(callable $sort): self
     {
-        \usort($this->constants, $sort);
+        \uasort($this->constants, $sort);
 
         return $this;
     }
 
     /**
-     * Uses usort internally
+     * Uses uasort internally
      *
      * @param callable $sort (ClassPropertyBuilder $a, ClassPropertyBuilder $b)
      * @return $this
      */
     public function sortProperties(callable $sort): self
     {
-        \usort($this->properties, $sort);
+        \uasort($this->properties, $sort);
 
         return $this;
     }
 
     /**
-     * Uses usort internally
+     * Uses uasort internally
      *
      * @param callable $sort (ClassMethodBuilder $a, ClassMethodBuilder $b)
      * @return $this
      */
     public function sortMethods(callable $sort): self
     {
-        \usort($this->methods, $sort);
+        \uasort($this->methods, $sort);
 
         return $this;
     }
 
     /**
-     * Uses usort internally
+     * Uses uasort internally
      *
      * @param callable $sort (string $a, string $b)
      * @return $this
      */
     public function sortTraits(callable $sort): self
     {
-        \usort($this->traits, $sort);
+        \uasort($this->traits, $sort);
 
         return $this;
     }
 
     /**
-     * Uses usort internally
+     * Uses uasort internally
      *
      * @param callable $sort (string $a, string $b)
      * @return $this
      */
     public function sortNamespaceImports(callable $sort): self
     {
-        \usort($this->namespaceImports, $sort);
+        \uasort($this->namespaceImports, $sort);
 
         return $this;
     }
@@ -398,7 +610,7 @@ final class ClassBuilder
             $visitors[] = new ClassNamespace($this->namespace);
         }
         if ($this->namespaceImports) {
-            $visitors[] = new NamespaceUse(...\array_reverse($this->namespaceImports));
+            $visitors[] = new NamespaceUse(...\array_reverse(\array_values($this->namespaceImports)));
         }
 
         $visitors[] = new ClassFile($this->classGenerator());
@@ -407,10 +619,10 @@ final class ClassBuilder
             $visitors[] = new ClassExtends($this->extends);
         }
         if ($this->implements) {
-            $visitors[] = new ClassImplements(...$this->implements);
+            $visitors[] = new ClassImplements(...\array_values($this->implements));
         }
         if ($this->traits) {
-            $visitors[] = new ClassUseTrait(...\array_reverse($this->traits));
+            $visitors[] = new ClassUseTrait(...\array_reverse(\array_values($this->traits)));
         }
 
         if (\count($this->constants) > 0) {
@@ -420,7 +632,7 @@ final class ClassBuilder
                     static function (ClassConstBuilder $const) {
                         return $const->generate();
                     },
-                    $this->constants
+                    \array_values($this->constants)
                 )
             );
         }
@@ -431,7 +643,7 @@ final class ClassBuilder
                     static function (ClassPropertyBuilder $property) {
                         return $property->generate();
                     },
-                    $this->properties
+                    \array_values($this->properties)
                 )
             );
         }
@@ -442,7 +654,7 @@ final class ClassBuilder
                     static function (ClassMethodBuilder $method) use ($parser) {
                         return $method->generate($parser);
                     },
-                    $this->methods
+                    \array_values($this->methods)
                 )
             );
         }
@@ -471,9 +683,10 @@ final class ClassBuilder
                 }
                 break;
             case $node instanceof Node\Stmt\UseUse:
-                $this->namespaceImports[] = $node->name instanceof Node\Name\FullyQualified
+                $namespaceImport = $node->name instanceof Node\Name\FullyQualified
                     ? '\\' . $node->name->toString()
                     : $node->name->toString();
+                $this->namespaceImports[$namespaceImport] = $namespaceImport;
                 break;
             case $node instanceof Node\Stmt\Class_:
                 $this->name = $node->name->name;
@@ -488,36 +701,33 @@ final class ClassBuilder
                 foreach ($node->stmts as $stmt) {
                     $this->unpackNode($stmt);
                 }
-                $this->implements = \array_map(
-                    static function (Node\Name $name) {
-                        return $name instanceof Node\Name\FullyQualified
-                            ? '\\' . $name->toString()
-                            : $name->toString();
-                    },
-                    $node->implements
-                );
+
+                foreach ($node->implements as $implement) {
+                    $name = $implement instanceof Node\Name\FullyQualified
+                        ? '\\' . $implement->toString()
+                        : $implement->toString();
+                    $this->implements[$name] = $name;
+                }
                 break;
             case $node instanceof Node\Stmt\TraitUse:
-                \array_push(
-                    $this->traits,
-                    ...\array_map(
-                        static function (Node\Name $name) {
-                            return $name instanceof Node\Name\FullyQualified
-                                ? '\\' . $name->toString()
-                                : $name->toString();
-                        },
-                        $node->traits
-                    )
-                );
+                foreach ($node->traits as $trait) {
+                    $name = $trait instanceof Node\Name\FullyQualified
+                        ? '\\' . $trait->toString()
+                        : $trait->toString();
+                    $this->traits[$name] = $name;
+                }
                 break;
             case $node instanceof Node\Stmt\ClassConst:
-                $this->constants[] = ClassConstBuilder::fromNode($node);
+                $constant = ClassConstBuilder::fromNode($node);
+                $this->constants[$constant->getName()] = $constant;
                 break;
             case $node instanceof Node\Stmt\Property:
-                $this->properties[] = ClassPropertyBuilder::fromNode($node);
+                $property = ClassPropertyBuilder::fromNode($node);
+                $this->properties[$property->getName()] = $property;
                 break;
             case $node instanceof Node\Stmt\ClassMethod:
-                $this->methods[] = ClassMethodBuilder::fromNode($node);
+                $method = ClassMethodBuilder::fromNode($node);
+                $this->methods[$method->getName()] = $method;
                 break;
             default:
                 break;
