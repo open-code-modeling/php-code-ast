@@ -14,6 +14,7 @@ use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
 use OpenCodeModeling\CodeAst\Code\PropertyGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\Property;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
@@ -65,6 +66,20 @@ final class ClassPropertyBuilder
         $self->type = $node->type ? $node->type->toString() : null;
         $self->visibility = $node->flags;
         $self->typed = $typed;
+
+        $comments = $node->getAttribute('comments');
+
+        if ($comments !== null
+            && $comments[0] instanceof Doc
+        ) {
+            $comments = \explode("\n", $comments[0]->getReformattedText());
+
+            foreach ($comments as $comment) {
+                if (0 === \strpos($comment, ' * @var ')) {
+                    $self->setTypeDocBlockHint(\substr($comment, 8));
+                }
+            }
+        }
 
         return $self;
     }
