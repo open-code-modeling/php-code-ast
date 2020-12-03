@@ -30,6 +30,7 @@
     },
     "require-dev": {
         "laminas/laminas-filter": "^2.9",
+        "open-code-modeling/php-filter": "^0.1.1",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.33",
         "phpstan/phpstan-strict-rules": "^0.12.4",

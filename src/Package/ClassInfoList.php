@@ -74,4 +74,16 @@ final class ClassInfoList
             \sprintf('No class info found for filename "%s". Check your namespace configuration.', $filename)
         );
     }
+
+    public function classInfoForNamespace(string $namespace): ClassInfo
+    {
+        foreach ($this->list as $classInfo) {
+            if (\strpos($namespace, $classInfo->getPackagePrefix()) === 0) {
+                return $classInfo;
+            }
+        }
+        throw new RuntimeException(
+            \sprintf('No class info found for namespace "%s". Check your namespace configuration.', $namespace)
+        );
+    }
 }
