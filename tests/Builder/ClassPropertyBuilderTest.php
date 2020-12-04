@@ -46,6 +46,8 @@ final class ClassPropertyBuilderTest extends TestCase
         $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
         $classFactory->setProperties(ClassPropertyBuilder::fromScratch('aggregateId', 'string'));
 
+        $this->assertTrue($classFactory->hasProperty('aggregateId'));
+
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
 

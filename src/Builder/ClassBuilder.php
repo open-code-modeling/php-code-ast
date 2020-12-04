@@ -122,9 +122,13 @@ final class ClassBuilder
         return $this;
     }
 
-    public function setImplements(string ...$interfaces): self
+    public function setImplements(string ...$implements): self
     {
-        $this->implements = $interfaces;
+        $this->implements = [];
+
+        foreach ($implements as $implement) {
+            $this->implements[$implement] = $implement;
+        }
 
         return $this;
     }
@@ -142,6 +146,11 @@ final class ClassBuilder
         }
 
         return $this;
+    }
+
+    public function hasImplement(string $implement): bool
+    {
+        return isset($this->implements[$implement]);
     }
 
     public function setNamespace(string $namespace): self
@@ -196,6 +205,11 @@ final class ClassBuilder
         }
 
         return $this;
+    }
+
+    public function hasNamespaceImport(string $namespace): bool
+    {
+        return isset($this->namespaceImports[$namespace]);
     }
 
     /**
@@ -255,6 +269,11 @@ final class ClassBuilder
         return $this;
     }
 
+    public function hasTrait(string $trait): bool
+    {
+        return isset($this->traits[$trait]);
+    }
+
     /**
      * @deprecated Use setTraits()
      * @param string ...$traits
@@ -273,7 +292,11 @@ final class ClassBuilder
      */
     public function setConstants(ClassConstBuilder ...$constants): self
     {
-        $this->constants = $constants;
+        $this->constants = [];
+
+        foreach ($constants as $constant) {
+            $this->constants[$constant->getName()] = $constant;
+        }
 
         return $this;
     }
@@ -306,6 +329,11 @@ final class ClassBuilder
         }
 
         return $this;
+    }
+
+    public function hasConstant(string $constantName): bool
+    {
+        return isset($this->constants[$constantName]);
     }
 
     /**
@@ -355,6 +383,11 @@ final class ClassBuilder
         return $this;
     }
 
+    public function hasProperty(string $propertyName): bool
+    {
+        return isset($this->properties[$propertyName]);
+    }
+
     public function setMethods(ClassMethodBuilder ...$methods): self
     {
         $this->methods = [];
@@ -394,6 +427,11 @@ final class ClassBuilder
         }
 
         return $this;
+    }
+
+    public function hasMethod(string $methodName): bool
+    {
+        return isset($this->methods[$methodName]);
     }
 
     public function getNamespace(): ?string

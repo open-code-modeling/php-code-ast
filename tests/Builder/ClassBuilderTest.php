@@ -52,6 +52,12 @@ final class ClassBuilderTest extends TestCase
             ->setTraits('\\My\\TestTrait')
             ->setConstants(ClassConstBuilder::fromScratch('PRIV', 'private')->setPrivate());
 
+        $this->assertTrue($classFactory->hasConstant('PRIV'));
+        $this->assertTrue($classFactory->hasImplement('\\Iterator'));
+        $this->assertTrue($classFactory->hasImplement('Bar'));
+        $this->assertTrue($classFactory->hasTrait('\\My\\TestTrait'));
+        $this->assertTrue($classFactory->hasNamespaceImport('Foo\\Bar'));
+
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
 

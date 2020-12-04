@@ -52,6 +52,9 @@ final class ClassMethodBuilderTest extends TestCase
             ClassMethodBuilder::fromScratch('doSomething')->setReturnType('void')->setFinal(true)
         );
 
+        $this->assertTrue($classFactory->hasMethod('setActive'));
+        $this->assertTrue($classFactory->hasMethod('doSomething'));
+
         $methods = $classFactory->getMethods();
 
         $this->assertCount(2, $methods);
