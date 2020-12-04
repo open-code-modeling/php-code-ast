@@ -15,6 +15,7 @@ use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
 use OpenCodeModeling\CodeAst\Code\MethodGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassMethod;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
@@ -77,8 +78,22 @@ final class ClassMethodBuilder
 
         $self = new self();
 
+        $returnType = null;
+
+        switch (true) {
+            case $node->returnType instanceof Node\Name:
+            case $node->returnType instanceof Node\Identifier:
+                $returnType = $node->returnType->toString();
+                break;
+            case $node->returnType instanceof Node\NullableType:
+                $returnType = '?' . $node->returnType->type->toString();
+                break;
+            default:
+                break;
+        }
+
         $self->name = $node->name->toString();
-        $self->returnType = $node->returnType ? $node->returnType->toString() : null;
+        $self->returnType = $returnType;
         $self->visibility = $node->flags;
         $self->abstract = ($node->flags & MethodGenerator::FLAG_ABSTRACT) > 0;
         $self->final = ($node->flags & MethodGenerator::FLAG_FINAL) > 0;
@@ -91,6 +106,20 @@ final class ClassMethodBuilder
 
         if (null !== $node->stmts) {
             $self->body = $printer->prettyPrint($node->stmts);
+        }
+
+        $comments = $node->getAttribute('comments');
+
+        if ($comments !== null
+            && $comments[0] instanceof Doc
+        ) {
+            $comments = \explode("\n", $comments[0]->getReformattedText());
+
+            foreach ($comments as $comment) {
+                if (0 === \strpos($comment, ' * @return ')) {
+                    $self->setReturnTypeDocBlockHint(\substr($comment, 11));
+                }
+            }
         }
 
         return $self;
@@ -122,11 +151,21 @@ final class ClassMethodBuilder
         return $this;
     }
 
+    public function body(): string
+    {
+        return $this->body;
+    }
+
     public function setReturnType(?string $returnType): self
     {
         $this->returnType = $returnType;
 
         return $this;
+    }
+
+    public function getReturnType(): ?string
+    {
+        return $this->returnType;
     }
 
     public function getName(): string
@@ -173,6 +212,21 @@ final class ClassMethodBuilder
         $this->visibility = ClassConstGenerator::FLAG_PUBLIC;
 
         return $this;
+    }
+
+    public function isPrivate(): bool
+    {
+        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PRIVATE);
+    }
+
+    public function isProtected(): bool
+    {
+        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PROTECTED);
+    }
+
+    public function isPublic(): bool
+    {
+        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PUBLIC);
     }
 
     public function getDocBlockComment(): ?string

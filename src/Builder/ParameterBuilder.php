@@ -47,9 +47,23 @@ final class ParameterBuilder
 
     public static function fromNode(Node\Param $node): self
     {
+        $type = null;
+
+        switch (true) {
+            case $node->type instanceof Node\Name:
+            case $node->type instanceof Node\Identifier:
+                $type = $node->type->toString();
+                break;
+            case $node->type instanceof Node\NullableType:
+                $type = '?' . $node->type->type->toString();
+                break;
+            default:
+                break;
+        }
+
         $self = new self();
         $self->name = $node->var->name;
-        $self->type = $node->type ? $node->type->toString() : null;
+        $self->type = $type;
         $self->variadic = $node->variadic;
         $self->passedByReference = $node->byRef;
 

@@ -61,9 +61,23 @@ final class ClassPropertyBuilder
     {
         $self = new self();
 
+        $type = null;
+
+        switch (true) {
+            case $node->type instanceof Node\Name:
+            case $node->type instanceof Node\Identifier:
+                $type = $node->type->toString();
+                break;
+            case $node->type instanceof Node\NullableType:
+                $type = '?' . $node->type->type->toString();
+                break;
+            default:
+                break;
+        }
+
         $self->name = $node->props[0]->name->name;
         $self->defaultValue = $node->props[0]->default;
-        $self->type = $node->type ? $node->type->toString() : null;
+        $self->type = $type;
         $self->visibility = $node->flags;
         $self->typed = $typed;
 
@@ -136,6 +150,21 @@ final class ClassPropertyBuilder
         $this->visibility = ClassConstGenerator::FLAG_PUBLIC;
 
         return $this;
+    }
+
+    public function isPrivate(): bool
+    {
+        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PRIVATE);
+    }
+
+    public function isProtected(): bool
+    {
+        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PROTECTED);
+    }
+
+    public function isPublic(): bool
+    {
+        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PUBLIC);
     }
 
     public function getDocBlockComment(): ?string

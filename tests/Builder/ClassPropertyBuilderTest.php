@@ -78,6 +78,7 @@ namespace My\Awesome\Service;
 class TestClass
 {
     private string $aggregateId;
+    protected ?string $name;
 }
 EOF;
 
@@ -87,10 +88,15 @@ EOF;
 
         $properties = $classFactory->getProperties();
 
-        $this->assertCount(1, $properties);
+        $this->assertCount(2, $properties);
 
         $this->assertSame('aggregateId', $properties['aggregateId']->getName());
         $this->assertSame('string', $properties['aggregateId']->getType());
+        $this->assertTrue($properties['aggregateId']->isPrivate());
+
+        $this->assertSame('name', $properties['name']->getName());
+        $this->assertSame('?string', $properties['name']->getType());
+        $this->assertTrue($properties['name']->isProtected());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);

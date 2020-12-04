@@ -139,7 +139,7 @@ class TestClass
     public function setActive() : void
     {
     }
-    public final function doSomething() : void
+    protected final function doSomething() : ?MyResult
     {
     }
 }
@@ -156,10 +156,14 @@ EOF;
         $this->assertSame('setActive', $methods[0]->getName());
         $this->assertFalse($methods[0]->isAbstract());
         $this->assertFalse($methods[0]->isFinal());
+        $this->assertTrue($methods[0]->isPublic());
+        $this->assertSame('void', $methods[0]->getReturnType());
 
         $this->assertSame('doSomething', $methods[1]->getName());
         $this->assertFalse($methods[1]->isAbstract());
         $this->assertTrue($methods[1]->isFinal());
+        $this->assertTrue($methods[1]->isProtected());
+        $this->assertSame('?MyResult', $methods[1]->getReturnType());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
@@ -248,7 +252,7 @@ namespace My\Awesome\Service;
 
 class TestClass
 {
-    public function setActive(bool $active) : void
+    public function setActive(?bool $active) : void
     {
     }
 }
@@ -264,6 +268,7 @@ EOF;
         $this->assertCount(1, $methods[0]->getParameters());
 
         $this->assertSame('setActive', $methods[0]->getName());
+        $this->assertTrue($methods[0]->isPublic());
 
         $parameters = $methods[0]->getParameters();
 
@@ -272,7 +277,7 @@ EOF;
         $parameter = $parameters[0];
 
         $this->assertSame('active', $parameter->getName());
-        $this->assertSame('bool', $parameter->getType());
+        $this->assertSame('?bool', $parameter->getType());
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
