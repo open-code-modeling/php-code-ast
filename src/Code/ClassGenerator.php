@@ -20,7 +20,7 @@ use PhpParser\Node\Stmt\Class_;
  * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-code/blob/master/LICENSE.md New BSD License
  */
-final class ClassGenerator implements StatementGenerator
+final class ClassGenerator implements \OpenCodeModeling\CodeAst\StatementGenerator
 {
     public const FLAG_ABSTRACT = Class_::MODIFIER_ABSTRACT;
     public const FLAG_FINAL = Class_::MODIFIER_FINAL;

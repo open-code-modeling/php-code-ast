@@ -32,6 +32,11 @@ final class ClassFile extends NodeVisitorAbstract
         $this->classGenerator = $classGenerator;
     }
 
+    public static function fromNode(Class_ $node): self
+    {
+        return new self(new ClassGenerator($node->name->name));
+    }
+
     public function beforeTraverse(array $nodes)
     {
         foreach ($nodes as $node) {

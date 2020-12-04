@@ -12,6 +12,8 @@ namespace OpenCodeModeling\CodeAst\NodeVisitor;
 
 use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\IdentifierGenerator;
+use OpenCodeModeling\CodeAst\IdentifiedStatementGenerator;
+use OpenCodeModeling\CodeAst\Node\StatementGenerator;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
@@ -20,13 +22,23 @@ use PhpParser\NodeVisitorAbstract;
 final class ClassConstant extends NodeVisitorAbstract
 {
     /**
-     * @var IdentifierGenerator
+     * @var IdentifiedStatementGenerator
      */
     private $lineGenerator;
 
-    public function __construct(IdentifierGenerator $lineGenerator)
+    public function __construct(IdentifiedStatementGenerator $lineGenerator)
     {
         $this->lineGenerator = $lineGenerator;
+    }
+
+    public static function fromNode(Node\Stmt\ClassConst $node): self
+    {
+        return new self(
+            new StatementGenerator(
+                $node->consts[0]->name->name,
+                $node
+            )
+        );
     }
 
     public static function forClassConstant(
@@ -79,7 +91,7 @@ final class ClassConstant extends NodeVisitorAbstract
     {
         foreach ($node->stmts as $stmt) {
             if ($stmt instanceof Node\Stmt\ClassConst
-                && $stmt->consts[0]->name->name === $this->lineGenerator->getIdentifier()
+                && $stmt->consts[0]->name->name === $this->lineGenerator->identifier()
             ) {
                 return true;
             }

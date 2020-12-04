@@ -12,7 +12,7 @@ namespace OpenCodeModeling\CodeAst\Code;
 
 use PhpParser\Parser;
 
-final class BodyGenerator implements StatementGenerator
+final class BodyGenerator implements \OpenCodeModeling\CodeAst\StatementGenerator
 {
     /**
      * @var Parser

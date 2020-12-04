@@ -8,17 +8,9 @@
 
 declare(strict_types=1);
 
-namespace OpenCodeModeling\CodeAst\Code;
+namespace OpenCodeModeling\CodeAst;
 
-use PhpParser\Node;
-
-/**
- * @deprecated Use \OpenCodeModeling\CodeAst\StatementGenerator
- */
-interface StatementGenerator
+interface IdentifiedStatementGenerator extends StatementGenerator
 {
-    /**
-     * @return Node\Stmt|Node\Stmt[]
-     */
-    public function generate();
+    public function identifier(): string;
 }

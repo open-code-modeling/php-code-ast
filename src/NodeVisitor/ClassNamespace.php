@@ -33,6 +33,11 @@ final class ClassNamespace extends NodeVisitorAbstract
         $this->builderFactory = new BuilderFactory();
     }
 
+    public static function fromNode(Stmt\Namespace_ $node): self
+    {
+        return new self($node->name->toString());
+    }
+
     public function afterTraverse(array $nodes): ?array
     {
         if ($this->hasNamespace($nodes)) {
