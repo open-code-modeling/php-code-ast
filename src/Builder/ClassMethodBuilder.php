@@ -241,7 +241,7 @@ final class ClassMethodBuilder
         return $this;
     }
 
-    public function getReturnTypeDocBlockHint(): string
+    public function getReturnTypeDocBlockHint(): ?string
     {
         return $this->returnTypeDocBlockHint;
     }

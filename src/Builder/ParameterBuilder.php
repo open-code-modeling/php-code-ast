@@ -152,7 +152,7 @@ final class ParameterBuilder
         return $this->name;
     }
 
-    public function getTypeDocBlockHint(): string
+    public function getTypeDocBlockHint(): ?string
     {
         return $this->typeDocBlockHint;
     }
