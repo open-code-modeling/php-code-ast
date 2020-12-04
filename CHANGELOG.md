@@ -2,28 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.9.0 - TBD
+## 0.9.0 - 2020-12-04
 
-### Added
 
-- Nothing.
 
-### Changed
+-----
 
-- Nothing.
+### Release Notes for [0.9.0](https://github.com/open-code-modeling/php-code-ast/milestone/7)
 
-### Deprecated
+Feature release (minor)
 
-- Nothing.
+### 0.9.0
 
-### Removed
+- Total issues resolved: **7**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-- Nothing.
+#### bug
 
-### Fixed
+ - [49: Fix return type of *DocBlockHint() methods](https://github.com/open-code-modeling/php-code-ast/issues/49) thanks to @sandrokeil
 
-- Nothing.
+#### enhancement
 
+ - [48: Add has* methods to ClassBuilder](https://github.com/open-code-modeling/php-code-ast/issues/48) thanks to @sandrokeil
+ - [47: Support Node\NullableType in Builder classes](https://github.com/open-code-modeling/php-code-ast/issues/47) thanks to @sandrokeil
+ - [46: Support for returning ClassInfo for namespace in ClassInfoList](https://github.com/open-code-modeling/php-code-ast/issues/46) thanks to @sandrokeil
+ - [45: Add ClassBuilder collection](https://github.com/open-code-modeling/php-code-ast/issues/45) thanks to @sandrokeil
+ - [44: Allow add/remove of constants, properties, methods, traits and namespace imports in ClassBuilder](https://github.com/open-code-modeling/php-code-ast/issues/44) thanks to @sandrokeil
+ - [43: Support @var comment in Builder\ClassPropertyBuilder::fromNode()](https://github.com/open-code-modeling/php-code-ast/issues/43) thanks to @sandrokeil
 
 ## 0.8.6 - 2020-11-20
 
