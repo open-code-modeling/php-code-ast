@@ -1,0 +1,19 @@
+{
+    "autoload": {
+        "psr-0": {
+            "Monolog\\": "src/"
+        },
+        "psr-4": {
+            "OpenCodeModeling\\CodeAst\\": "src/",
+            "Monolog\\": [
+                "src/",
+                "lib/"
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OpenCodeModelingTest\\CodeAst\\": "tests/"
+        }
+    }
+}

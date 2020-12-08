@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Package;
 
-use Composer\Autoload\ClassLoader;
-
 final class Psr4Info implements ClassInfo
 {
     /**
@@ -172,30 +170,67 @@ final class Psr4Info implements ClassInfo
     /**
      * Creates an instance of the class Psr4Info based on the Composer configuration.
      *
-     * @param ClassLoader $classLoader Composer ClassLoader instance
+     * @param string $basePath Usually the composer.json root folder
+     * @param string $composerFileContent Content of composer.json to detect registered namespaces
      * @param callable $filterDirectoryToNamespace Callable to filter a directory to a namespace
-     * @param callable $filterNamespaceToDirectory  Callable to filter a namespace to a directory
+     * @param callable $filterNamespaceToDirectory Callable to filter a namespace to a directory
      * @param string $exclude Specifies which path should be ignored
-     * @return array
+     * @return Psr4Info[]
+     * @throws \JsonException
      */
     public static function fromComposer(
-        ClassLoader $classLoader,
+        string $basePath,
+        string $composerFileContent,
         callable $filterDirectoryToNamespace,
         callable $filterNamespaceToDirectory,
         string $exclude = 'vendor' . DIRECTORY_SEPARATOR
     ): array {
         $namespaces = [];
 
-        foreach ($classLoader->getPrefixesPsr4() as $namespace => $paths) {
-            $realpath = \preg_replace('/^' . \addcslashes(\getcwd(), '/') . '\//', '', \realpath($paths[0]));
-            if (false !== \stripos($realpath, $exclude)) {
-                continue;
-            }
-            $classInfo = new self($realpath, $namespace, $filterDirectoryToNamespace, $filterNamespaceToDirectory);
+        $composer = \json_decode($composerFileContent, true, 512, \JSON_BIGINT_AS_STRING | \JSON_THROW_ON_ERROR);
 
-            $namespaces[] = $classInfo;
+        foreach ($composer['autoload']['psr-4'] ?? [] as $namespace => $paths) {
+            $namespaces[] = self::fromNamespace($basePath, $namespace, (array) $paths, $filterDirectoryToNamespace, $filterNamespaceToDirectory, $exclude);
+        }
+        foreach ($composer['autoload-dev']['psr-4'] ?? [] as $namespace => $paths) {
+            $namespaces[] = self::fromNamespace($basePath, $namespace, (array) $paths, $filterDirectoryToNamespace, $filterNamespaceToDirectory, $exclude);
         }
 
-        return $namespaces;
+        return \array_merge(...$namespaces);
+    }
+
+    /**
+     * @param string $basePath Usually the composer.json root folder
+     * @param string $namespace
+     * @param array $paths
+     * @param callable $filterDirectoryToNamespace
+     * @param callable $filterNamespaceToDirectory
+     * @param string $exclude
+     * @return Psr4Info[]
+     */
+    public static function fromNamespace(
+        string $basePath,
+        string $namespace,
+        array $paths,
+        callable $filterDirectoryToNamespace,
+        callable $filterNamespaceToDirectory,
+        string $exclude = 'vendor' . DIRECTORY_SEPARATOR
+    ): array {
+        $classInfoList = [];
+
+        $basePath = \rtrim($basePath, '/') . DIRECTORY_SEPARATOR;
+
+        foreach ($paths as $path) {
+            $path = $basePath . $path;
+
+            if (false !== \stripos($path, $exclude)) {
+                continue;
+            }
+            $classInfo = new self($path, $namespace, $filterDirectoryToNamespace, $filterNamespaceToDirectory);
+
+            $classInfoList[] = $classInfo;
+        }
+
+        return $classInfoList;
     }
 }

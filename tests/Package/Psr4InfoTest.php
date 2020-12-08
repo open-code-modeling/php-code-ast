@@ -19,6 +19,33 @@ final class Psr4InfoTest extends TestCase
 {
     /**
      * @test
+     */
+    public function it_can_be_created_from_composer(): void
+    {
+        $psr4InfoList = Psr4Info::fromComposer(
+            '/service',
+            \file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR . 'composer.json'),
+            $this->filterDirectoryToNamespace(),
+            $this->filterNamespaceToDirectory()
+        );
+
+        $this->assertCount(4, $psr4InfoList);
+
+        $this->assertSame('OpenCodeModeling\\CodeAst', $psr4InfoList[0]->getPackagePrefix());
+        $this->assertSame('/service/src', $psr4InfoList[0]->getSourceFolder());
+
+        $this->assertSame('Monolog', $psr4InfoList[1]->getPackagePrefix());
+        $this->assertSame('/service/src', $psr4InfoList[1]->getSourceFolder());
+
+        $this->assertSame('Monolog', $psr4InfoList[2]->getPackagePrefix());
+        $this->assertSame('/service/lib', $psr4InfoList[2]->getSourceFolder());
+
+        $this->assertSame('OpenCodeModelingTest\\CodeAst', $psr4InfoList[3]->getPackagePrefix());
+        $this->assertSame('/service/tests', $psr4InfoList[3]->getSourceFolder());
+    }
+
+    /**
+     * @test
      * @dataProvider providerForGetClassNamespace
      * @covers       \OpenCodeModeling\CodeAst\Package\Psr4Info::__construct
      * @covers       \OpenCodeModeling\CodeAst\Package\Psr4Info::getClassNamespaceFromPath
