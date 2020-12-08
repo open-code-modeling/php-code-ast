@@ -66,6 +66,9 @@ final class ClassMethodBuilder
     /** @var bool */
     private $abstract = false;
 
+    /** @var bool */
+    private $isStatic = false;
+
     private function __construct()
     {
     }
@@ -279,6 +282,13 @@ final class ClassMethodBuilder
         return $this;
     }
 
+    public function setStatic(bool $isStatic): self
+    {
+        $this->isStatic = $isStatic;
+
+        return $this;
+    }
+
     public function isFinal(): bool
     {
         return $this->final;
@@ -287,6 +297,11 @@ final class ClassMethodBuilder
     public function isAbstract(): bool
     {
         return $this->abstract;
+    }
+
+    public function isStatic(): bool
+    {
+        return $this->isStatic;
     }
 
     public function generate(Parser $parser): NodeVisitor
@@ -303,6 +318,9 @@ final class ClassMethodBuilder
         }
         if ($this->abstract) {
             $flags |= MethodGenerator::FLAG_ABSTRACT;
+        }
+        if ($this->isStatic) {
+            $flags |= MethodGenerator::FLAG_STATIC;
         }
 
         $body = null;

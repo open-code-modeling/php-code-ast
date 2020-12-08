@@ -46,7 +46,7 @@ final class ClassMethodBuilderTest extends TestCase
 
         $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
         $classFactory->setMethods(
-            ClassMethodBuilder::fromScratch('setActive')->setReturnType('void')
+            ClassMethodBuilder::fromScratch('setActive')->setReturnType('void')->setStatic(true)
         );
         $classFactory->addMethod(
             ClassMethodBuilder::fromScratch('doSomething')->setReturnType('void')->setFinal(true)
@@ -62,6 +62,7 @@ final class ClassMethodBuilderTest extends TestCase
         $this->assertSame('setActive', $methods['setActive']->getName());
         $this->assertFalse($methods['setActive']->isAbstract());
         $this->assertFalse($methods['setActive']->isFinal());
+        $this->assertTrue($methods['setActive']->isStatic());
 
         $this->assertSame('doSomething', $methods['doSomething']->getName());
         $this->assertFalse($methods['doSomething']->isAbstract());
@@ -78,7 +79,7 @@ namespace My\Awesome\Service;
 
 class TestClass
 {
-    public function setActive() : void
+    public static function setActive() : void
     {
     }
     public final function doSomething() : void
