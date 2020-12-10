@@ -15,6 +15,7 @@ use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
 use OpenCodeModeling\CodeAst\Code\MethodGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassMethod;
+use OpenCodeModeling\CodeAst\NodeVisitor\InterfaceMethod;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
@@ -304,8 +305,12 @@ final class ClassMethodBuilder
         return $this->isStatic;
     }
 
-    public function generate(Parser $parser): NodeVisitor
+    public function generate(Parser $parser, bool $isInterfaceMethod = false): NodeVisitor
     {
+        if ($isInterfaceMethod === true) {
+            return new InterfaceMethod($this->methodGenerator($parser));
+        }
+
         return new ClassMethod($this->methodGenerator($parser));
     }
 
