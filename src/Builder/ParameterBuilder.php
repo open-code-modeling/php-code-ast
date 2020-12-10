@@ -157,9 +157,11 @@ final class ParameterBuilder
         return $this->typeDocBlockHint;
     }
 
-    public function setTypeDocBlockHint(?string $typeDocBlockHint): void
+    public function setTypeDocBlockHint(?string $typeDocBlockHint): self
     {
         $this->typeDocBlockHint = $typeDocBlockHint;
+
+        return $this;
     }
 
     public function generate(): ParameterGenerator
