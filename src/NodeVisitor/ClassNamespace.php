@@ -20,12 +20,12 @@ final class ClassNamespace extends NodeVisitorAbstract
     /**
      * @var string
      */
-    private $namespace;
+    private string $namespace;
 
     /**
      * @var BuilderFactory
      **/
-    private $builderFactory;
+    private BuilderFactory $builderFactory;
 
     public function __construct(string $namespace)
     {

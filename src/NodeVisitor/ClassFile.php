@@ -20,12 +20,12 @@ final class ClassFile extends NodeVisitorAbstract
     /**
      * @var bool
      */
-    private $classExists = false;
+    private bool $classExists = false;
 
     /**
      * @var ClassGenerator
      **/
-    private $classGenerator;
+    private ClassGenerator $classGenerator;
 
     public function __construct(ClassGenerator $classGenerator)
     {

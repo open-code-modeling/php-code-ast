@@ -19,7 +19,7 @@ use PhpParser\NodeVisitor;
 final class ClassConstBuilder
 {
     /** @var string */
-    private $name;
+    private string $name;
 
     /** @var mixed */
     private $value;
@@ -27,7 +27,7 @@ final class ClassConstBuilder
     /**
      * @var int
      */
-    private $visibility;
+    private int $visibility;
 
     private function __construct()
     {

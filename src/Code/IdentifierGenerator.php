@@ -17,12 +17,12 @@ final class IdentifierGenerator implements StatementGenerator
     /**
      * @var StatementGenerator
      */
-    private $statementGenerator;
+    private StatementGenerator $statementGenerator;
 
     /**
      * @var string
      */
-    private $identifier;
+    private string $identifier;
 
     public function __construct(string $identifier, StatementGenerator $statementGenerator)
     {

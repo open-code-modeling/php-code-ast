@@ -17,12 +17,12 @@ final class BodyGenerator implements StatementGenerator
     /**
      * @var Parser
      **/
-    private $parser;
+    private Parser $parser;
 
     /**
      * @var string
      */
-    private $code;
+    private string $code;
 
     public function __construct(Parser $parser, string $code)
     {

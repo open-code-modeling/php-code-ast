@@ -24,28 +24,28 @@ use PhpParser\Parser;
 final class InterfaceBuilder implements File
 {
     /** @var string|null */
-    private $namespace;
+    private ?string $namespace = null;
 
     /** @var string|null */
-    private $name;
+    private ?string $name = null;
 
     /** @var bool */
-    private $strict = false;
+    private bool $strict = false;
 
     /** @var bool */
-    private $typed = false;
+    private bool $typed = false;
 
     /** @var string[] */
-    private $extends = [];
+    private array $extends = [];
 
     /** @var string[] */
-    private $namespaceImports = [];
+    private array $namespaceImports = [];
 
     /** @var ClassConstBuilder[] */
-    private $constants = [];
+    private array $constants = [];
 
     /** @var ClassMethodBuilder[] */
-    private $methods = [];
+    private array $methods = [];
 
     private function __construct()
     {

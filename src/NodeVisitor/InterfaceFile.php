@@ -20,12 +20,12 @@ final class InterfaceFile extends NodeVisitorAbstract
     /**
      * @var bool
      */
-    private $classExists = false;
+    private bool $classExists = false;
 
     /**
      * @var InterfaceGenerator
      **/
-    private $interfaceGenerator;
+    private \OpenCodeModeling\CodeAst\Code\InterfaceGenerator $interfaceGenerator;
 
     public function __construct(InterfaceGenerator $interfaceGenerator)
     {

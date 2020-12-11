@@ -21,7 +21,7 @@ final class ClassInfoListTest extends TestCase
     /**
      * @var ClassInfoList
      */
-    private $classInfoList;
+    private ClassInfoList $classInfoList;
 
     public function setUp(): void
     {

@@ -17,7 +17,7 @@ final class ClassConstGenerator extends AbstractMemberGenerator
     /**
      * @var ValueGenerator
      */
-    private $value;
+    private ValueGenerator $value;
 
     /**
      * @param string $name

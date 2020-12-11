@@ -21,7 +21,7 @@ final class ClassBuilderCollection implements Iterator, Countable
     /**
      * @var array<string, ClassBuilder>
      */
-    private $items;
+    private array $items;
 
     public static function fromItems(ClassBuilder ...$classBuilders): self
     {

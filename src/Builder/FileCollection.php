@@ -18,7 +18,7 @@ final class FileCollection implements Iterator, Countable
     /**
      * @var array<string, File>
      */
-    private $items;
+    private array $items;
 
     public static function fromItems(File ...$files): self
     {

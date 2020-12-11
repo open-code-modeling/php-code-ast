@@ -28,17 +28,17 @@ final class InterfaceMethodTest extends TestCase
     /**
      * @var Parser
      */
-    private $parser;
+    private Parser $parser;
 
     /**
      * @var Standard
      */
-    private $printer;
+    private Standard $printer;
 
     /**
      * @var MethodGenerator
      */
-    private $method;
+    private \OpenCodeModeling\CodeAst\Code\MethodGenerator $method;
 
     public function setUp(): void
     {

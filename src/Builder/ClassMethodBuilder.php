@@ -27,48 +27,48 @@ use PhpParser\PrettyPrinterAbstract;
 final class ClassMethodBuilder
 {
     /** @var string */
-    private $name;
+    private string $name;
 
     /** @var ParameterBuilder[] */
-    private $parameters = [];
+    private array $parameters = [];
 
     /** @var string */
-    private $body = '';
+    private string $body = '';
 
     /** @var string|null */
-    private $returnType;
+    private ?string $returnType = null;
 
     /**
      * @var int
      */
-    private $visibility;
+    private int $visibility;
 
     /** @var bool */
-    private $typed = false;
+    private bool $typed = false;
 
     /**
      * @var string|null
      */
-    private $docBlockComment;
+    private ?string $docBlockComment = null;
 
     /**
      * @var string|null
      */
-    private $returnTypeDocBlockHint;
+    private ?string $returnTypeDocBlockHint = null;
 
     /**
      * @var DocBlock|null
      */
-    private $docBlock;
+    private ?DocBlock $docBlock = null;
 
     /** @var bool */
-    private $final = false;
+    private bool $final = false;
 
     /** @var bool */
-    private $abstract = false;
+    private bool $abstract = false;
 
     /** @var bool */
-    private $isStatic = false;
+    private bool $isStatic = false;
 
     private function __construct()
     {

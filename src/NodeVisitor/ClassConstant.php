@@ -22,7 +22,7 @@ final class ClassConstant extends NodeVisitorAbstract
     /**
      * @var IdentifierGenerator
      */
-    private $lineGenerator;
+    private IdentifierGenerator $lineGenerator;
 
     public function __construct(IdentifierGenerator $lineGenerator)
     {

@@ -23,7 +23,7 @@ final class ParamTag extends AbstractTypeableTag
     /**
      * @var string
      */
-    protected $variableName;
+    protected string $variableName;
 
     /**
      * ParamTag constructor.

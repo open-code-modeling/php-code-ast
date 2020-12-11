@@ -30,37 +30,37 @@ final class MethodGenerator extends AbstractMemberGenerator
     /**
      * @var array
      */
-    private $parameters = [];
+    private array $parameters = [];
 
     /**
      * @var BodyGenerator|null
      */
-    private $body;
+    private ?BodyGenerator $body = null;
 
     /**
      * @var null|TypeGenerator
      */
-    private $returnType;
+    private ?TypeGenerator $returnType = null;
 
     /**
      * @var bool
      */
-    private $typed = false;
+    private bool $typed = false;
 
     /**
      * @var string|null
      */
-    private $docBlockComment;
+    private ?string $docBlockComment = null;
 
     /**
      * @var string|null
      */
-    private $returnTypeDocBlockHint;
+    private ?string $returnTypeDocBlockHint = null;
 
     /**
      * @var DocBlock|null
      */
-    private $docBlock;
+    private ?DocBlock $docBlock = null;
 
     /**
      * @param string $name

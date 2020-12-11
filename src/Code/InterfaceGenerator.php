@@ -26,7 +26,7 @@ final class InterfaceGenerator implements StatementGenerator
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @param string $name

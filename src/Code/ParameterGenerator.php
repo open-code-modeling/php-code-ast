@@ -25,32 +25,32 @@ final class ParameterGenerator
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var TypeGenerator|null
      */
-    private $type;
+    private ?TypeGenerator $type = null;
 
     /**
      * @var ValueGenerator|null
      */
-    private $defaultValue;
+    private ?ValueGenerator $defaultValue = null;
 
     /**
      * @var bool
      */
-    private $passedByReference = false;
+    private bool $passedByReference = false;
 
     /**
      * @var bool
      */
-    private $variadic = false;
+    private bool $variadic = false;
 
     /**
      * @var string|null
      */
-    private $typeDocBlockHint;
+    private ?string $typeDocBlockHint = null;
 
     /**
      * @param string $name

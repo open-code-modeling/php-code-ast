@@ -44,12 +44,12 @@ abstract class AbstractMemberGenerator implements StatementGenerator
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var int
      */
-    protected $flags = self::FLAG_PUBLIC;
+    protected int $flags = self::FLAG_PUBLIC;
 
     /**
      * @param  int|array $flags

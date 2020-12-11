@@ -17,14 +17,14 @@ final class Psr4Info implements ClassInfo
      *
      * @var string
      */
-    private $sourceFolder;
+    private string $sourceFolder;
 
     /**
      * Package prefix
      *
      * @var string
      */
-    private $packagePrefix;
+    private string $packagePrefix;
 
     /**
      * @var callable

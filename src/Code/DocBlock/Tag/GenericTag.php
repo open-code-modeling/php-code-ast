@@ -23,12 +23,12 @@ final class GenericTag implements Tag
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var string
      */
-    protected $content;
+    protected string $content;
 
     public function __construct(?string $name = null, ?string $content = null)
     {

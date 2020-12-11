@@ -22,7 +22,7 @@ final class InterfaceMethod extends NodeVisitorAbstract
     /**
      * @var MethodGenerator
      **/
-    private $methodGenerator;
+    private MethodGenerator $methodGenerator;
 
     public function __construct(MethodGenerator $methodGenerator)
     {

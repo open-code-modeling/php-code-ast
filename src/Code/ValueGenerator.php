@@ -53,7 +53,7 @@ final class ValueGenerator
     /**
      * @var string
      */
-    private $type = self::TYPE_AUTO;
+    private string $type = self::TYPE_AUTO;
 
     /**
      * @param mixed $value

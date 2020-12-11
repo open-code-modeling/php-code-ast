@@ -22,7 +22,7 @@ final class Property extends NodeVisitorAbstract
     /**
      * @var PropertyGenerator
      **/
-    private $propertyGenerator;
+    private PropertyGenerator $propertyGenerator;
 
     public function __construct(PropertyGenerator $propertyGenerator)
     {

@@ -20,7 +20,7 @@ final class ClassUseTrait extends NodeVisitorAbstract
     /**
      * @var string[]
      */
-    private $traits;
+    private array $traits;
 
     public function __construct(string ...$traits)
     {

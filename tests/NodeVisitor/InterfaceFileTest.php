@@ -24,12 +24,12 @@ final class InterfaceFileTest extends TestCase
     /**
      * @var Parser
      */
-    private $parser;
+    private Parser $parser;
 
     /**
      * @var Standard
      */
-    private $printer;
+    private Standard $printer;
 
     public function setUp(): void
     {

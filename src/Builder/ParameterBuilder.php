@@ -16,10 +16,10 @@ use PhpParser\Node;
 final class ParameterBuilder
 {
     /** @var string */
-    private $name;
+    private string $name;
 
     /** @var string|null */
-    private $type;
+    private ?string $type = null;
 
     /**
      * @var mixed
@@ -29,17 +29,17 @@ final class ParameterBuilder
     /**
      * @var bool
      */
-    private $passedByReference = false;
+    private bool $passedByReference = false;
 
     /**
      * @var bool
      */
-    private $variadic = false;
+    private bool $variadic = false;
 
     /**
      * @var string|null
      */
-    private $typeDocBlockHint;
+    private ?string $typeDocBlockHint = null;
 
     private function __construct()
     {

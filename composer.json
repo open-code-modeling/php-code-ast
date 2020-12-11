@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "nikic/php-parser": "^4.2",
         "ext-json": "*"
     },
@@ -35,8 +35,8 @@
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.33",
         "phpstan/phpstan-strict-rules": "^0.12.4",
-        "phpunit/phpunit": "^9.2.6",
-        "prooph/php-cs-fixer-config": "^0.3",
+        "phpunit/phpunit": "^9.5.0",
+        "prooph/php-cs-fixer-config": "^v0.3.1",
         "roave/security-advisories": "dev-master"
     },
     "minimum-stability": "dev",

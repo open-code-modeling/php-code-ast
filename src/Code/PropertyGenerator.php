@@ -29,32 +29,32 @@ final class PropertyGenerator extends AbstractMemberGenerator
     /**
      * @var TypeGenerator|null
      */
-    private $type;
+    private ?TypeGenerator $type = null;
 
     /**
      * @var ValueGenerator|null
      */
-    private $defaultValue;
+    private ?ValueGenerator $defaultValue = null;
 
     /**
      * @var bool
      */
-    private $typed;
+    private bool $typed;
 
     /**
      * @var string|null
      */
-    private $docBlockComment;
+    private ?string $docBlockComment = null;
 
     /**
      * @var string|null
      */
-    private $typeDocBlockHint;
+    private ?string $typeDocBlockHint = null;
 
     /**
      * @var DocBlock|null
      */
-    private $docBlock;
+    private ?DocBlock $docBlock = null;
 
     public function __construct(
         string $name = null,

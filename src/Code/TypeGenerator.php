@@ -27,24 +27,24 @@ final class TypeGenerator
     /**
      * @var bool
      */
-    private $isInternalPhpType;
+    private bool $isInternalPhpType;
 
     /**
      * @var string
      */
-    private $type;
+    private string $type;
 
     /**
      * @var bool
      */
-    private $nullable;
+    private bool $nullable;
 
     /**
      * @var string[]
      *
      * @link http://php.net/manual/en/functions.arguments.php#functions.arguments.type-declaration
      */
-    private static $internalPhpTypes = [
+    private static array $internalPhpTypes = [
         'void',
         'int',
         'float',
@@ -59,7 +59,7 @@ final class TypeGenerator
     /**
      * @var string a regex pattern to match valid class names or types
      */
-    private static $validIdentifierMatcher = '/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*'
+    private static string $validIdentifierMatcher = '/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*'
     . '(\\\\[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)*$/';
 
     /**

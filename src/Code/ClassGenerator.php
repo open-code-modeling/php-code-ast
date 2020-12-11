@@ -28,12 +28,12 @@ final class ClassGenerator implements StatementGenerator
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var int
      */
-    private $flags = 0;
+    private int $flags = 0;
 
     /**
      * @param  string|null $name

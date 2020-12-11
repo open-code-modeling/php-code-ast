@@ -20,12 +20,12 @@ final class NamespaceUse extends NodeVisitorAbstract
     /**
      * @var array
      */
-    private $imports;
+    private array $imports;
 
     /**
      * @var BuilderFactory
      **/
-    private $builderFactory;
+    private BuilderFactory $builderFactory;
 
     public function __construct(...$imports)
     {

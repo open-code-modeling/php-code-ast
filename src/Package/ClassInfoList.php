@@ -20,7 +20,7 @@ final class ClassInfoList
     /**
      * @var ClassInfo[]
      **/
-    private $list = [];
+    private array $list = [];
 
     public function __construct(ClassInfo ...$classInfo)
     {

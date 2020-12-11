@@ -17,12 +17,12 @@ final class DocBlock
     /**
      * @var string
      */
-    protected $comment;
+    protected ?string $comment = null;
 
     /**
      * @var Tag[]
      */
-    protected $tags;
+    protected array $tags;
 
     public function __construct(?string $comment, Tag ...$tags)
     {

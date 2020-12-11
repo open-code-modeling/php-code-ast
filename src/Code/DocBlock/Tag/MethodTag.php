@@ -23,12 +23,12 @@ final class MethodTag extends AbstractTypeableTag
     /**
      * @var string
      */
-    protected $methodName;
+    protected string $methodName;
 
     /**
      * @var bool
      */
-    protected $isStatic = false;
+    protected bool $isStatic = false;
 
     public function __construct(
         ?string $methodName = null,

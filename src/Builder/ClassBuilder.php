@@ -26,43 +26,43 @@ use PhpParser\Parser;
 final class ClassBuilder implements File
 {
     /** @var string|null */
-    private $namespace;
+    private ?string $namespace = null;
 
     /** @var string|null */
-    private $name;
+    private ?string $name = null;
 
     /** @var bool */
-    private $strict = false;
+    private bool $strict = false;
 
     /** @var bool */
-    private $typed = false;
+    private bool $typed = false;
 
     /** @var bool */
-    private $final = false;
+    private bool $final = false;
 
     /** @var bool */
-    private $abstract = false;
+    private bool $abstract = false;
 
     /** @var string|null */
-    private $extends;
+    private ?string $extends = null;
 
     /** @var string[] */
-    private $implements = [];
+    private array $implements = [];
 
     /** @var string[] */
-    private $namespaceImports = [];
+    private array $namespaceImports = [];
 
     /** @var string[] */
-    private $traits = [];
+    private array $traits = [];
 
     /** @var ClassConstBuilder[] */
-    private $constants = [];
+    private array $constants = [];
 
     /** @var ClassPropertyBuilder[] */
-    private $properties = [];
+    private array $properties = [];
 
     /** @var ClassMethodBuilder[] */
-    private $methods = [];
+    private array $methods = [];
 
     private function __construct()
     {

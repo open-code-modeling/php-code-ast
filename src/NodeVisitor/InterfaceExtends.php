@@ -20,7 +20,7 @@ final class InterfaceExtends extends NodeVisitorAbstract
     /**
      * @var string[]
      */
-    private $extends;
+    private array $extends;
 
     public function __construct(string ...$extends)
     {

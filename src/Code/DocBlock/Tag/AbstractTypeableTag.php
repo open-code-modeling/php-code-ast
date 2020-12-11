@@ -29,12 +29,12 @@ abstract class AbstractTypeableTag implements Tag
     /**
      * @var string
      */
-    protected $description;
+    protected ?string $description = null;
 
     /**
      * @var array
      */
-    protected $types = [];
+    protected array $types = [];
 
     /**
      * @param string|string[] $types

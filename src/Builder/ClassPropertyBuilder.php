@@ -22,10 +22,10 @@ use PhpParser\NodeVisitor;
 final class ClassPropertyBuilder
 {
     /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var string */
-    private $type;
+    /** @var string|null */
+    private ?string $type;
 
     /** @var mixed */
     private $defaultValue;
@@ -33,25 +33,25 @@ final class ClassPropertyBuilder
     /**
      * @var int
      */
-    private $visibility;
+    private int $visibility;
 
     /** @var bool */
-    private $typed = false;
+    private bool $typed = false;
 
     /**
      * @var string|null
      */
-    private $docBlockComment;
+    private ?string $docBlockComment = null;
 
     /**
      * @var string|null
      */
-    private $typeDocBlockHint;
+    private ?string $typeDocBlockHint = null;
 
     /**
      * @var DocBlock|null
      */
-    private $docBlock;
+    private ?DocBlock $docBlock = null;
 
     private function __construct()
     {
@@ -114,7 +114,7 @@ final class ClassPropertyBuilder
         return $this->name;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
