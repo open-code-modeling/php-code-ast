@@ -33,7 +33,7 @@ final class Property extends NodeVisitorAbstract
         string $name = null,
         string $type = null,
         $defaultValue = null,
-        bool $typed = false,
+        bool $typed = true,
         int $flags = PropertyGenerator::FLAG_PRIVATE
     ): self {
         return new self(

@@ -60,7 +60,7 @@ final class PropertyGenerator extends AbstractMemberGenerator
         string $name = null,
         string $type = null,
         $defaultValue = null,
-        bool $typed = false,
+        bool $typed = true,
         int $flags = self::FLAG_PRIVATE
     ) {
         if (null !== $name) {

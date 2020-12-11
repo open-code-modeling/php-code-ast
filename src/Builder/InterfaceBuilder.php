@@ -33,7 +33,7 @@ final class InterfaceBuilder implements File
     private bool $strict = false;
 
     /** @var bool */
-    private bool $typed = false;
+    private bool $typed = true;
 
     /** @var string[] */
     private array $extends = [];

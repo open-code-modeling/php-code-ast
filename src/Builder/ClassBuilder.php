@@ -35,7 +35,7 @@ final class ClassBuilder implements File
     private bool $strict = false;
 
     /** @var bool */
-    private bool $typed = false;
+    private bool $typed = true;
 
     /** @var bool */
     private bool $final = false;

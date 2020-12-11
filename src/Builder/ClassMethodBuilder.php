@@ -44,7 +44,7 @@ final class ClassMethodBuilder
     private int $visibility;
 
     /** @var bool */
-    private bool $typed = false;
+    private bool $typed = true;
 
     /**
      * @var string|null

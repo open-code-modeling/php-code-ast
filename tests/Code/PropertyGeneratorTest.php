@@ -40,7 +40,7 @@ final class PropertyGeneratorTest extends TestCase
      */
     public function it_generates_property_with_doc_block(): void
     {
-        $property = new PropertyGenerator('sourceFolder', 'string');
+        $property = new PropertyGenerator('sourceFolder', 'string', null, false);
         $property->setDocBlockComment('source folder');
 
         $expectedOutput = <<<'EOF'
@@ -62,7 +62,7 @@ EOF;
      */
     public function it_generates_property_with_overridden_doc_block(): void
     {
-        $property = new PropertyGenerator('sourceFolder', 'string');
+        $property = new PropertyGenerator('sourceFolder', 'string', null, false);
         $property->setDocBlockComment('source folder');
         $property->overrideDocBlock(new DocBlock('Awesome'));
 
@@ -92,7 +92,7 @@ EOF;
 /**
  * @var array<string, \stdClass>
  */
-private $items;
+private array $items;
 EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$property->generate()]));
@@ -130,7 +130,7 @@ EOF;
  *
  * @var string
  */
-private $sourceFolder;
+private string $sourceFolder;
 EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$property->generate()]));

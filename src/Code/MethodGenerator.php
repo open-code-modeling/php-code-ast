@@ -45,7 +45,7 @@ final class MethodGenerator extends AbstractMemberGenerator
     /**
      * @var bool
      */
-    private bool $typed = false;
+    private bool $typed = true;
 
     /**
      * @var string|null
