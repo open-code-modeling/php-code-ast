@@ -13,19 +13,16 @@ namespace OpenCodeModeling\CodeAst\Builder;
 use Countable;
 use Iterator;
 
-/**
- * @deprecated Use FileCollection instead
- */
-final class ClassBuilderCollection implements Iterator, Countable
+final class FileCollection implements Iterator, Countable
 {
     /**
-     * @var array<string, ClassBuilder>
+     * @var array<string, File>
      */
     private $items;
 
-    public static function fromItems(ClassBuilder ...$classBuilders): self
+    public static function fromItems(File ...$files): self
     {
-        return new self(...$classBuilders);
+        return new self(...$files);
     }
 
     public static function emptyList(): self
@@ -33,30 +30,30 @@ final class ClassBuilderCollection implements Iterator, Countable
         return new self();
     }
 
-    private function __construct(ClassBuilder ...$classBuilders)
+    private function __construct(File ...$files)
     {
-        foreach ($classBuilders as $classBuilder) {
-            $this->items[$this->identifier($classBuilder)] = $classBuilder;
+        foreach ($files as $file) {
+            $this->items[$this->identifier($file)] = $file;
         }
     }
 
-    public function add(ClassBuilder $classBuilder): self
+    public function add(File $file): self
     {
-        $this->items[$this->identifier($classBuilder)] = $classBuilder;
+        $this->items[$this->identifier($file)] = $file;
 
         return $this;
     }
 
-    public function remove(ClassBuilder $classBuilder): self
+    public function remove(File $file): self
     {
-        unset($this->items[$this->identifier($classBuilder)]);
+        unset($this->items[$this->identifier($file)]);
 
         return $this;
     }
 
-    public function contains(ClassBuilder $classBuilder): bool
+    public function contains(File $file): bool
     {
-        return isset($this->items[$this->identifier($classBuilder)]);
+        return isset($this->items[$this->identifier($file)]);
     }
 
     public function filter(callable $filter): self
@@ -64,8 +61,8 @@ final class ClassBuilderCollection implements Iterator, Countable
         return new self(...\array_values(
                 \array_filter(
                     $this->items,
-                    static function (ClassBuilder $classBuilder) use ($filter) {
-                        return $filter($classBuilder);
+                    static function (File $file) use ($filter) {
+                        return $filter($file);
                     }
                 )
             )
@@ -73,7 +70,7 @@ final class ClassBuilderCollection implements Iterator, Countable
     }
 
     /**
-     * @return array<string, ClassBuilder>
+     * @return array<string, File>
      */
     public function items(): array
     {
@@ -85,7 +82,7 @@ final class ClassBuilderCollection implements Iterator, Countable
         \reset($this->items);
     }
 
-    public function current(): ClassBuilder
+    public function current(): File
     {
         return \current($this->items);
     }
@@ -110,15 +107,15 @@ final class ClassBuilderCollection implements Iterator, Countable
         return \count($this->items);
     }
 
-    private function identifier(ClassBuilder $classBuilder): string
+    private function identifier(File $file): string
     {
-        $namespace = $classBuilder->getNamespace() !== null ? ('\\' . $classBuilder->getNamespace()) : '';
-        $name = $classBuilder->getName() !== null ? ('\\' . $classBuilder->getName()) : '';
+        $namespace = $file->getNamespace() !== null ? ('\\' . $file->getNamespace()) : '';
+        $name = $file->getName() !== null ? ('\\' . $file->getName()) : '';
 
         $identifier = $namespace . $name;
 
         if ($identifier === '') {
-            return \spl_object_hash($classBuilder);
+            return \spl_object_hash($file);
         }
 
         return $identifier;

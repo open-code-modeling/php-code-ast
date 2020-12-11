@@ -23,7 +23,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\Parser;
 
-final class ClassBuilder
+final class ClassBuilder implements File
 {
     /** @var string|null */
     private $namespace;

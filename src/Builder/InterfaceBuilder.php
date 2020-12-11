@@ -21,7 +21,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\Parser;
 
-final class InterfaceBuilder
+final class InterfaceBuilder implements File
 {
     /** @var string|null */
     private $namespace;
