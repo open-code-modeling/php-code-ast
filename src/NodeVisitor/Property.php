@@ -29,18 +29,6 @@ final class Property extends NodeVisitorAbstract
         $this->propertyGenerator = $propertyGenerator;
     }
 
-    public static function forClassProperty(
-        string $name = null,
-        string $type = null,
-        $defaultValue = null,
-        bool $typed = true,
-        int $flags = PropertyGenerator::FLAG_PRIVATE
-    ): self {
-        return new self(
-            new PropertyGenerator($name, $type, $defaultValue, $typed, $flags)
-        );
-    }
-
     public function afterTraverse(array $nodes): ?array
     {
         $newNodes = [];

@@ -12,6 +12,7 @@ namespace OpenCodeModelingTest\CodeAst\NodeVisitor;
 
 use Generator;
 use OpenCodeModeling\CodeAst\Code\ClassGenerator;
+use OpenCodeModeling\CodeAst\Code\PropertyGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassFile;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
 use OpenCodeModeling\CodeAst\NodeVisitor\Property;
@@ -72,7 +73,7 @@ final class PropertyTest extends TestCase
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
-        $nodeTraverser->addVisitor(Property::forClassProperty('property', $type, null, true));
+        $nodeTraverser->addVisitor(new Property(new PropertyGenerator('property', $type)));
 
         $expected = <<<EOF
 <?php
@@ -96,7 +97,7 @@ EOF;
         $ast = $this->parser->parse('<?php class TestClass {}');
 
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(Property::forClassProperty('property', $type, null, true));
+        $nodeTraverser->addVisitor(new Property(new PropertyGenerator('property', $type)));
 
         $expected = <<<EOF
 <?php
@@ -122,7 +123,7 @@ EOF;
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new ClassNamespace('My\\Awesome\\Service'));
         $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
-        $nodeTraverser->addVisitor(Property::forClassProperty('property', $type, null, true));
+        $nodeTraverser->addVisitor(new Property(new PropertyGenerator('property', $type)));
 
         $expected = <<<EOF
 <?php
@@ -156,7 +157,7 @@ EOF;
         $ast = $this->parser->parse($code);
 
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(Property::forClassProperty('property', $type, null, true));
+        $nodeTraverser->addVisitor(new Property(new PropertyGenerator('property', $type)));
 
         $expected = <<<EOF
 <?php
