@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.10.1 - TBD
+## 0.10.1 - 2021-01-15
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.10.1](https://github.com/open-code-modeling/php-code-ast/milestone/20)
 
-- Nothing.
+0.10.x bugfix release (patch)
 
-### Deprecated
+### 0.10.1
 
-- Nothing.
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-### Removed
+#### bug
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [56: Fix double slashes in path for Psr4Info](https://github.com/open-code-modeling/php-code-ast/issues/56) thanks to @sandrokeil
 
 ## 0.9.1 - TBD
 
