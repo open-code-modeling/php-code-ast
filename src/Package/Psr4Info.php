@@ -110,10 +110,9 @@ final class Psr4Info implements ClassInfo
     public function getFilenameFromPathAndName(string $path, string $name): string
     {
         $filePath = $this->getSourceFolder() . DIRECTORY_SEPARATOR;
+        $filePath .= $this->normalizePath($path) . DIRECTORY_SEPARATOR;
 
-        if ($path = \trim($path, '/')) {
-            $filePath .= $this->normalizePath($path) . DIRECTORY_SEPARATOR;
-        }
+        $filePath = \str_replace('//', '/', $filePath);
 
         return $filePath . $name . '.php';
     }

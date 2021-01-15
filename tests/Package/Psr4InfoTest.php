@@ -42,6 +42,15 @@ final class Psr4InfoTest extends TestCase
 
         $this->assertSame('OpenCodeModelingTest\\CodeAst', $psr4InfoList[3]->getPackagePrefix());
         $this->assertSame('/service/tests', $psr4InfoList[3]->getSourceFolder());
+
+        $this->assertSame(
+            '/service/src/Domain/Model/Building/Building.php',
+            $psr4InfoList[0]->getFilenameFromPathAndName('/service/src/Domain/Model/Building', 'Building')
+        );
+        $this->assertSame(
+            '/service/src/Domain/Model/Building/Building.php',
+            $psr4InfoList[0]->getFilenameFromPathAndName('Domain/Model/Building', 'Building')
+        );
     }
 
     /**
