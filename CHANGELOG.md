@@ -2,27 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.10.2 - TBD
+## 0.10.2 - 2021-01-20
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.10.2](https://github.com/open-code-modeling/php-code-ast/milestone/22)
 
-- Nothing.
+0.10.x bugfix release (patch)
 
-### Deprecated
+### 0.10.2
 
-- Nothing.
+- Total issues resolved: **2**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-### Removed
+#### bug
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [59: Fully qualified namespace not checked in note visitors](https://github.com/open-code-modeling/php-code-ast/issues/59) thanks to @sandrokeil
+ - [58: Empty collection not working](https://github.com/open-code-modeling/php-code-ast/issues/58) thanks to @sandrokeil
 
 ## 0.10.1 - 2021-01-15
 
