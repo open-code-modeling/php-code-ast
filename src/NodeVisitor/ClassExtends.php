@@ -57,7 +57,9 @@ final class ClassExtends extends NodeVisitorAbstract
 
     private function checkExtendsExists(Stmt\Class_ $node): bool
     {
-        $exists = $this->extends === (string) $node->extends;
+        $exists = $this->extends === ($node->extends instanceof Name\FullyQualified
+                ? '\\' . $node->extends->toString()
+                : (string) $node->extends);
 
         if (false === $exists && null !== $node->extends) {
             throw new LogicException(\sprintf(

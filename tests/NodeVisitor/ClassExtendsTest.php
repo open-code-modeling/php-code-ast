@@ -173,6 +173,38 @@ EOF;
     /**
      * @test
      */
+    public function it_checks_class_extends_with_fully_qualified_namespace_for_existing_file(): void
+    {
+        $code = <<<EOF
+<?php
+
+namespace My\Awesome\Service;
+
+class TestClass extends \MyBaseClass {}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
+        $nodeTraverser->addVisitor(new ClassExtends('\\MyBaseClass'));
+
+        $expected = <<<EOF
+<?php
+
+namespace My\Awesome\Service;
+
+class TestClass extends \MyBaseClass
+{
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_exception_if_multi_inheritance(): void
     {
         $code = <<<EOF
