@@ -35,6 +35,8 @@ final class ClassBuilderCollection implements Iterator, Countable
 
     private function __construct(ClassBuilder ...$classBuilders)
     {
+        $this->items = [];
+
         foreach ($classBuilders as $classBuilder) {
             $this->items[$this->identifier($classBuilder)] = $classBuilder;
         }

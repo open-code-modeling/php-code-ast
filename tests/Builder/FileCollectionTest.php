@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace OpenCodeModelingTest\CodeAst\Builder;
 
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
-use OpenCodeModeling\CodeAst\Builder\ClassBuilderCollection;
+use OpenCodeModeling\CodeAst\Builder\FileCollection;
 use PHPUnit\Framework\TestCase;
 
-final class ClassBuilderCollectionTest extends TestCase
+final class FileCollectionTest extends TestCase
 {
     /**
      * @test
@@ -22,7 +22,7 @@ final class ClassBuilderCollectionTest extends TestCase
     public function it_adds_same_class_builder_not_twice(): void
     {
         $classBuilder = ClassBuilder::fromScratch('MyClass');
-        $cut = ClassBuilderCollection::fromItems($classBuilder);
+        $cut = FileCollection::fromItems($classBuilder);
         $this->assertCount(1, $cut);
 
         $cut->add($classBuilder);
@@ -40,7 +40,7 @@ final class ClassBuilderCollectionTest extends TestCase
         $classBuilderWithoutNamespace = ClassBuilder::fromScratch('MyClass');
         $classBuilderNamespace = ClassBuilder::fromScratch('MyClass', 'MyNamespace');
 
-        $cut = ClassBuilderCollection::fromItems($classBuilderWithoutNamespace);
+        $cut = FileCollection::fromItems($classBuilderWithoutNamespace);
         $this->assertCount(1, $cut);
 
         $cut->add($classBuilderNamespace);
@@ -78,7 +78,7 @@ final class ClassBuilderCollectionTest extends TestCase
     {
         $classBuilder = ClassBuilder::fromScratch(null);
 
-        $cut = ClassBuilderCollection::fromItems($classBuilder);
+        $cut = FileCollection::fromItems($classBuilder);
         $this->assertCount(1, $cut);
 
         $items = $cut->items();
@@ -90,7 +90,7 @@ final class ClassBuilderCollectionTest extends TestCase
      */
     public function it_can_be_empty(): void
     {
-        $cut = ClassBuilderCollection::emptyList();
+        $cut = FileCollection::emptyList();
         $this->assertCount(0, $cut);
 
         $this->assertSame([], $cut->items());

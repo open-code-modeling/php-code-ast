@@ -32,6 +32,8 @@ final class FileCollection implements Iterator, Countable
 
     private function __construct(File ...$files)
     {
+        $this->items = [];
+
         foreach ($files as $file) {
             $this->items[$this->identifier($file)] = $file;
         }
