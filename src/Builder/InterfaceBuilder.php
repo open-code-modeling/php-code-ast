@@ -168,16 +168,6 @@ final class InterfaceBuilder implements File
     }
 
     /**
-     * @deprecated Use setNamespaceImports()
-     * @param string ...$namespaces
-     * @return self
-     */
-    public function setNamespaceUse(string ...$namespaces): self
-    {
-        return $this->setNamespaceImports(...$namespaces);
-    }
-
-    /**
      * Replacing will not work on existing files
      *
      * @param ClassConstBuilder ...$constants
@@ -344,15 +334,6 @@ final class InterfaceBuilder implements File
     public function getExtends(): array
     {
         return $this->extends;
-    }
-
-    /**
-     * @deprecated Use namespaceImports()
-     * @return string[]
-     */
-    public function getNamespaceUse(): array
-    {
-        return $this->namespaceImports;
     }
 
     /**

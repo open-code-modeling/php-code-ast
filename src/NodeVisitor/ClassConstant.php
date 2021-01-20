@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\NodeVisitor;
 
-use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\IdentifierGenerator;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
@@ -27,19 +26,6 @@ final class ClassConstant extends NodeVisitorAbstract
     public function __construct(IdentifierGenerator $lineGenerator)
     {
         $this->lineGenerator = $lineGenerator;
-    }
-
-    public static function forClassConstant(
-        string $constantName,
-        $constantValue,
-        int $flags = ClassConstGenerator::FLAG_PUBLIC
-    ): ClassConstant {
-        return new self(
-            new IdentifierGenerator(
-                $constantName,
-                new ClassConstGenerator($constantName, $constantValue, $flags)
-            )
-        );
     }
 
     public function afterTraverse(array $nodes): ?array

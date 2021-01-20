@@ -213,16 +213,6 @@ final class ClassBuilder implements File
     }
 
     /**
-     * @deprecated Use setNamespaceImports()
-     * @param string ...$namespaces
-     * @return self
-     */
-    public function setNamespaceUse(string ...$namespaces): self
-    {
-        return $this->setNamespaceImports(...$namespaces);
-    }
-
-    /**
      * Replacing will not work on existing files
      *
      * @param string ...$traits
@@ -272,16 +262,6 @@ final class ClassBuilder implements File
     public function hasTrait(string $trait): bool
     {
         return isset($this->traits[$trait]);
-    }
-
-    /**
-     * @deprecated Use setTraits()
-     * @param string ...$traits
-     * @return self
-     */
-    public function setUseTrait(string ...$traits): self
-    {
-        return $this->setTraits(...$traits);
     }
 
     /**
@@ -499,29 +479,11 @@ final class ClassBuilder implements File
     }
 
     /**
-     * @deprecated Use namespaceImports()
-     * @return string[]
-     */
-    public function getNamespaceUse(): array
-    {
-        return $this->namespaceImports;
-    }
-
-    /**
      * @return string[]
      */
     public function getNamespaceImports(): array
     {
         return $this->namespaceImports;
-    }
-
-    /**
-     * @deprecated Use getTraits()
-     * @return string[]
-     */
-    public function getUseTrait(): array
-    {
-        return $this->traits;
     }
 
     /**
@@ -619,16 +581,6 @@ final class ClassBuilder implements File
         \uasort($this->namespaceImports, $sort);
 
         return $this;
-    }
-
-    /**
-     * @deprecated Use sortNamespaceImports()
-     * @param callable $sort
-     * @return $this
-     */
-    public function sortNamespaceUse(callable $sort): self
-    {
-        return $this->sortNamespaceImports($sort);
     }
 
     /**

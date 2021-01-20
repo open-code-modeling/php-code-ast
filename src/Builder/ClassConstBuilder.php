@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace OpenCodeModeling\CodeAst\Builder;
 
 use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
+use OpenCodeModeling\CodeAst\Code\IdentifierGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassConstant;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
@@ -98,7 +99,12 @@ final class ClassConstBuilder
 
     public function generate(): NodeVisitor
     {
-        return ClassConstant::forClassConstant($this->name, $this->value, $this->visibility);
+        return new ClassConstant(
+            new IdentifierGenerator(
+                $this->name,
+                new ClassConstGenerator($this->name, $this->value, $this->visibility)
+            )
+        );
     }
 
     public function injectVisitors(NodeTraverser $nodeTraverser): void

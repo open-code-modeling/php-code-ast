@@ -12,6 +12,7 @@ namespace OpenCodeModelingTest\CodeAst\NodeVisitor;
 
 use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\ClassGenerator;
+use OpenCodeModeling\CodeAst\Code\IdentifierGenerator;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassConstant;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassFile;
 use OpenCodeModeling\CodeAst\NodeVisitor\ClassNamespace;
@@ -52,7 +53,14 @@ final class ClassConstantTest extends TestCase
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new StrictType());
         $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
-        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_STRING', 'string'));
+        $nodeTraverser->addVisitor(
+            new ClassConstant(
+                new IdentifierGenerator(
+                    'TYPE_STRING',
+                    new ClassConstGenerator('TYPE_STRING', 'string')
+                )
+            )
+        );
 
         $expected = <<<'EOF'
 <?php
@@ -75,7 +83,14 @@ EOF;
         $ast = $this->parser->parse('<?php class TestClass {}');
 
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_STRING', 'string', ClassConstGenerator::FLAG_PRIVATE));
+        $nodeTraverser->addVisitor(
+            new ClassConstant(
+                new IdentifierGenerator(
+                    'TYPE_STRING',
+                    new ClassConstGenerator('TYPE_STRING', 'string', ClassConstGenerator::FLAG_PRIVATE)
+                )
+            )
+        );
 
         $expected = <<<'EOF'
 <?php
@@ -100,7 +115,14 @@ EOF;
         $nodeTraverser->addVisitor(new StrictType());
         $nodeTraverser->addVisitor(new ClassNamespace('My\\Awesome\\Service'));
         $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
-        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_STRING', 'string'));
+        $nodeTraverser->addVisitor(
+            new ClassConstant(
+                new IdentifierGenerator(
+                    'TYPE_STRING',
+                    new ClassConstGenerator('TYPE_STRING', 'string')
+                )
+            )
+        );
 
         $expected = <<<'EOF'
 <?php
@@ -133,7 +155,14 @@ PHP;
         $ast = $this->parser->parse($code);
 
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_STRING', 'string', ClassConstGenerator::FLAG_PRIVATE));
+        $nodeTraverser->addVisitor(
+            new ClassConstant(
+                new IdentifierGenerator(
+                    'TYPE_STRING',
+                    new ClassConstGenerator('TYPE_STRING', 'string', ClassConstGenerator::FLAG_PRIVATE)
+                )
+            )
+        );
 
         $expected = <<<'EOF'
 <?php
@@ -162,8 +191,22 @@ EOF;
         $nodeTraverser->addVisitor(new NamespaceUse('My\\Awesome\\ServiceTrait'));
         $nodeTraverser->addVisitor(new ClassFile(new ClassGenerator('TestClass')));
         $nodeTraverser->addVisitor(new ClassUseTrait('ServiceTrait'));
-        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_STRING', 'string'));
-        $nodeTraverser->addVisitor(ClassConstant::forClassConstant('TYPE_INT', 3));
+        $nodeTraverser->addVisitor(
+            new ClassConstant(
+                new IdentifierGenerator(
+                    'TYPE_STRING',
+                    new ClassConstGenerator('TYPE_STRING', 'string')
+                )
+            )
+        );
+        $nodeTraverser->addVisitor(
+            new ClassConstant(
+                new IdentifierGenerator(
+                    'TYPE_INT',
+                    new ClassConstGenerator('TYPE_INT', 3)
+                )
+            )
+        );
 
         $expected = <<<'EOF'
 <?php
