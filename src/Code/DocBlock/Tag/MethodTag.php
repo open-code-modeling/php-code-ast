@@ -40,7 +40,7 @@ final class MethodTag extends AbstractTypeableTag
             $this->setMethodName($methodName);
         }
 
-        $this->setIsStatic((bool) $isStatic);
+        $this->setIsStatic($isStatic);
 
         parent::__construct($types, $description);
     }

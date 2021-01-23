@@ -143,7 +143,7 @@ final class MethodGenerator extends AbstractMemberGenerator
         return $this;
     }
 
-    public function getBody(): BodyGenerator
+    public function getBody(): ?BodyGenerator
     {
         return $this->body;
     }

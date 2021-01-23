@@ -41,7 +41,6 @@ final class ClassConstBuilder
         $self->name = $node->consts[0]->name->name;
 
         if ($node->consts[0]->value instanceof Node\Scalar) {
-            // @phpstan-ignore-next-line
             $self->value = $node->consts[0]->value->value;
         } else {
             // use node expression
