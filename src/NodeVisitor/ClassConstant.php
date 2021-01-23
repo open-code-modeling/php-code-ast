@@ -61,6 +61,9 @@ final class ClassConstant extends NodeVisitorAbstract
         return $newNodes;
     }
 
+    /**
+     * @param Class_|Node\Stmt\Interface_ $node
+     */
     private function checkConstantExists($node): bool
     {
         foreach ($node->stmts as $stmt) {

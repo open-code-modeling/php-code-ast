@@ -33,11 +33,11 @@
         "laminas/laminas-filter": "^2.9",
         "open-code-modeling/php-filter": "^0.1.1",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^0.12.33",
-        "phpstan/phpstan-strict-rules": "^0.12.4",
         "phpunit/phpunit": "^9.5.0",
-        "prooph/php-cs-fixer-config": "^v0.3.1",
-        "roave/security-advisories": "dev-master"
+        "prooph/php-cs-fixer-config": "^v0.4.0",
+        "psalm/plugin-phpunit": "^0.15.0",
+        "roave/security-advisories": "dev-master",
+        "vimeo/psalm": "^4.4"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -45,13 +45,13 @@
         "check": [
             "@cs",
             "@test",
-            "@analyse"
+            "@static-analysis"
         ],
-        "docheader": "vendor/bin/docheader check src/ tests/",
         "cs": "php-cs-fixer fix -v --diff --dry-run",
         "cs-fix": "php-cs-fixer fix -v --diff",
-        "test": "vendor/bin/phpunit",
-        "analyse": "php vendor/bin/phpstan.phar analyse --no-interaction"
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "static-analysis": "psalm --shepherd --stats"
     },
     "config": {
         "sort-packages": true,
