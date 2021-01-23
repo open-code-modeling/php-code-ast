@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace OpenCodeModeling\CodeAst\NodeVisitor;
 
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
@@ -74,7 +75,9 @@ final class ClassImplements extends NodeVisitorAbstract
                     if ($stmt instanceof Stmt\Class_) {
                         foreach ($stmt->implements as $implementName) {
                             $implements = \array_filter($implements, static function (string $implement) use ($implementName) {
-                                return $implement !== (string) $implementName;
+                                return $implement !== ($implementName instanceof FullyQualified
+                                    ? '\\' . $implementName->toString()
+                                    : (string) $implementName);
                             });
                         }
                     }

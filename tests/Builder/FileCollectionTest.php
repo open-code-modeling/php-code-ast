@@ -84,4 +84,15 @@ final class FileCollectionTest extends TestCase
         $items = $cut->items();
         $this->assertArrayHasKey(\spl_object_hash($classBuilder), $items);
     }
+
+    /**
+     * @test
+     */
+    public function it_can_be_empty(): void
+    {
+        $cut = FileCollection::emptyList();
+        $this->assertCount(0, $cut);
+
+        $this->assertSame([], $cut->items());
+    }
 }

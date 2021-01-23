@@ -73,7 +73,9 @@ final class ClassUseTrait extends NodeVisitorAbstract
                                 foreach ($classStmt->traits as $trait) {
                                     $useTraits = \array_filter($useTraits,
                                         static function (string $implement) use ($trait) {
-                                            return $implement !== (string) $trait;
+                                            return $implement !== ($trait instanceof Name\FullyQualified
+                                                ? '\\' . $trait->toString()
+                                                : (string) $trait);
                                         });
                                 }
                             }

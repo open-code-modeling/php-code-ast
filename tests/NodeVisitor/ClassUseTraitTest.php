@@ -43,7 +43,7 @@ final class ClassUseTraitTest extends TestCase
         $ast = $this->parser->parse($this->classCode());
 
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new ClassUseTrait('MyService\Foo', 'MyService\Bar'));
+        $nodeTraverser->addVisitor(new ClassUseTrait('\MyService\Foo', 'MyService\Bar', 'MyService\FooBar'));
 
         $this->assertSame($this->expectedClassCode(), $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
     }
@@ -59,7 +59,8 @@ final class ClassUseTraitTest extends TestCase
 
         class TestClass
         {
-            use MyService\Foo;
+            use \MyService\Foo;
+            use MyService\FooBar;
 
             public function testMethod()
             {
@@ -79,7 +80,8 @@ final class ClassUseTraitTest extends TestCase
         class TestClass
         {
             use MyService\Bar;
-            use MyService\Foo;
+            use \MyService\Foo;
+            use MyService\FooBar;
             public function testMethod()
             {
             }

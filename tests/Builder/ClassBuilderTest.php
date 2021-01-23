@@ -76,6 +76,7 @@ final class TestClass extends BaseClass implements \Iterator, Bar
 EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse($expected))));
     }
 
     /**
