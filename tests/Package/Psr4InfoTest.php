@@ -329,7 +329,7 @@ final class Psr4InfoTest extends TestCase
      * @dataProvider providerForGetFullyQualifiedClassNameFromFilename
      * @covers       \OpenCodeModeling\CodeAst\Package\Psr4Info::getFullyQualifiedClassNameFromFilename
      */
-    public function it_returns_fqcn_from_filename($expected, $sourceFolder, $packagePrefix, $filename): void
+    public function it_returns_fqcn_from_filename($expectedFqcn, $expectedClassNamespace, $expectedClassName, $sourceFolder, $packagePrefix, $filename): void
     {
         $psr4Info = new Psr4Info(
             $sourceFolder,
@@ -338,7 +338,11 @@ final class Psr4InfoTest extends TestCase
             $this->filterNamespaceToDirectory()
         );
 
-        self::assertSame($expected, $psr4Info->getFullyQualifiedClassNameFromFilename($filename));
+        $fqcn = $psr4Info->getFullyQualifiedClassNameFromFilename($filename);
+
+        self::assertSame($expectedFqcn, $fqcn);
+        self::assertSame($expectedClassNamespace, $psr4Info->getClassNamespace($fqcn));
+        self::assertSame($expectedClassName, $psr4Info->getClassName($fqcn));
     }
 
     /**
@@ -351,12 +355,16 @@ final class Psr4InfoTest extends TestCase
         return [
             [
                 'MyVendor\MyPackage\ModelPath\UserPath\User',
+                'MyVendor\MyPackage\ModelPath\UserPath',
+                'User',
                 'src',
                 '\MyVendor\MyPackage\\',
                 'src/ModelPath/UserPath/User.php',
             ],
             [
                 'MyVendor\MyPackage\ModelPath\UserPath\User',
+                'MyVendor\MyPackage\ModelPath\UserPath',
+                'User',
                 'src',
                 '\MyVendor\MyPackage\\',
                 'src/ModelPath/UserPath/User',

@@ -24,6 +24,25 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 0.10.3 - 2021-01-29
+
+
+-----
+
+### Release Notes for [0.10.3](https://github.com/open-code-modeling/php-code-ast/milestone/23)
+
+0.10.x bugfix release (patch)
+
+### 0.10.3
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
+
+#### bug
+
+ - [63: Fix invalid class namespace](https://github.com/open-code-modeling/php-code-ast/issues/63) thanks to @sandrokeil
+
 ## 0.10.2 - 2021-01-20
 
 
