@@ -86,9 +86,8 @@ final class Psr4Info implements ClassInfo
     public function getClassNamespace(string $fcqn): string
     {
         $namespace = $this->normalizeNamespace($fcqn);
-        $namespace = \substr($namespace, 0, \strrpos($namespace, '/'));
 
-        return $this->normalizeNamespace($this->getPackagePrefix() . '\\' . $namespace);
+        return \substr($namespace, 0, \strrpos($namespace, '\\'));
     }
 
     public function getClassName(string $fqcn): string
