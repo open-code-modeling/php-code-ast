@@ -64,6 +64,9 @@ final class ClassBuilder implements File
     /** @var ClassMethodBuilder[] */
     private array $methods = [];
 
+    /** @var NodeVisitor[] */
+    private array $nodeVisitors = [];
+
     private function __construct()
     {
     }
@@ -414,6 +417,18 @@ final class ClassBuilder implements File
         return isset($this->methods[$methodName]);
     }
 
+    public function setNodeVisitors(NodeVisitor ...$nodeVisitors): void
+    {
+        $this->nodeVisitors = $nodeVisitors;
+    }
+
+    public function addNodeVisitor(NodeVisitor ...$nodeVisitors): void
+    {
+        foreach ($nodeVisitors as $nodeVisitor) {
+            $this->nodeVisitors[] = $nodeVisitor;
+        }
+    }
+
     public function getNamespace(): ?string
     {
         return $this->namespace;
@@ -649,7 +664,7 @@ final class ClassBuilder implements File
             );
         }
 
-        return $visitors;
+        return \array_merge($visitors, $this->nodeVisitors);
     }
 
     private function unpackNode(Node $node): void

@@ -12,7 +12,11 @@ namespace OpenCodeModelingTest\CodeAst\Builder;
 
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassConstBuilder;
+use OpenCodeModeling\CodeAst\Builder\ClassMethodBuilder;
+use PhpParser\Node;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
+use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
@@ -461,5 +465,76 @@ EOF;
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_adding_of_node_visitors(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory->setMethods(
+            ClassMethodBuilder::fromScratch('setActive')->setReturnType('void')->setStatic(true)
+        );
+
+        $classFactory->addNodeVisitor($this->getSetActiveNodeVisitor());
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public static function setActive() : void
+    {
+        $tmp = $this->get();
+    }
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    private function getSetActiveNodeVisitor(): NodeVisitor
+    {
+        $nodes = $this->parser->parse('<?php $tmp = $this->get();');
+
+        return new class($nodes) extends NodeVisitorAbstract {
+            private $nodes;
+
+            public function __construct($nodes)
+            {
+                $this->nodes = $nodes;
+            }
+
+            public function afterTraverse(array $nodes)
+            {
+                $newNodes = [];
+
+                foreach ($nodes as $node) {
+                    $newNodes[] = $node;
+
+                    if (! $node instanceof Node\Stmt\Class_) {
+                        continue;
+                    }
+
+                    if ($node->stmts[0] instanceof Node\Stmt\ClassMethod
+                        && $node->stmts[0]->name instanceof Node\Identifier
+                        && $node->stmts[0]->name->name === 'setActive'
+                    ) {
+                        $node->stmts[0]->stmts = $this->nodes;
+                    }
+                }
+
+                return $newNodes;
+            }
+        };
     }
 }

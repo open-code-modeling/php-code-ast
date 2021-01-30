@@ -47,6 +47,9 @@ final class InterfaceBuilder implements File
     /** @var ClassMethodBuilder[] */
     private array $methods = [];
 
+    /** @var NodeVisitor[] */
+    private array $nodeVisitors = [];
+
     private function __construct()
     {
     }
@@ -265,6 +268,18 @@ final class InterfaceBuilder implements File
         return isset($this->methods[$methodName]);
     }
 
+    public function setNodeVisitors(NodeVisitor ...$nodeVisitors): void
+    {
+        $this->nodeVisitors = $nodeVisitors;
+    }
+
+    public function addNodeVisitor(NodeVisitor ...$nodeVisitors): void
+    {
+        foreach ($nodeVisitors as $nodeVisitor) {
+            $this->nodeVisitors[] = $nodeVisitor;
+        }
+    }
+
     /**
      * Uses uasort internally
      *
@@ -402,7 +417,7 @@ final class InterfaceBuilder implements File
             );
         }
 
-        return $visitors;
+        return \array_merge($visitors, $this->nodeVisitors);
     }
 
     private function unpackNode(Node $node): void
