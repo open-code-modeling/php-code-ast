@@ -10,6 +10,8 @@ $ composer require open-code-modeling/php-code-ast --dev
 
 ## Usage
 
+> See unit tests in `tests` folder for comprehensive examples.
+
 Let's start with a straightforward example of generating a class with the `ClassFactory`:
 
 ```php
