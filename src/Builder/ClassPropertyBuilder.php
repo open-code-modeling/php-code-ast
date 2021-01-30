@@ -28,7 +28,7 @@ final class ClassPropertyBuilder
     private ?string $type;
 
     /** @var mixed */
-    private $defaultValue;
+    private $defaultValue = null;
 
     /**
      * @var int

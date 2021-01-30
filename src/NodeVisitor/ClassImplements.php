@@ -21,7 +21,7 @@ final class ClassImplements extends NodeVisitorAbstract
     /**
      * @var string[]
      */
-    private $implements;
+    private array $implements;
 
     public function __construct(string ...$implements)
     {
