@@ -2,27 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.11.0 - TBD
+## 0.11.0 - 2021-01-30
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.11.0](https://github.com/open-code-modeling/php-code-ast/milestone/21)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 0.11.0
 
-- Nothing.
+- Total issues resolved: **4**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-### Removed
+#### enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [66: Generate code from file collection with current file AST support](https://github.com/open-code-modeling/php-code-ast/issues/66) thanks to @sandrokeil
+ - [65: Support custom node visitors in class and interface builder](https://github.com/open-code-modeling/php-code-ast/issues/65) thanks to @sandrokeil
+ - [61: Switch from PHPStan to Psalm](https://github.com/open-code-modeling/php-code-ast/issues/61) thanks to @sandrokeil
+ - [55: Remove deprecated methods and static node visitor methods in favour of high level API](https://github.com/open-code-modeling/php-code-ast/issues/55) thanks to @sandrokeil
 
 ## 0.10.3 - 2021-01-29
 
