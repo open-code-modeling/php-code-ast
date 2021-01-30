@@ -52,7 +52,12 @@ final class FileCodeGenerator
         $files = [];
 
         if ($currentFileAst === null) {
-            $currentFileAst = static function (File $file, ClassInfo $classInfo) {
+            /**
+             * @param File $file
+             * @param ClassInfo $classInfo
+             * @return \PhpParser\Node\Stmt[]
+             */
+            $currentFileAst = static function (File $file, ClassInfo $classInfo): array {
                 return [];
             };
         }
@@ -93,7 +98,7 @@ final class FileCodeGenerator
         callable $skip = null
     ): void {
         if ($skip === null) {
-            $skip = static function (ClassBuilder $classBuilder) {
+            $skip = static function (ClassBuilder $classBuilder): bool {
                 return false;
             };
         }
@@ -106,7 +111,8 @@ final class FileCodeGenerator
                 $methodName = ($methodNameFilter)($classPropertyBuilder->getName());
 
                 if (true === ($skip)($classBuilder)
-                    || $classBuilder->hasMethod($methodName)) {
+                    || $classBuilder->hasMethod($methodName)
+                ) {
                     continue 2;
                 }
                 $classBuilder->addMethod(
@@ -136,7 +142,7 @@ final class FileCodeGenerator
         int $visibility = ClassConstGenerator::FLAG_PUBLIC
     ): void {
         if ($skip === null) {
-            $skip = static function (ClassBuilder $classBuilder) {
+            $skip = static function (ClassBuilder $classBuilder): bool {
                 return false;
             };
         }
@@ -149,7 +155,8 @@ final class FileCodeGenerator
                 $constantName = ($constantNameFilter)($classPropertyBuilder->getName());
 
                 if (true === ($skip)($classBuilder)
-                    || $classBuilder->hasConstant($constantName)) {
+                    || $classBuilder->hasConstant($constantName)
+                ) {
                     continue 2;
                 }
                 $classBuilder->addConstant(
