@@ -43,11 +43,13 @@ final class FileCodeGenerator
      *
      * @param FileCollection $fileCollection
      * @param callable|null $currentFileAst Callable to return current file AST, if null, file will be overwritten
+     * @param callable|null $applyCodeStyle Apply additional code style
      * @return array<string, string> List of filename => code
      */
     public function generateFiles(
         FileCollection $fileCollection,
-        callable $currentFileAst = null
+        callable $currentFileAst = null,
+        callable $applyCodeStyle = null
     ): array {
         $files = [];
 
@@ -60,6 +62,10 @@ final class FileCodeGenerator
             $currentFileAst = static function (File $file, ClassInfo $classInfo): array {
                 return [];
             };
+        }
+
+        if ($applyCodeStyle === null) {
+            $applyCodeStyle = static fn (string $code) => $code;
         }
 
         $previousNamespace = '__invalid//namespace__';
@@ -75,9 +81,9 @@ final class FileCodeGenerator
             $nodeTraverser = new NodeTraverser();
             $classBuilder->injectVisitors($nodeTraverser, $this->parser);
 
-            $files[$filename] = $this->printer->prettyPrintFile(
+            $files[$filename] = ($applyCodeStyle)($this->printer->prettyPrintFile(
                 $nodeTraverser->traverse($currentFileAst($classBuilder, $classInfo))
-            );
+            ));
         }
 
         return $files;
