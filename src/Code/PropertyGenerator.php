@@ -59,7 +59,6 @@ final class PropertyGenerator extends AbstractMemberGenerator
     public function __construct(
         string $name = null,
         string $type = null,
-        $defaultValue = null,
         bool $typed = true,
         int $flags = self::FLAG_PRIVATE
     ) {
@@ -69,10 +68,6 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
         if (null !== $type) {
             $this->setType($type);
-        }
-
-        if (null !== $defaultValue) {
-            $this->setDefaultValue($defaultValue);
         }
 
         $this->typed = $typed;
@@ -117,19 +112,16 @@ final class PropertyGenerator extends AbstractMemberGenerator
     }
 
     /**
-     * @param ValueGenerator|mixed $defaultValue
-     * @param string $defaultValueType
+     * Set the default value of the parameter.
      *
+     * @param  ValueGenerator|mixed $defaultValue
      * @return PropertyGenerator
      */
-    public function setDefaultValue(
-        $defaultValue,
-        $defaultValueType = ValueGenerator::TYPE_AUTO
-    ): self {
+    public function setDefaultValue($defaultValue): self
+    {
         if (! $defaultValue instanceof ValueGenerator) {
-            $defaultValue = new ValueGenerator($defaultValue, $defaultValueType);
+            $defaultValue = new ValueGenerator($defaultValue);
         }
-
         $this->defaultValue = $defaultValue;
 
         return $this;

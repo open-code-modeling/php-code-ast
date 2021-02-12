@@ -53,6 +53,8 @@ final class ClassPropertyBuilder
      */
     private ?DocBlock $docBlock = null;
 
+    private PropertyGenerator $propertyGenerator;
+
     private function __construct()
     {
     }
@@ -60,7 +62,6 @@ final class ClassPropertyBuilder
     public static function fromNode(Node\Stmt\Property $node, bool $typed = true): self
     {
         $self = new self();
-
         $type = null;
 
         switch (true) {
@@ -76,10 +77,33 @@ final class ClassPropertyBuilder
         }
 
         $self->name = $node->props[0]->name->name;
-        $self->defaultValue = $node->props[0]->default;
         $self->type = $type;
         $self->visibility = $node->flags;
         $self->typed = $typed;
+        $self->propertyGenerator = new PropertyGenerator($self->name, $self->type);
+
+        $defaultValue = $node->props[0]->default;
+
+        switch (true) {
+            case $defaultValue instanceof Node\Expr\ConstFetch:
+                $self->defaultValue = $defaultValue->name->toString();
+
+                if ($self->defaultValue === 'null') {
+                    $self->defaultValue = null;
+                }
+                $self->propertyGenerator->setDefaultValue($self->defaultValue);
+                break;
+            case $defaultValue instanceof Node\Expr\ClassConstFetch:
+                $self->defaultValue = $defaultValue->class->toString() . '::'.  $defaultValue->name->toString();
+                $self->propertyGenerator->setDefaultValue($self->defaultValue);
+                break;
+            default:
+                if ($defaultValue !== null) {
+                    $self->defaultValue = $defaultValue;
+                    $self->propertyGenerator->setDefaultValue($self->defaultValue);
+                }
+                break;
+        }
 
         $comments = $node->getAttribute('comments');
 
@@ -105,6 +129,7 @@ final class ClassPropertyBuilder
         $self->type = $type;
         $self->typed = $typed;
         $self->visibility = ClassConstGenerator::FLAG_PRIVATE;
+        $self->propertyGenerator = new PropertyGenerator($self->name, $self->type);
 
         return $self;
     }
@@ -203,6 +228,20 @@ final class ClassPropertyBuilder
         return $this;
     }
 
+    /**
+     * @param mixed $defaultValue
+     */
+    public function setDefaultValue($defaultValue): void
+    {
+        $this->defaultValue = $defaultValue;
+        $this->propertyGenerator->setDefaultValue($this->defaultValue);
+    }
+
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
     public function generate(): NodeVisitor
     {
         return new Property($this->propertyGenerator());
@@ -211,14 +250,12 @@ final class ClassPropertyBuilder
     private function propertyGenerator(): PropertyGenerator
     {
         $flags = $this->visibility;
+        $this->propertyGenerator->setFlags($flags);
+        $this->propertyGenerator->setDocBlockComment($this->docBlockComment);
+        $this->propertyGenerator->setTypeDocBlockHint($this->typeDocBlockHint);
+        $this->propertyGenerator->overrideDocBlock($this->docBlock);
 
-        $propertyGenerator = new PropertyGenerator($this->name, $this->type, $this->defaultValue, $this->typed, $flags);
-
-        $propertyGenerator->setDocBlockComment($this->docBlockComment);
-        $propertyGenerator->setTypeDocBlockHint($this->typeDocBlockHint);
-        $propertyGenerator->overrideDocBlock($this->docBlock);
-
-        return $propertyGenerator;
+        return $this->propertyGenerator;
     }
 
     public function injectVisitors(NodeTraverser $nodeTraverser): void

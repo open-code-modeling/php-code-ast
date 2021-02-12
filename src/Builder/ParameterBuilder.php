@@ -41,6 +41,8 @@ final class ParameterBuilder
      */
     private ?string $typeDocBlockHint = null;
 
+    private ParameterGenerator $parameterGenerator;
+
     private function __construct()
     {
     }
@@ -66,19 +68,40 @@ final class ParameterBuilder
         $self->type = $type;
         $self->variadic = $node->variadic;
         $self->passedByReference = $node->byRef;
+        $self->parameterGenerator = new ParameterGenerator($self->name, $self->type);
+
+        $defaultValue = $node->default;
+
+        switch (true) {
+            case $defaultValue instanceof Node\Expr\ConstFetch:
+                $self->defaultValue = $defaultValue->name->toString();
+
+                if ($self->defaultValue === 'null') {
+                    $self->defaultValue = null;
+                }
+                $self->parameterGenerator->setDefaultValue($self->defaultValue);
+                break;
+            case $defaultValue instanceof Node\Expr\ClassConstFetch:
+                $self->defaultValue = $defaultValue->class->toString() . '::'.  $defaultValue->name->toString();
+                $self->parameterGenerator->setDefaultValue($self->defaultValue);
+                break;
+            default:
+                if ($defaultValue !== null) {
+                    $self->defaultValue = $defaultValue;
+                    $self->parameterGenerator->setDefaultValue($self->defaultValue);
+                }
+                break;
+        }
 
         return $self;
     }
 
-    public static function fromScratch(
-        string $name,
-        ?string $type = null,
-        $defaultValue = null
-    ): self {
+    public static function fromScratch(string $name, ?string $type = null): self
+    {
         $self = new self();
         $self->name = $name;
         $self->type = $type;
-        $self->defaultValue = $defaultValue;
+        $self->parameterGenerator = new ParameterGenerator($self->name, $self->type);
 
         return $self;
     }
@@ -112,6 +135,7 @@ final class ParameterBuilder
     public function setDefaultValue($defaultValue): self
     {
         $this->defaultValue = $defaultValue;
+        $this->parameterGenerator->setDefaultValue($this->defaultValue);
 
         return $this;
     }
@@ -166,11 +190,10 @@ final class ParameterBuilder
 
     public function generate(): ParameterGenerator
     {
-        $methodGenerator = new ParameterGenerator($this->name, $this->type, $this->defaultValue, $this->passedByReference);
+        $this->parameterGenerator->setPassedByReference($this->passedByReference);
+        $this->parameterGenerator->setTypeDocBlockHint($this->typeDocBlockHint);
+        $this->parameterGenerator->setVariadic($this->variadic);
 
-        $methodGenerator->setTypeDocBlockHint($this->typeDocBlockHint);
-        $methodGenerator->setVariadic($this->variadic);
-
-        return $methodGenerator;
+        return $this->parameterGenerator;
     }
 }

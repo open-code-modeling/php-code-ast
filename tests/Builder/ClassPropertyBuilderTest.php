@@ -12,6 +12,7 @@ namespace OpenCodeModelingTest\CodeAst\Builder;
 
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassPropertyBuilder;
+use OpenCodeModeling\CodeAst\Code\PropertyGenerator;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -204,6 +205,34 @@ EOF;
 
         $nodeTraverser = new NodeTraverser();
         $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_property_with_default_value_from_node(): void
+    {
+        $classBuilder = ClassBuilder::fromScratch('TestClass');
+        $classBuilder->addProperty(
+            ClassPropertyBuilder::fromNode(
+                (new PropertyGenerator('recordData', 'array'))->setDefaultValue(null)->generate()
+            )
+        );
+
+        $nodeTraverser = new NodeTraverser();
+        $classBuilder->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+class TestClass
+{
+    private array $recordData = null;
+}
+EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }

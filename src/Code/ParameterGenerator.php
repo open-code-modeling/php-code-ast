@@ -55,22 +55,17 @@ final class ParameterGenerator
     /**
      * @param string $name
      * @param string|null $type
-     * @param mixed $defaultValue
      * @param bool $passByReference
      */
     public function __construct(
         string $name,
         string $type = null,
-        $defaultValue = null,
         bool $passByReference = false
     ) {
         $this->setName($name);
 
         if (null !== $type) {
             $this->setType($type);
-        }
-        if (null !== $defaultValue) {
-            $this->setDefaultValue($defaultValue);
         }
         if (false !== $passByReference) {
             $this->setPassedByReference(true);
@@ -110,8 +105,6 @@ final class ParameterGenerator
 
     /**
      * Set the default value of the parameter.
-     *
-     * Certain variables are difficult to express
      *
      * @param  ValueGenerator|mixed $defaultValue
      * @return ParameterGenerator
