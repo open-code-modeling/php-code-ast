@@ -412,4 +412,37 @@ EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }
+
+    /**
+     * @test
+     */
+    public function it_generates_method_with_args_and_default_value(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $methodBuilder = ClassMethodBuilder::fromScratch('setActive')->setReturnType('void');
+        $methodBuilder->setParameters(ParameterBuilder::fromScratch('active', 'bool')->setDefaultValue(null));
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory->setMethods($methodBuilder);
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public function setActive(bool $active = null) : void
+    {
+    }
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
 }

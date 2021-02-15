@@ -80,7 +80,7 @@ final class ClassPropertyBuilder
         $self->type = $type;
         $self->visibility = $node->flags;
         $self->typed = $typed;
-        $self->propertyGenerator = new PropertyGenerator($self->name, $self->type);
+        $self->propertyGenerator = new PropertyGenerator($self->name, $self->type, $typed);
 
         $defaultValue = $node->props[0]->default;
 
@@ -129,7 +129,7 @@ final class ClassPropertyBuilder
         $self->type = $type;
         $self->typed = $typed;
         $self->visibility = ClassConstGenerator::FLAG_PRIVATE;
-        $self->propertyGenerator = new PropertyGenerator($self->name, $self->type);
+        $self->propertyGenerator = new PropertyGenerator($self->name, $self->type, $typed);
 
         return $self;
     }
