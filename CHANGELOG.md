@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.12.1 - TBD
+## 0.12.1 - 2021-02-15
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.12.1](https://github.com/open-code-modeling/php-code-ast/milestone/27)
 
-- Nothing.
+0.12.x bugfix release (patch)
 
-### Deprecated
+### 0.12.1
 
-- Nothing.
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
 
-### Removed
+#### bug
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [69: ClassPropertyBuilder with typed=false not working](https://github.com/open-code-modeling/php-code-ast/issues/69) thanks to @sandrokeil
 
 ## 0.12.0 - 2021-02-12
 
