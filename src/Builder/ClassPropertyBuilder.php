@@ -148,6 +148,8 @@ final class ClassPropertyBuilder
     {
         $this->typed = $typed;
 
+        $this->propertyGenerator->setTyped($typed);
+
         return $this;
     }
 

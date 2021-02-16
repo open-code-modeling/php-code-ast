@@ -5,14 +5,14 @@ PHP code generation based on AST.
 ## Installation
 
 ```bash
-$ composer require open-code-modeling/php-code-ast --dev
+$ composer require open-code-modeling/php-code-ast
 ```
 
 ## Usage
 
 > See unit tests in `tests` folder for comprehensive examples.
 
-Let's start with a straightforward example of generating a class with the `ClassFactory`:
+Let's start with a straightforward example of generating a class with the `ClassBuilder`:
 
 ```php
 <?php
@@ -22,8 +22,8 @@ $printer = new PhpParser\PrettyPrinter\Standard(['shortArraySyntax' => true]);
 
 $ast = $parser->parse('');
 
-$classFactory = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
-$classFactory
+$classBuilder = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+$classBuilder
     ->setFinal(true)
     ->setExtends('BaseClass')
     ->setNamespaceImports('Foo\\Bar')
@@ -31,7 +31,7 @@ $classFactory
 
 $nodeTraverser = new PhpParser\NodeTraverser();
 
-$classFactory->injectVisitors($nodeTraverser, $parser);
+$classBuilder->injectVisitors($nodeTraverser, $parser);
 
 print_r($printer->prettyPrintFile($nodeTraverser->traverse($ast)));
 ```
@@ -93,12 +93,15 @@ Now, change the body of the `toInt()` method to something else. You will see tha
 
 ### Reverse usage
 
-It is also possible to create a factory class from parsed PHP AST. You can create an instance of `OpenCodeModeling\CodeAst\Factory\ClassFactory` by 
-calling `OpenCodeModeling\CodeAst\Factory\ClassFactory::fromNodes()`.
+It is also possible to create a factory class from parsed PHP AST. You can create an instance of 
+`OpenCodeModeling\CodeAst\Builder\ClassBuilder` by calling `OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromNodes()`.
 
 ```php
 <?php
-        $expected = <<<'EOF'
+$parser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::ONLY_PHP7);
+$printer = new PhpParser\PrettyPrinter\Standard(['shortArraySyntax' => true]);
+
+$expected = <<<'EOF'
 <?php
 
 declare (strict_types=1);
@@ -114,12 +117,11 @@ EOF;
 
 $ast = $parser->parse($expected);
 
-$classFactory = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromNodes(...$ast);
+$classBuilder = OpenCodeModeling\CodeAst\Builder\ClassBuilder::fromNodes(...$ast);
 
-$classFactory->getName(); // TestClass
-$classFactory->getExtends(); // BaseClass
-$classFactory->isFinal(); // true
-$classFactory->isStrict(); // true
-$classFactory->isAbstract(); // false
-
+$classBuilder->getName(); // TestClass
+$classBuilder->getExtends(); // BaseClass
+$classBuilder->isFinal(); // true
+$classBuilder->isStrict(); // true
+$classBuilder->isAbstract(); // false
 ```
