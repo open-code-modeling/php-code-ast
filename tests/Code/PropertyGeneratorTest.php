@@ -41,7 +41,8 @@ final class PropertyGeneratorTest extends TestCase
      */
     public function it_generates_property_with_doc_block(): void
     {
-        $property = new PropertyGenerator('sourceFolder', 'string', false);
+        $property = new PropertyGenerator('sourceFolder', 'string');
+        $property->setTyped(false);
         $property->setDocBlockComment('source folder');
 
         $expectedOutput = <<<'EOF'
@@ -63,7 +64,8 @@ EOF;
      */
     public function it_generates_property_with_overridden_doc_block(): void
     {
-        $property = new PropertyGenerator('sourceFolder', 'string', false);
+        $property = new PropertyGenerator('sourceFolder', 'string', true);
+        $property->setTyped(false);
         $property->setDocBlockComment('source folder');
         $property->overrideDocBlock(new DocBlock('Awesome'));
 

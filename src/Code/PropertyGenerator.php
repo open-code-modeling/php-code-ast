@@ -147,6 +147,18 @@ final class PropertyGenerator extends AbstractMemberGenerator
         return $this;
     }
 
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
+    }
+
+    public function isTyped(): bool
+    {
+        return $this->typed;
+    }
+
     public function generate(): Property
     {
         return new Property(

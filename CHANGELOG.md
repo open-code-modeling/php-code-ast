@@ -24,6 +24,25 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 0.12.2 - 2021-02-16
+
+
+-----
+
+### Release Notes for [0.12.2](https://github.com/open-code-modeling/php-code-ast/milestone/29)
+
+0.12.x bugfix release (patch)
+
+### 0.12.2
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
+
+#### bug
+
+ - [71: Typed is not considered via setTyped() method in ClassPropertyBuilder](https://github.com/open-code-modeling/php-code-ast/issues/71) thanks to @sandrokeil
+
 ## 0.12.1 - 2021-02-15
 
 
