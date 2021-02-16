@@ -41,7 +41,7 @@ final class PropertyGeneratorTest extends TestCase
      */
     public function it_generates_property_with_doc_block(): void
     {
-        $property = new PropertyGenerator('sourceFolder', 'string');
+        $property = new PropertyGenerator('sourceFolder', 'string', false);
         $property->setDocBlockComment('source folder');
 
         $expectedOutput = <<<'EOF'
@@ -52,7 +52,7 @@ final class PropertyGeneratorTest extends TestCase
  *
  * @var string
  */
-private string $sourceFolder;
+private $sourceFolder;
 EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$property->generate()]));
@@ -63,7 +63,7 @@ EOF;
      */
     public function it_generates_property_with_overridden_doc_block(): void
     {
-        $property = new PropertyGenerator('sourceFolder', 'string');
+        $property = new PropertyGenerator('sourceFolder', 'string', false);
         $property->setDocBlockComment('source folder');
         $property->overrideDocBlock(new DocBlock('Awesome'));
 
@@ -73,7 +73,7 @@ EOF;
 /**
  * Awesome
  */
-private string $sourceFolder;
+private $sourceFolder;
 EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$property->generate()]));

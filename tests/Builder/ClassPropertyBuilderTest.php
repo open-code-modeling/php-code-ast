@@ -45,7 +45,7 @@ final class ClassPropertyBuilderTest extends TestCase
         $ast = $this->parser->parse('');
 
         $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
-        $classFactory->setProperties(ClassPropertyBuilder::fromScratch('aggregateId', 'string'));
+        $classFactory->setProperties(ClassPropertyBuilder::fromScratch('aggregateId', 'string', false));
 
         $this->assertTrue($classFactory->hasProperty('aggregateId'));
 
@@ -60,7 +60,10 @@ namespace My\Awesome\Service;
 
 class TestClass
 {
-    private string $aggregateId;
+    /**
+     * @var string
+     */
+    private $aggregateId;
 }
 EOF;
 
