@@ -10,9 +10,11 @@ declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Code;
 
+use OpenCodeModeling\CodeAst\Code\BodyGenerator;
 use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
 use OpenCodeModeling\CodeAst\Code\MethodGenerator;
 use OpenCodeModeling\CodeAst\Code\ParameterGenerator;
+use OpenCodeModeling\CodeAst\Exception\RuntimeException;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
@@ -261,5 +263,27 @@ public function setType(string $type, ?int $value);
 EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_catches_body_parse_errors_and_throws_runtime_exception(): void
+    {
+        $method = new MethodGenerator(
+            'setType',
+            [
+                new ParameterGenerator('type', '?string'),
+            ],
+            MethodGenerator::FLAG_PUBLIC,
+            new BodyGenerator($this->parser, '$test=1; error=true')
+        );
+        $method->setTyped(true);
+        $method->setReturnType('void');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not generate method "setType" due the following error');
+
+        $this->printer->prettyPrintFile([$method->generate()]);
     }
 }

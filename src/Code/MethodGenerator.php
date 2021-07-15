@@ -15,6 +15,7 @@ use OpenCodeModeling\CodeAst\Code\DocBlock\Tag\ParamTag;
 use OpenCodeModeling\CodeAst\Code\DocBlock\Tag\ReturnTag;
 use OpenCodeModeling\CodeAst\Exception;
 use PhpParser\Comment\Doc;
+use PhpParser\Error;
 use PhpParser\Node\Stmt\ClassMethod;
 
 /**
@@ -215,21 +216,33 @@ final class MethodGenerator extends AbstractMemberGenerator
 
     public function generate(): ClassMethod
     {
-        return new ClassMethod(
-            $this->getName(),
-            [
-                'flags' => $this->flags,
-                'params' => \array_map(
-                    static function (ParameterGenerator $parameter) {
-                        return $parameter->generate();
-                    },
-                    $this->getParameters()
+        try {
+            return new ClassMethod(
+                $this->getName(),
+                [
+                    'flags' => $this->flags,
+                    'params' => \array_map(
+                        static function (ParameterGenerator $parameter) {
+                            return $parameter->generate();
+                        },
+                        $this->getParameters()
+                    ),
+                    'stmts' => $this->body ? $this->body->generate() : null,
+                    'returnType' => $this->returnType ? $this->returnType->generate() : null,
+                ],
+                $this->generateAttributes()
+            );
+        } catch (Error $e) {
+            throw new Exception\RuntimeException(
+                \sprintf(
+                    'Could not generate method "%s" due the following error: %s',
+                    $this->getName(),
+                    $e->getMessage()
                 ),
-                'stmts' => $this->body ? $this->body->generate() : null,
-                'returnType' => $this->returnType ? $this->returnType->generate() : null,
-            ],
-            $this->generateAttributes()
-        );
+                (int) $e->getCode(),
+                $e
+            );
+        }
     }
 
     private function generateAttributes(): array
