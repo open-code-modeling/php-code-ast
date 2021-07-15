@@ -144,6 +144,15 @@ final class ClassPropertyBuilder
         return $this->type;
     }
 
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        $this->propertyGenerator->setType($type);
+
+        return $this;
+    }
+
     public function setTyped(bool $typed): self
     {
         $this->typed = $typed;

@@ -19,6 +19,8 @@ use PhpParser\NodeVisitorAbstract;
 
 final class Property extends NodeVisitorAbstract
 {
+    use FindInsertPositionForType;
+
     /**
      * @var PropertyGenerator
      **/
@@ -42,14 +44,24 @@ final class Property extends NodeVisitorAbstract
                         if ($this->checkPropertyExists($stmt)) {
                             return null;
                         }
-                        $stmt->stmts[] = $this->propertyGenerator->generate();
+                        \array_splice(
+                            $stmt->stmts,
+                            $this->findInsertPositionForType($stmt->stmts, Node\Stmt\Property::class),
+                            0,
+                            [$this->propertyGenerator->generate()]
+                        );
                     }
                 }
             } elseif ($node instanceof Stmt\Class_) {
                 if ($this->checkPropertyExists($node)) {
                     return null;
                 }
-                $node->stmts[] = $this->propertyGenerator->generate();
+                \array_splice(
+                    $node->stmts,
+                    $this->findInsertPositionForType($node->stmts, Node\Stmt\Property::class),
+                    0,
+                    [$this->propertyGenerator->generate()]
+                );
             }
         }
 

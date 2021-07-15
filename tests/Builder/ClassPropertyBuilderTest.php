@@ -179,7 +179,11 @@ namespace My\Awesome\Service;
 
 class TestClass
 {
+    public const TEST = 1;
     private $a;
+    public function test(): void
+    {
+    }
 }
 EOF;
 
@@ -199,10 +203,14 @@ namespace My\Awesome\Service;
 
 class TestClass
 {
+    public const TEST = 1;
     private string $a;
     private string $b;
     private string $c;
     private string $d;
+    public function test() : void
+    {
+    }
 }
 EOF;
 

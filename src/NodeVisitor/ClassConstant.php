@@ -18,6 +18,8 @@ use PhpParser\NodeVisitorAbstract;
 
 final class ClassConstant extends NodeVisitorAbstract
 {
+    use FindInsertPositionForType;
+
     /**
      * @var IdentifierGenerator
      */
@@ -41,8 +43,10 @@ final class ClassConstant extends NodeVisitorAbstract
                         if ($this->checkConstantExists($stmt)) {
                             return null;
                         }
-                        $stmt->stmts = \array_merge(
+                        \array_splice(
                             $stmt->stmts,
+                            $this->findInsertPositionForType($stmt->stmts, Node\Stmt\ClassConst::class),
+                            0,
                             $this->lineGenerator->generate()
                         );
                     }
@@ -51,8 +55,10 @@ final class ClassConstant extends NodeVisitorAbstract
                 if ($this->checkConstantExists($node)) {
                     return null;
                 }
-                $node->stmts = \array_merge(
+                \array_splice(
                     $node->stmts,
+                    $this->findInsertPositionForType($node->stmts, Node\Stmt\ClassConst::class),
+                    0,
                     $this->lineGenerator->generate()
                 );
             }

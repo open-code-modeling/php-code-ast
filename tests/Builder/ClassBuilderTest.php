@@ -180,6 +180,57 @@ EOF;
     /**
      * @test
      */
+    public function it_supports_adding_of_class_constants_before_property(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    use TestTrait;
+    protected $property;
+    
+    public function test(): void
+    {
+    }
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $classFactory->addConstant(ClassConstBuilder::fromScratch('FIRST', 1));
+        $classFactory->addConstant(ClassConstBuilder::fromScratch('PUB', 'public'));
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    use TestTrait;
+    public const FIRST = 1;
+    public const PUB = 'public';
+    protected $property;
+    public function test() : void
+    {
+    }
+}
+EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
     public function it_supports_adding_of_class_constants(): void
     {
         $code = <<<'EOF'
@@ -191,6 +242,10 @@ namespace My\Awesome\Service;
 final class TestClass
 {
     protected const PROT = 'protected';
+    
+    public function test(): void
+    {
+    }
 }
 EOF;
 
@@ -211,6 +266,9 @@ final class TestClass
     protected const PROT = 'protected';
     public const FIRST = 1;
     public const PUB = 'public';
+    public function test() : void
+    {
+    }
 }
 EOF;
         $nodeTraverser = new NodeTraverser();
