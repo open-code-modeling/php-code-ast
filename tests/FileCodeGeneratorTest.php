@@ -12,9 +12,9 @@ namespace OpenCodeModelingTest\CodeAst;
 
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassPropertyBuilder;
-use OpenCodeModeling\CodeAst\Builder\File;
 use OpenCodeModeling\CodeAst\Builder\FileCollection;
 use OpenCodeModeling\CodeAst\Builder\InterfaceBuilder;
+use OpenCodeModeling\CodeAst\Builder\PhpFile;
 use OpenCodeModeling\CodeAst\FileCodeGenerator;
 use OpenCodeModeling\CodeAst\Package\ClassInfo;
 use OpenCodeModeling\CodeAst\Package\ClassInfoList;
@@ -145,7 +145,7 @@ final class FileCodeGeneratorTest extends TestCase
         }
         EOF;
 
-        $currentFileAst = function (File $classBuilder, ClassInfo $classInfo) use (
+        $currentFileAst = function (PhpFile $classBuilder, ClassInfo $classInfo) use (
             $expectedMyInterface,
             $expectedTestClass
         ) {
@@ -304,6 +304,7 @@ final class FileCodeGeneratorTest extends TestCase
         EOF;
 
         $fileCollection = FileCollection::fromItems($testClass, $testClassOther);
+        $fileCollection = FileCollection::emptyList()->addFileCollection($fileCollection);
 
         $this->fileCodeGenerator->addGetterMethodsForProperties(
             $fileCollection,

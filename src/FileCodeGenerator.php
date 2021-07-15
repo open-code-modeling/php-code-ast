@@ -15,6 +15,7 @@ use OpenCodeModeling\CodeAst\Builder\ClassConstBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassMethodBuilder;
 use OpenCodeModeling\CodeAst\Builder\File;
 use OpenCodeModeling\CodeAst\Builder\FileCollection;
+use OpenCodeModeling\CodeAst\Builder\PhpFile;
 use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Package\ClassInfo;
 use OpenCodeModeling\CodeAst\Package\ClassInfoList;
@@ -71,6 +72,10 @@ final class FileCodeGenerator
         $previousNamespace = '__invalid//namespace__';
 
         foreach ($fileCollection as $classBuilder) {
+            if (! $classBuilder instanceof PhpFile) {
+                continue;
+            }
+
             if ($previousNamespace !== $classBuilder->getNamespace()) {
                 $previousNamespace = $classBuilder->getNamespace();
                 $classInfo = $this->classInfoList->classInfoForNamespace($previousNamespace);

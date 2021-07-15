@@ -39,16 +39,20 @@ final class FileCollection implements Iterator, Countable
         }
     }
 
-    public function add(File $file): self
+    public function add(File ...$files): self
     {
-        $this->items[$this->identifier($file)] = $file;
+        foreach ($files as $file) {
+            $this->items[$this->identifier($file)] = $file;
+        }
 
         return $this;
     }
 
-    public function remove(File $file): self
+    public function remove(File ...$files): self
     {
-        unset($this->items[$this->identifier($file)]);
+        foreach ($files as $file) {
+            unset($this->items[$this->identifier($file)]);
+        }
 
         return $this;
     }
@@ -56,6 +60,24 @@ final class FileCollection implements Iterator, Countable
     public function contains(File $file): bool
     {
         return isset($this->items[$this->identifier($file)]);
+    }
+
+    public function addFileCollection(FileCollection $fileCollection): self
+    {
+        foreach ($fileCollection as $file) {
+            $this->add($file);
+        }
+
+        return $this;
+    }
+
+    public function removeFileCollection(FileCollection $fileCollection): self
+    {
+        foreach ($fileCollection as $file) {
+            $this->remove($file);
+        }
+
+        return $this;
     }
 
     public function filter(callable $filter): self
@@ -111,10 +133,14 @@ final class FileCollection implements Iterator, Countable
 
     private function identifier(File $file): string
     {
-        $namespace = $file->getNamespace() !== null ? ('\\' . $file->getNamespace()) : '';
-        $name = $file->getName() !== null ? ('\\' . $file->getName()) : '';
+        $identifier = '';
 
-        $identifier = $namespace . $name;
+        if ($file instanceof PhpFile) {
+            $namespace = $file->getNamespace() !== null ? ('\\' . $file->getNamespace()) : '';
+            $name = $file->getName() !== null ? ('\\' . $file->getName()) : '';
+
+            $identifier = $namespace . $name;
+        }
 
         if ($identifier === '') {
             return \spl_object_hash($file);
