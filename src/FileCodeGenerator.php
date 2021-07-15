@@ -95,6 +95,8 @@ final class FileCodeGenerator
     }
 
     /**
+     * @deprecated Use addPropertiesGetterMethods
+     *
      * Generation of getter methods. Use $skip callable to skip generation e. g. for value objects
      *
      * @param FileCollection $classBuilderCollection Only ClassBuilder objects are considered
@@ -115,28 +117,45 @@ final class FileCodeGenerator
         }
 
         foreach ($classBuilderCollection as $classBuilder) {
-            if (! $classBuilder instanceof ClassBuilder) {
+            if (! $classBuilder instanceof ClassBuilder
+                || true === ($skip)($classBuilder)
+            ) {
                 continue;
             }
-            foreach ($classBuilder->getProperties() as $classPropertyBuilder) {
-                $methodName = ($methodNameFilter)($classPropertyBuilder->getName());
-
-                if (true === ($skip)($classBuilder)
-                    || $classBuilder->hasMethod($methodName)
-                ) {
-                    continue 2;
-                }
-                $classBuilder->addMethod(
-                    ClassMethodBuilder::fromScratch($methodName, $typed)
-                        ->setReturnType($classPropertyBuilder->getType())
-                        ->setReturnTypeDocBlockHint($classPropertyBuilder->getTypeDocBlockHint())
-                        ->setBody('return $this->' . $classPropertyBuilder->getName() . ';')
-                );
-            }
+            $this->addPropertiesGetterMethods($classBuilder, $typed, $methodNameFilter);
         }
     }
 
     /**
+     * Generation of getter methods.
+     *
+     * @param ClassBuilder $classBuilder
+     * @param bool $typed Should the generated code be typed
+     * @param callable $methodNameFilter Filter the property name to your desired method name e.g. with "get" prefix
+     */
+    public function addPropertiesGetterMethods(
+        ClassBuilder $classBuilder,
+        bool $typed,
+        callable $methodNameFilter
+    ): void {
+        foreach ($classBuilder->getProperties() as $classPropertyBuilder) {
+            $methodName = ($methodNameFilter)($classPropertyBuilder->getName());
+
+            if ($classBuilder->hasMethod($methodName)) {
+                continue;
+            }
+            $classBuilder->addMethod(
+                ClassMethodBuilder::fromScratch($methodName, $typed)
+                    ->setReturnType($classPropertyBuilder->getType())
+                    ->setReturnTypeDocBlockHint($classPropertyBuilder->getTypeDocBlockHint())
+                    ->setBody('return $this->' . $classPropertyBuilder->getName() . ';')
+            );
+        }
+    }
+
+    /**
+     * @deprecated Use addPropertiesClassConstants
+     *
      * Generation of constants for each property. Use $skip callable to skip generation e. g. for value objects
      *
      * @param FileCollection $fileCollection Only ClassBuilder objects are considered
@@ -178,6 +197,36 @@ final class FileCodeGenerator
                     )
                 );
             }
+        }
+    }
+
+    /**
+     * Generation of constants for each property.
+     *
+     * @param ClassBuilder $classBuilder
+     * @param callable $constantNameFilter Converts the name to a proper class constant name
+     * @param callable $constantValueFilter Converts the name to a proper class constant value e.g. snake_case or camelCase
+     * @param int $visibility Visibility of the class constant
+     */
+    public function addPropertiesClassConstants(
+        ClassBuilder $classBuilder,
+        callable $constantNameFilter,
+        callable $constantValueFilter,
+        int $visibility = ClassConstGenerator::FLAG_PUBLIC
+    ): void {
+        foreach ($classBuilder->getProperties() as $classPropertyBuilder) {
+            $constantName = ($constantNameFilter)($classPropertyBuilder->getName());
+
+            if ($classBuilder->hasConstant($constantName)) {
+                continue;
+            }
+            $classBuilder->addConstant(
+                ClassConstBuilder::fromScratch(
+                    $constantName,
+                    ($constantValueFilter)($classPropertyBuilder->getName()),
+                    $visibility
+                )
+            );
         }
     }
 }

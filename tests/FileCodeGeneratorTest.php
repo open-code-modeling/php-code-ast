@@ -319,4 +319,70 @@ final class FileCodeGeneratorTest extends TestCase
         $this->assertSame($expectedTestClass, $files['/service/src/TestClass.php']);
         $this->assertSame($expectedTestClassOther, $files['/service/src/TestClassOther.php']);
     }
+
+    /**
+     * @test
+     */
+    public function it_add_getter_methods_for_properties_via_visit(): void
+    {
+        $testClass = ClassBuilder::fromScratch('TestClass', 'MyService')
+            ->setFinal(true)
+            ->addProperty(
+                ClassPropertyBuilder::fromScratch('foo', 'string'),
+                ClassPropertyBuilder::fromScratch('bar', 'int'),
+            );
+
+        $testClassOther = ClassBuilder::fromScratch('TestClassOther', 'MyService')
+            ->setFinal(true)
+            ->addProperty(
+                ClassPropertyBuilder::fromScratch('foo', 'float'),
+                ClassPropertyBuilder::fromScratch('bar', 'bool'),
+            );
+
+        $expectedTestClass = <<<'EOF'
+        <?php
+        
+        declare (strict_types=1);
+        namespace MyService;
+        
+        final class TestClass
+        {
+            private string $foo;
+            private int $bar;
+        }
+        EOF;
+
+        $expectedTestClassOther = <<<'EOF'
+        <?php
+        
+        declare (strict_types=1);
+        namespace MyService;
+        
+        final class TestClassOther
+        {
+            private float $foo;
+            private bool $bar;
+            public function foo() : float
+            {
+                return $this->foo;
+            }
+            public function bar() : bool
+            {
+                return $this->bar;
+            }
+        }
+        EOF;
+
+        $fileCollection = FileCollection::fromItems($testClass, $testClassOther);
+
+        $fileCollection->filter(fn (ClassBuilder $classBuilder) => $classBuilder->getName() === 'TestClassOther')
+            ->visit(fn (ClassBuilder $classBuilder) => $this->fileCodeGenerator->addPropertiesGetterMethods($classBuilder, true, FilterFactory::methodNameFilter()));
+
+        $files = $this->fileCodeGenerator->generateFiles($fileCollection);
+
+        $this->assertArrayHasKey('/service/src/TestClassOther.php', $files);
+        $this->assertArrayHasKey('/service/src/TestClass.php', $files);
+        $this->assertSame($expectedTestClass, $files['/service/src/TestClass.php']);
+        $this->assertSame($expectedTestClassOther, $files['/service/src/TestClassOther.php']);
+    }
 }

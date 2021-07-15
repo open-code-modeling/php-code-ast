@@ -93,6 +93,15 @@ final class FileCollection implements Iterator, Countable
         );
     }
 
+    public function visit(callable $visitor): self
+    {
+        foreach ($this->items as $file) {
+            ($visitor)($file);
+        }
+
+        return $this;
+    }
+
     /**
      * @return array<string, File>
      */
