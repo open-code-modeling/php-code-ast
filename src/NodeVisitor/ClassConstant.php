@@ -45,7 +45,7 @@ final class ClassConstant extends NodeVisitorAbstract
                         }
                         \array_splice(
                             $stmt->stmts,
-                            $this->findInsertPositionForType($stmt->stmts, Node\Stmt\ClassConst::class),
+                            $this->findInsertPositionForType($stmt->stmts, Node\Stmt\ClassConst::class, [Node\Stmt\ClassMethod::class]),
                             0,
                             $this->lineGenerator->generate()
                         );
@@ -57,7 +57,7 @@ final class ClassConstant extends NodeVisitorAbstract
                 }
                 \array_splice(
                     $node->stmts,
-                    $this->findInsertPositionForType($node->stmts, Node\Stmt\ClassConst::class),
+                    $this->findInsertPositionForType($node->stmts, Node\Stmt\ClassConst::class, [Node\Stmt\ClassMethod::class]),
                     0,
                     $this->lineGenerator->generate()
                 );

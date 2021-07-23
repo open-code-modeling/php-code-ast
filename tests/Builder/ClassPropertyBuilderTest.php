@@ -169,6 +169,74 @@ EOF;
     /**
      * @test
      */
+    public function it_supports_adding_of_properties_before_methods_with_doc_blocks(): void
+    {
+        $code = <<<'EOF'
+        <?php
+        
+        declare (strict_types=1);
+        namespace My\Awesome\Service;
+        
+        final class TestClass
+        {
+            /**
+             * Define aggregate names using constants
+             *
+             * @example
+             *
+             * const USER = 'User';
+             */
+        
+        
+            /**
+             * @param EventEngine $eventEngine
+             */
+            public static function describe(EventEngine $eventEngine): void
+            {
+            }
+        }
+        EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\Awesome\Service');
+        $classFactory->addProperty(ClassPropertyBuilder::fromScratch('first', 'string'));
+        $classFactory->addProperty(ClassPropertyBuilder::fromScratch('pub', 'array'));
+
+        $expected = <<<'EOF'
+        <?php
+        
+        declare (strict_types=1);
+        namespace My\Awesome\Service;
+        
+        final class TestClass
+        {
+            private string $first;
+            private array $pub;
+            /**
+             * Define aggregate names using constants
+             *
+             * @example
+             *
+             * const USER = 'User';
+             */
+            /**
+             * @param EventEngine $eventEngine
+             */
+            public static function describe(EventEngine $eventEngine) : void
+            {
+            }
+        }
+        EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
     public function it_supports_adding_of_class_properties(): void
     {
         $code = <<<'EOF'

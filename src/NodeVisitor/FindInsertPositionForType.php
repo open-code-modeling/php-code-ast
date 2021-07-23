@@ -17,20 +17,35 @@ trait FindInsertPositionForType
     /**
      * @param Stmt[] $stmts
      * @param string $type
+     * @param array $decTypes List of types (FQCN) where position should be decremented
+     * @param array $incTypes List of types (FQCN) where position should be incremented
      * @return int
      */
-    private function findInsertPositionForType(array $stmts, string $type): int
-    {
-        $pos = 0;
+    private function findInsertPositionForType(
+        array $stmts,
+        string $type,
+        array $decTypes = [],
+        array $incTypes = []
+    ): int {
+        $pos = -1;
         $length = 0;
 
         foreach ($stmts as $key => $stmt) {
+            $class = \get_class($stmt);
+
             if ($stmt instanceof $type) {
                 $pos = (int) $key;
             }
             $length++;
+
+            if (true === \in_array($class, $decTypes, true)) {
+                $length--;
+            }
+            if (true === \in_array($class, $incTypes, true)) {
+                $length++;
+            }
         }
 
-        return $pos === 0 ? ++$length : ++$pos;
+        return $pos === -1 ? $length : ++$pos;
     }
 }

@@ -231,6 +231,74 @@ EOF;
     /**
      * @test
      */
+    public function it_supports_adding_of_class_constants_before_methods_with_doc_blocks(): void
+    {
+        $code = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    /**
+     * Define aggregate names using constants
+     *
+     * @example
+     *
+     * const USER = 'User';
+     */
+
+
+    /**
+     * @param EventEngine $eventEngine
+     */
+    public static function describe(EventEngine $eventEngine): void
+    {
+    }
+}
+EOF;
+
+        $ast = $this->parser->parse($code);
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\Awesome\Service');
+        $classFactory->addConstant(ClassConstBuilder::fromScratch('FIRST', 1));
+        $classFactory->addConstant(ClassConstBuilder::fromScratch('PUB', 'public'));
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final class TestClass
+{
+    public const FIRST = 1;
+    public const PUB = 'public';
+    /**
+     * Define aggregate names using constants
+     *
+     * @example
+     *
+     * const USER = 'User';
+     */
+    /**
+     * @param EventEngine $eventEngine
+     */
+    public static function describe(EventEngine $eventEngine) : void
+    {
+    }
+}
+EOF;
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
     public function it_supports_adding_of_class_constants(): void
     {
         $code = <<<'EOF'

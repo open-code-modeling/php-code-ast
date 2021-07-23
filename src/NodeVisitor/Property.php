@@ -46,7 +46,7 @@ final class Property extends NodeVisitorAbstract
                         }
                         \array_splice(
                             $stmt->stmts,
-                            $this->findInsertPositionForType($stmt->stmts, Node\Stmt\Property::class),
+                            $this->findInsertPositionForType($stmt->stmts, Node\Stmt\Property::class, [Node\Stmt\ClassMethod::class]),
                             0,
                             [$this->propertyGenerator->generate()]
                         );
@@ -58,7 +58,7 @@ final class Property extends NodeVisitorAbstract
                 }
                 \array_splice(
                     $node->stmts,
-                    $this->findInsertPositionForType($node->stmts, Node\Stmt\Property::class),
+                    $this->findInsertPositionForType($node->stmts, Node\Stmt\Property::class, [Node\Stmt\ClassMethod::class]),
                     0,
                     [$this->propertyGenerator->generate()]
                 );
