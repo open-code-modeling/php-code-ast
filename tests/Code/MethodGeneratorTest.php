@@ -53,10 +53,10 @@ final class MethodGeneratorTest extends TestCase
         $method->setReturnType('void');
 
         $expectedOutput = <<<'EOF'
-<?php
-
-public function setType(?string $type) : void;
-EOF;
+        <?php
+        
+        public function setType(?string $type) : void;
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -71,13 +71,13 @@ EOF;
         $method->setReturnType('array');
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * @return Items[]
- */
-public function getItems() : array;
-EOF;
+        <?php
+        
+        /**
+         * @return Items[]
+         */
+        public function getItems() : array;
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -93,13 +93,13 @@ EOF;
         $method->overrideDocBlock(new DocBlock('Awesome'));
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * Awesome
- */
-public function getItems() : array;
-EOF;
+        <?php
+        
+        /**
+         * Awesome
+         */
+        public function getItems() : array;
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -119,15 +119,15 @@ EOF;
         $method->setDocBlockComment('Sets an awesome type');
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * Sets an awesome type
- *
- * @param string|null $type
- */
-public function setType(?string $type);
-EOF;
+        <?php
+        
+        /**
+         * Sets an awesome type
+         *
+         * @param string|null $type
+         */
+        public function setType(?string $type);
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -149,16 +149,16 @@ EOF;
         $method->setTyped(true);
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * Sets an awesome type
- *
- * @param string|null $type
- * @return void
- */
-public function setType(?string $type) : void;
-EOF;
+        <?php
+        
+        /**
+         * Sets an awesome type
+         *
+         * @param string|null $type
+         * @return void
+         */
+        public function setType(?string $type) : void;
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -177,14 +177,14 @@ EOF;
         $method->setReturnTypeDocBlockHint('mixed');
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * @param mixed $type
- * @return mixed
- */
-public function setType($type);
-EOF;
+        <?php
+        
+        /**
+         * @param mixed $type
+         * @return mixed
+         */
+        public function setType($type);
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -208,16 +208,16 @@ EOF;
         $method->setDocBlockComment('Sets awesome items');
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * Sets awesome items
- *
- * @param array<string, \stdClass> $items
- * @return void
- */
-public function setItems(array $items) : void;
-EOF;
+        <?php
+        
+        /**
+         * Sets awesome items
+         *
+         * @param array<string, \stdClass> $items
+         * @return void
+         */
+        public function setItems(array $items) : void;
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
@@ -228,14 +228,14 @@ EOF;
     public function it_generates_method_with_long_doc_block(): void
     {
         $docBlockComment = <<<'EOF'
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
-type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-remaining essentially unchanged.
-
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at
-its layout.
-EOF;
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+        type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+        remaining essentially unchanged.
+        
+        It is a long established fact that a reader will be distracted by the readable content of a page when looking at
+        its layout.
+        EOF;
 
         $method = new MethodGenerator(
             'setType',
@@ -247,22 +247,22 @@ EOF;
         $method->setDocBlockComment($docBlockComment);
 
         $expectedOutput = <<<'EOF'
-<?php
-
-/**
- * Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
- * standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
- * type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
- * remaining essentially unchanged.
- *
- * It is a long established fact that a reader will be distracted by the readable content of a page when looking at
- * its layout.
- *
- * @param string $type
- * @param int|null $value
- */
-public function setType(string $type, ?int $value);
-EOF;
+        <?php
+        
+        /**
+         * Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+         * standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+         * type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+         * remaining essentially unchanged.
+         *
+         * It is a long established fact that a reader will be distracted by the readable content of a page when looking at
+         * its layout.
+         *
+         * @param string $type
+         * @param int|null $value
+         */
+        public function setType(string $type, ?int $value);
+        EOF;
 
         $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
