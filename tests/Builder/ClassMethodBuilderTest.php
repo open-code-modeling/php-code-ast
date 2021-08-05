@@ -445,4 +445,66 @@ EOF;
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
     }
+
+    /**
+     * @test
+     */
+    public function it_generates_method_with_doc_block_from_builder(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $docBlockComment = <<<'EOF'
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+        type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+        remaining essentially unchanged.
+        
+        It is a long established fact that a reader will be distracted by the readable content of a page when looking at
+        its layout.
+        EOF;
+
+        $methodBuilder = ClassMethodBuilder::fromScratch('setActive')->setReturnType('void');
+        $methodBuilder->setDocBlockComment($docBlockComment);
+        $methodBuilder->setParameters(ParameterBuilder::fromScratch('active', 'bool')->setDefaultValue(null)->setTypeDocBlockHint('bool'));
+
+        $classBuilder = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classBuilder->setMethods($methodBuilder);
+
+        $nodeTraverser = new NodeTraverser();
+        $classBuilder->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+        <?php
+        
+        declare (strict_types=1);
+        namespace My\Awesome\Service;
+        
+        class TestClass
+        {
+            /**
+             * Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+             * standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+             * type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+             * remaining essentially unchanged.
+             *
+             * It is a long established fact that a reader will be distracted by the readable content of a page when looking at
+             * its layout.
+             *
+             * @param bool $active
+             */
+            public function setActive(bool $active = null) : void
+            {
+            }
+        }
+        EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+
+        $classBuilder = ClassBuilder::fromNodes(...$this->parser->parse($expected));
+
+        $nodeTraverser = new NodeTraverser();
+        $classBuilder->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse([])));
+    }
 }

@@ -120,10 +120,34 @@ final class ClassMethodBuilder
             $comments = \explode("\n", $comments[0]->getReformattedText());
 
             foreach ($comments as $comment) {
+                if ($comment === '/**' || $comment === ' */') {
+                    continue;
+                }
                 if (0 === \strpos($comment, ' * @return ')) {
                     $self->setReturnTypeDocBlockHint(\substr($comment, 11));
+                    continue;
+                }
+                if (0 === \strpos($comment, ' * @param ')) {
+                    if ($self->docBlockComment === null) {
+                        $self->setDocBlockComment('');
+                    }
+                    continue;
+                }
+                if ($comment === ' *') {
+                    $self->setDocBlockComment($self->getDocBlockComment() . PHP_EOL);
+                    continue;
+                }
+                if (0 === \strpos($comment, ' * ')) {
+                    if ($self->docBlockComment === null) {
+                        $self->setDocBlockComment('');
+                    }
+                    $self->setDocBlockComment($self->getDocBlockComment() . \substr($comment, 3) . PHP_EOL);
                 }
             }
+        }
+
+        if ($self->docBlockComment !== null) {
+            $self->docBlockComment = \trim($self->docBlockComment);
         }
 
         return $self;
