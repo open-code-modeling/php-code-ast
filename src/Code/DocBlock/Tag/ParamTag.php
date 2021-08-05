@@ -20,10 +20,9 @@ namespace OpenCodeModeling\CodeAst\Code\DocBlock\Tag;
  */
 final class ParamTag extends AbstractTypeableTag
 {
-    /**
-     * @var string
-     */
     protected string $variableName;
+
+    private bool $variadic = false;
 
     /**
      * ParamTag constructor.
@@ -68,13 +67,34 @@ final class ParamTag extends AbstractTypeableTag
     }
 
     /**
+     * @param bool $variadic
+     *
+     * @return ParamTag
+     */
+    public function setVariadic($variadic): self
+    {
+        $this->variadic = (bool) $variadic;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getVariadic(): bool
+    {
+        return $this->variadic;
+    }
+
+    /**
      * @return string
      */
     public function generate(): string
     {
         $output = '@param'
             . (! empty($this->types) ? ' ' . $this->getTypesAsString() : '')
-            . (! empty($this->variableName) ? ' $' . $this->variableName : '')
+            . ($this->variadic ? ' ...' : ' ')
+            . (! empty($this->variableName) ? '$' . $this->variableName : '')
             . (! empty($this->description) ? ' ' . $this->description : '');
 
         return $output;

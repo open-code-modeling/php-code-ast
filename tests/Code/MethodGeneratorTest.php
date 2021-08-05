@@ -85,6 +85,46 @@ final class MethodGeneratorTest extends TestCase
     /**
      * @test
      */
+    public function it_generates_method_with_variadic_doc_block(): void
+    {
+        $method = new MethodGenerator('setItems');
+        $method->setParameter((new ParameterGenerator('items'))->setVariadic(true)->setTypeDocBlockHint('mixed'));
+        $method->setReturnType('void');
+        $method->setDocBlockComment('');
+
+        $expectedOutput = <<<'EOF'
+        <?php
+        
+        /**
+         * @param mixed ...$items
+         */
+        public function setItems(...$items) : void;
+        EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_method_with_mixed_variadic_without_doc_block(): void
+    {
+        $method = new MethodGenerator('setItems');
+        $method->setParameter((new ParameterGenerator('items'))->setVariadic(true)->setType('mixed'));
+        $method->setReturnType('void');
+
+        $expectedOutput = <<<'EOF'
+        <?php
+        
+        public function setItems(mixed ...$items) : void;
+        EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
+    }
+
+    /**
+     * @test
+     */
     public function it_generates_method_with_overridden_doc_block(): void
     {
         $method = new MethodGenerator('getItems');

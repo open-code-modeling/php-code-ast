@@ -265,7 +265,7 @@ final class MethodGenerator extends AbstractMemberGenerator
                 if ($typeHint = $parameter->getTypeDocBlockHint()) {
                     $types = $typeHint;
                 }
-                $docBlock->addTag(new ParamTag($parameter->getName(), $types));
+                $docBlock->addTag((new ParamTag($parameter->getName(), $types))->setVariadic($parameter->getVariadic()));
             }
 
             $returnType = null;
