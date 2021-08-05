@@ -144,6 +144,7 @@ EOF;
             ]
         );
         $method->setReturnType('void');
+        $method->setReturnTypeDocBlockHint('void');
         $method->setDocBlockComment('Sets an awesome type');
         $method->setTyped(true);
 
@@ -203,6 +204,7 @@ EOF;
             ]
         );
         $method->setReturnType('void');
+        $method->setReturnTypeDocBlockHint('void');
         $method->setDocBlockComment('Sets awesome items');
 
         $expectedOutput = <<<'EOF'
