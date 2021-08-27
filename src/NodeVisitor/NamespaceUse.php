@@ -57,7 +57,7 @@ final class NamespaceUse extends NodeVisitorAbstract
                     }
                     \array_unshift($stmts, $useNamespace->getNode());
                 }
-                $node->stmts = $stmts; // @phpstan-ignore-line
+                $node->stmts = $stmts;
             }
         }
 
