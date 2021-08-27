@@ -36,7 +36,7 @@
         "phpstan/phpstan": "^0.12.33",
         "phpstan/phpstan-strict-rules": "^0.12.4",
         "phpunit/phpunit": "^9.5.0",
-        "prooph/php-cs-fixer-config": "^v0.3.1",
+        "prooph/php-cs-fixer-config": "^v0.4.0",
         "roave/security-advisories": "dev-master"
     },
     "minimum-stability": "dev",
