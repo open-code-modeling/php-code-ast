@@ -41,7 +41,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 #### bug
 
- - [71: Typed is not considered via setTyped() method in ClassPropertyBuilder](https://github.com/open-code-modeling/php-code-ast/issues/71) thanks to @sandrokeil
+- [71: Typed is not considered via setTyped() method in ClassPropertyBuilder](https://github.com/open-code-modeling/php-code-ast/issues/71) thanks to @sandrokeil
 
 ## 0.12.1 - 2021-02-15
 
@@ -60,7 +60,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 #### bug
 
- - [69: ClassPropertyBuilder with typed=false not working](https://github.com/open-code-modeling/php-code-ast/issues/69) thanks to @sandrokeil
+- [69: ClassPropertyBuilder with typed=false not working](https://github.com/open-code-modeling/php-code-ast/issues/69) thanks to @sandrokeil
 
 ## 0.12.0 - 2021-02-12
 
@@ -79,11 +79,26 @@ Feature release (minor)
 
 #### bug,enhancement
 
- - [68: Fix default value code generation for properties and parameters](https://github.com/open-code-modeling/php-code-ast/issues/68) thanks to @sandrokeil
+- [68: Fix default value code generation for properties and parameters](https://github.com/open-code-modeling/php-code-ast/issues/68) thanks to @sandrokeil
 
 #### enhancement
 
- - [67: Add support for code style in FileGenerator ](https://github.com/open-code-modeling/php-code-ast/issues/67) thanks to @sandrokeil
+- [67: Add support for code style in FileGenerator ](https://github.com/open-code-modeling/php-code-ast/issues/67) thanks to @sandrokeil
+
+## 0.11.1 - 2021-08-27
+
+
+-----
+
+### Release Notes for [0.11.1](https://github.com/open-code-modeling/php-code-ast/milestone/25)
+
+0.11.x bugfix release (patch)
+
+### 0.11.1
+
+- Total issues resolved: **0**
+- Total pull requests resolved: **0**
+- Total contributors: **0**
 
 ## 0.11.0 - 2021-01-30
 
@@ -102,10 +117,29 @@ Feature release (minor)
 
 #### enhancement
 
- - [66: Generate code from file collection with current file AST support](https://github.com/open-code-modeling/php-code-ast/issues/66) thanks to @sandrokeil
- - [65: Support custom node visitors in class and interface builder](https://github.com/open-code-modeling/php-code-ast/issues/65) thanks to @sandrokeil
- - [61: Switch from PHPStan to Psalm](https://github.com/open-code-modeling/php-code-ast/issues/61) thanks to @sandrokeil
- - [55: Remove deprecated methods and static node visitor methods in favour of high level API](https://github.com/open-code-modeling/php-code-ast/issues/55) thanks to @sandrokeil
+- [66: Generate code from file collection with current file AST support](https://github.com/open-code-modeling/php-code-ast/issues/66) thanks to @sandrokeil
+- [65: Support custom node visitors in class and interface builder](https://github.com/open-code-modeling/php-code-ast/issues/65) thanks to @sandrokeil
+- [61: Switch from PHPStan to Psalm](https://github.com/open-code-modeling/php-code-ast/issues/61) thanks to @sandrokeil
+- [55: Remove deprecated methods and static node visitor methods in favour of high level API](https://github.com/open-code-modeling/php-code-ast/issues/55) thanks to @sandrokeil
+
+## 0.10.4 - 2021-08-27
+
+
+-----
+
+### Release Notes for [0.10.4](https://github.com/open-code-modeling/php-code-ast/milestone/24)
+
+0.10.x bugfix release (patch)
+
+### 0.10.4
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **0**
+- Total contributors: **1**
+
+#### bug
+
+ - [82: Exists check in NodeVisitor/ClassImplements not working properly](https://github.com/open-code-modeling/php-code-ast/issues/82) thanks to @sandrokeil
 
 ## 0.10.3 - 2021-01-29
 
