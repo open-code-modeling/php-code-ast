@@ -30,8 +30,8 @@ final class BodyGenerator implements StatementGenerator
         $this->code = $code;
     }
 
-    public function generate(): ?array
+    public function generate(): array
     {
-        return $this->parser->parse('<?php ' . PHP_EOL . $this->code);
+        return $this->parser->parse('<?php ' . PHP_EOL . $this->code) ?? [];
     }
 }
