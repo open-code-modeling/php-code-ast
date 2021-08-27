@@ -67,22 +67,31 @@ final class ClassImplements extends NodeVisitorAbstract
 
     private function filterImplements(array $nodes): array
     {
-        $implements = $this->implements;
-
         foreach ($nodes as $node) {
             if ($node instanceof Namespace_) {
                 foreach ($node->stmts as $stmt) {
                     if ($stmt instanceof Stmt\Class_) {
-                        foreach ($stmt->implements as $implementName) {
-                            $implements = \array_filter($implements, static function (string $implement) use ($implementName) {
-                                return $implement !== ($implementName instanceof FullyQualified
-                                    ? '\\' . $implementName->toString()
-                                    : (string) $implementName);
-                            });
-                        }
+                        return $this->filterClassImplements($stmt);
                     }
                 }
+            } elseif ($node instanceof Stmt\Class_) {
+                return $this->filterClassImplements($node);
             }
+        }
+
+        return $this->implements;
+    }
+
+    private function filterClassImplements(Stmt\Class_ $node): array
+    {
+        $implements = $this->implements;
+
+        foreach ($node->implements as $implementName) {
+            $implements = \array_filter($implements, static function (string $implement) use ($implementName) {
+                return $implement !== ($implementName instanceof FullyQualified
+                        ? '\\' . $implementName->toString()
+                        : (string) $implementName);
+            });
         }
 
         return $implements;
