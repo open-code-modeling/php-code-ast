@@ -2,27 +2,20 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.12.3 - TBD
+## 0.12.3 - 2021-08-27
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.12.3](https://github.com/open-code-modeling/php-code-ast/milestone/30)
 
-- Nothing.
+0.12.x bugfix release (patch)
 
-### Deprecated
+### 0.12.3
 
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **0**
+- Total contributors: **0**
 
 ## 0.12.2 - 2021-02-16
 
