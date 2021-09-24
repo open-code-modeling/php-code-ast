@@ -434,6 +434,16 @@ final class ClassBuilder implements PhpFile
         return $this->namespace;
     }
 
+    /**
+     * Returns fully qualified class name without leading backslash
+     *
+     * @return string
+     */
+    public function getFqcn(): string
+    {
+        return \trim($this->namespace . '\\' . $this->name, '\\');
+    }
+
     public function setName(?string $name): self
     {
         $this->name = $name;
