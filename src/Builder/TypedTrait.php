@@ -7,15 +7,21 @@
  */
 
 declare(strict_types=1);
+namespace OpenCodeModeling\CodeAst\Builder;
 
-namespace OpenCodeModeling\CodeAst\Code;
-
-use PhpParser\NodeAbstract;
-
-interface StatementGenerator
+trait TypedTrait
 {
-    /**
-     * @return NodeAbstract|NodeAbstract[]
-     */
-    public function generate();
+    private bool $typed = true;
+
+    public function setTyped(bool $typed): self
+    {
+        $this->typed = $typed;
+
+        return $this;
+    }
+
+    public function isTyped(): bool
+    {
+        return $this->typed;
+    }
 }

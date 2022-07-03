@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Code;
 
+use OpenCodeModeling\CodeAst\Code\AttributeGenerator;
 use OpenCodeModeling\CodeAst\Code\BodyGenerator;
 use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
 use OpenCodeModeling\CodeAst\Code\MethodGenerator;
@@ -327,5 +328,36 @@ final class MethodGeneratorTest extends TestCase
         $this->expectExceptionMessage('Could not generate method "setType" due the following error');
 
         $this->printer->prettyPrintFile([$method->generate()]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_method_with_readonly_properties(): void
+    {
+        $arg1 = new ParameterGenerator('type', 'string');
+        $arg1->setReadonly(true);
+        $arg1->setVisibility(ParameterGenerator::VISIBILITY_PUBLIC);
+        $arg1->addAttribute(new AttributeGenerator($this->parser, 'ListensTo', 'ProductCreated::class', "'string value'"));
+
+        $arg2 = new ParameterGenerator('option', '?string');
+        $arg2->setVisibility(ParameterGenerator::VISIBILITY_PROTECTED);
+
+        $method = new MethodGenerator(
+            '__construct',
+            [
+                $arg1,
+                $arg2,
+            ]
+        );
+        $method->setTyped(true);
+
+        $expectedOutput = <<<'EOF'
+        <?php
+        
+        public function __construct(#[ListensTo(ProductCreated::class, 'string value')] public readonly string $type, protected ?string $option);
+        EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$method->generate()]));
     }
 }

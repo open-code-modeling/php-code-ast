@@ -31,6 +31,7 @@ abstract class AbstractMemberGenerator implements StatementGenerator
     public const FLAG_PUBLIC = Class_::MODIFIER_PUBLIC;
     public const FLAG_PROTECTED = Class_::MODIFIER_PROTECTED;
     public const FLAG_PRIVATE = Class_::MODIFIER_PRIVATE;
+    public const FLAG_READONLY = Class_::MODIFIER_READONLY;
     /**#@-*/
 
     /**#@+
@@ -141,6 +142,16 @@ abstract class AbstractMemberGenerator implements StatementGenerator
     public function isStatic(): bool
     {
         return (bool) ($this->flags & self::FLAG_STATIC); // is FLAG_STATIC in flags
+    }
+
+    public function setReadonly(bool $isReadonly): self
+    {
+        return $isReadonly ? $this->addFlag(self::FLAG_READONLY) : $this->removeFlag(self::FLAG_READONLY);
+    }
+
+    public function isReadOnly(): bool
+    {
+        return (bool) ($this->flags & self::FLAG_READONLY);
     }
 
     /**

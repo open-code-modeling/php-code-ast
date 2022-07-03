@@ -26,6 +26,8 @@ use PhpParser\Node\Stmt\Property;
  */
 final class PropertyGenerator extends AbstractMemberGenerator
 {
+    use AttributeTrait;
+
     /**
      * @var TypeGenerator|null
      */
@@ -161,6 +163,14 @@ final class PropertyGenerator extends AbstractMemberGenerator
 
     public function generate(): Property
     {
+        $attributeGroups = [];
+
+        foreach ($this->attributes as $attribute) {
+            $attributeGroups[] = new Node\AttributeGroup([
+                $attribute->generate(),
+            ]);
+        }
+
         return new Property(
             $this->flags,
             [
@@ -171,7 +181,8 @@ final class PropertyGenerator extends AbstractMemberGenerator
             ],
             $this->generateAttributes(),
             // @phpstan-ignore-next-line
-            $this->typed && null !== $this->type ? $this->type->generate() : null
+            $this->typed && null !== $this->type ? $this->type->generate() : null,
+            $attributeGroups
         );
     }
 

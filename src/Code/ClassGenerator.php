@@ -24,6 +24,7 @@ final class ClassGenerator implements StatementGenerator
 {
     public const FLAG_ABSTRACT = Class_::MODIFIER_ABSTRACT;
     public const FLAG_FINAL = Class_::MODIFIER_FINAL;
+    public const FLAG_READONLY = Class_::MODIFIER_READONLY;
 
     /**
      * @var string

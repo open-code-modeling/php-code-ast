@@ -7,15 +7,26 @@
  */
 
 declare(strict_types=1);
-
 namespace OpenCodeModeling\CodeAst\Code;
 
-use PhpParser\NodeAbstract;
-
-interface StatementGenerator
+trait AttributeTrait
 {
     /**
-     * @return NodeAbstract|NodeAbstract[]
+     * @var AttributeGenerator[]
      */
-    public function generate();
+    protected array $attributes = [];
+
+    public function setAttributes(AttributeGenerator ...$attributes): self
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    public function addAttribute(AttributeGenerator $attribute): self
+    {
+        $this->attributes[] = $attribute;
+
+        return $this;
+    }
 }

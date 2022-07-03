@@ -7,15 +7,21 @@
  */
 
 declare(strict_types=1);
+namespace OpenCodeModeling\CodeAst\Builder;
 
-namespace OpenCodeModeling\CodeAst\Code;
-
-use PhpParser\NodeAbstract;
-
-interface StatementGenerator
+trait AbstractTrait
 {
-    /**
-     * @return NodeAbstract|NodeAbstract[]
-     */
-    public function generate();
+    private bool $abstract = false;
+
+    public function isAbstract(): bool
+    {
+        return $this->abstract;
+    }
+
+    public function setAbstract(bool $abstract): self
+    {
+        $this->abstract = $abstract;
+
+        return $this;
+    }
 }

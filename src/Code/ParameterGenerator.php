@@ -20,12 +20,9 @@ use PhpParser\Node;
  * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-code/blob/master/LICENSE.md New BSD License
  */
-final class ParameterGenerator
+final class ParameterGenerator extends AbstractMemberGenerator
 {
-    /**
-     * @var string
-     */
-    private string $name;
+    use AttributeTrait;
 
     /**
      * @var TypeGenerator|null
@@ -70,6 +67,7 @@ final class ParameterGenerator
         if (false !== $passByReference) {
             $this->setPassedByReference(true);
         }
+        $this->flags = 0;
     }
 
     public function setType(string $type): self
@@ -82,25 +80,6 @@ final class ParameterGenerator
     public function getType(): ?TypeGenerator
     {
         return $this->type;
-    }
-
-    /**
-     * @param  string $name
-     * @return ParameterGenerator
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     /**
@@ -183,12 +162,23 @@ final class ParameterGenerator
 
     public function generate(): Node\Param
     {
+        $attributeGroups = [];
+
+        foreach ($this->attributes as $attribute) {
+            $attributeGroups[] = new Node\AttributeGroup([
+                $attribute->generate(),
+            ]);
+        }
+
         return new Node\Param(
             new Node\Expr\Variable($this->name),
             $this->defaultValue ? $this->defaultValue->generate() : null,
             $this->type ? $this->type->generate() : null, // @phpstan-ignore-line
             $this->passedByReference,
-            $this->variadic
+            $this->variadic,
+            [],
+            $this->flags,
+            $attributeGroups
         );
     }
 }

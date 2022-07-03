@@ -12,7 +12,9 @@ namespace OpenCodeModeling\CodeAst\Code;
 
 use OpenCodeModeling\CodeAst\Exception;
 
+use PhpParser\Error;
 use PhpParser\Node;
+use PhpParser\Parser;
 
 /**
  * Code is largely lifted from the Zend\Code\Generator\ValueGenerator implementation in
@@ -55,18 +57,24 @@ final class ValueGenerator
      */
     private string $type = self::TYPE_AUTO;
 
-    /**
-     * @param mixed $value
-     * @param string $type
-     */
+    private ?Parser $parser;
+
     public function __construct(
         $value,
-        string $type = self::TYPE_AUTO
+        string $type = self::TYPE_AUTO,
+        Parser $parser = null
     ) {
+        $this->parser = $parser;
         // strict check is important here if $type = AUTO
         $this->setValue($value);
 
         if ($type !== self::TYPE_AUTO) {
+            if ($type === self::TYPE_OTHER && $this->parser === null) {
+                throw new Exception\InvalidArgumentException(
+                    \sprintf('If type "%s" is used, you have to provide a parser too.', self::TYPE_OTHER)
+                );
+            }
+
             $this->setType($type);
         }
     }
@@ -216,10 +224,21 @@ final class ValueGenerator
                 if ($this->value instanceof Node\Expr) {
                     return $this->value;
                 }
+                if ($this->parser !== null) {
+                    try {
+                        $nodes = $this->parser->parse('<?php ' . PHP_EOL . $value . ';');
+
+                        if (\count($nodes) === 1 && $nodes[0] instanceof Node\Stmt\Expression) {
+                            return $nodes[0]->expr;
+                        }
+                    } catch (Error $e) {
+                        // intentionally omitted
+                    }
+                }
                 // no break
             default:
                 throw new Exception\RuntimeException(
-                    \sprintf('Type "%s" is unknown or cannot be used as property default value.', \get_class($value))
+                    \sprintf('Type "%s" is unknown or cannot be used as value.', \get_class($value))
                 );
         }
     }

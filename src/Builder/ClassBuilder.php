@@ -25,23 +25,17 @@ use PhpParser\Parser;
 
 final class ClassBuilder implements PhpFile
 {
+    use ReadonlyTrait;
+    use TypedTrait;
+    use FinalTrait;
+    use AbstractTrait;
+    use StrictTrait;
+
     /** @var string|null */
     private ?string $namespace = null;
 
     /** @var string|null */
     private ?string $name = null;
-
-    /** @var bool */
-    private bool $strict = false;
-
-    /** @var bool */
-    private bool $typed = true;
-
-    /** @var bool */
-    private bool $final = false;
-
-    /** @var bool */
-    private bool $abstract = false;
 
     /** @var string|null */
     private ?string $extends = null;
@@ -102,20 +96,6 @@ final class ClassBuilder implements PhpFile
         foreach ($this->generate($parser) as $visitor) {
             $nodeTraverser->addVisitor($visitor);
         }
-    }
-
-    public function setFinal(bool $final): self
-    {
-        $this->final = $final;
-
-        return $this;
-    }
-
-    public function setAbstract(bool $abstract): self
-    {
-        $this->abstract = $abstract;
-
-        return $this;
     }
 
     public function setExtends(string $extends): self
@@ -456,40 +436,6 @@ final class ClassBuilder implements PhpFile
         return $this->name;
     }
 
-    public function setStrict(bool $strict): self
-    {
-        $this->strict = $strict;
-
-        return $this;
-    }
-
-    public function isStrict(): bool
-    {
-        return $this->strict;
-    }
-
-    public function setTyped(bool $typed): self
-    {
-        $this->typed = $typed;
-
-        return $this;
-    }
-
-    public function isTyped(): bool
-    {
-        return $this->typed;
-    }
-
-    public function isFinal(): bool
-    {
-        return $this->final;
-    }
-
-    public function isAbstract(): bool
-    {
-        return $this->abstract;
-    }
-
     public function getExtends(): ?string
     {
         return $this->extends;
@@ -655,8 +601,8 @@ final class ClassBuilder implements PhpFile
             \array_push(
                 $visitors,
                 ...\array_map(
-                    static function (ClassPropertyBuilder $property) {
-                        return $property->generate();
+                    static function (ClassPropertyBuilder $property) use ($parser) {
+                        return $property->generate($parser);
                     },
                     \array_values($this->properties)
                 )
@@ -706,6 +652,7 @@ final class ClassBuilder implements PhpFile
             case $node instanceof Node\Stmt\Class_:
                 $this->name = $node->name->name;
                 $this->final = $node->isFinal();
+                $this->isReadonly = $node->isReadonly();
 
                 if ($node->extends !== null) {
                     $this->extends = $node->extends instanceof Node\Name\FullyQualified
@@ -758,6 +705,9 @@ final class ClassBuilder implements PhpFile
         }
         if ($this->abstract) {
             $flags |= ClassGenerator::FLAG_ABSTRACT;
+        }
+        if ($this->isReadonly) {
+            $flags |= ClassGenerator::FLAG_READONLY;
         }
 
         return new ClassGenerator($this->name, $flags);

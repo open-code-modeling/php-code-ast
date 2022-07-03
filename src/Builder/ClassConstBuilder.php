@@ -19,16 +19,13 @@ use PhpParser\NodeVisitor;
 
 final class ClassConstBuilder
 {
+    use VisibilityTrait;
+
     /** @var string */
     private string $name;
 
     /** @var mixed */
     private $value;
-
-    /**
-     * @var int
-     */
-    private int $visibility;
 
     private function __construct()
     {
@@ -73,27 +70,6 @@ final class ClassConstBuilder
     public function getValue()
     {
         return $this->value;
-    }
-
-    public function setPrivate(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PRIVATE;
-
-        return $this;
-    }
-
-    public function setProtected(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PROTECTED;
-
-        return $this;
-    }
-
-    public function setPublic(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PUBLIC;
-
-        return $this;
     }
 
     public function generate(): NodeVisitor

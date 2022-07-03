@@ -7,15 +7,21 @@
  */
 
 declare(strict_types=1);
+namespace OpenCodeModeling\CodeAst\Builder;
 
-namespace OpenCodeModeling\CodeAst\Code;
-
-use PhpParser\NodeAbstract;
-
-interface StatementGenerator
+trait FinalTrait
 {
-    /**
-     * @return NodeAbstract|NodeAbstract[]
-     */
-    public function generate();
+    private bool $final = false;
+
+    public function setFinal(bool $final): self
+    {
+        $this->final = $final;
+
+        return $this;
+    }
+
+    public function isFinal(): bool
+    {
+        return $this->final;
+    }
 }

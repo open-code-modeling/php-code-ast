@@ -23,6 +23,8 @@ use PhpParser\Node\Stmt\Interface_;
  */
 final class InterfaceGenerator implements StatementGenerator
 {
+    use AttributeTrait;
+
     /**
      * @var string
      */
@@ -39,6 +41,10 @@ final class InterfaceGenerator implements StatementGenerator
     public function generate(): Interface_
     {
         $classBuilder = new Builder\Interface_($this->name);
+
+        foreach ($this->attributes as $attribute) {
+            $classBuilder->addAttribute($attribute->generate());
+        }
 
         return $classBuilder->getNode();
     }

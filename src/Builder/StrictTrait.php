@@ -7,15 +7,21 @@
  */
 
 declare(strict_types=1);
+namespace OpenCodeModeling\CodeAst\Builder;
 
-namespace OpenCodeModeling\CodeAst\Code;
-
-use PhpParser\NodeAbstract;
-
-interface StatementGenerator
+trait StrictTrait
 {
-    /**
-     * @return NodeAbstract|NodeAbstract[]
-     */
-    public function generate();
+    private bool $strict = false;
+
+    public function isStrict(): bool
+    {
+        return $this->strict;
+    }
+
+    public function setStrict(bool $strict): self
+    {
+        $this->strict = $strict;
+
+        return $this;
+    }
 }

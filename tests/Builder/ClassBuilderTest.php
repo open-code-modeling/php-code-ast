@@ -663,4 +663,68 @@ EOF;
             }
         };
     }
+
+    /**
+     * @test
+     */
+    public function it_generates_readonly_class_for_empty_file(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory
+            ->setFinal(true)
+            ->setExtends('BaseClass')
+            ->setIsReadonly(true);
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final readonly class TestClass extends BaseClass
+{
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse($expected))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_readonly_class_for_empty_file_from_template(): void
+    {
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+final readonly class TestClass extends BaseClass
+{
+}
+EOF;
+
+        $ast = $this->parser->parse($expected);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+
+        $this->assertSame('TestClass', $classFactory->getName());
+        $this->assertSame('BaseClass', $classFactory->getExtends());
+        $this->assertTrue($classFactory->isFinal());
+        $this->assertTrue($classFactory->isStrict());
+        $this->assertTrue($classFactory->isReadonly());
+        $this->assertFalse($classFactory->isAbstract());
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
 }
