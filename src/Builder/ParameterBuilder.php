@@ -10,11 +10,18 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Builder;
 
+use OpenCodeModeling\CodeAst\Code\AbstractMemberGenerator;
+use OpenCodeModeling\CodeAst\Code\AttributeGenerator;
 use OpenCodeModeling\CodeAst\Code\ParameterGenerator;
 use PhpParser\Node;
+use PhpParser\Parser;
 
 final class ParameterBuilder
 {
+    use ReadonlyTrait;
+    use VisibilityTrait;
+    use AttributeTrait;
+
     /** @var string */
     private string $name;
 
@@ -188,11 +195,24 @@ final class ParameterBuilder
         return $this;
     }
 
-    public function generate(): ParameterGenerator
+    public function generate(Parser $parser): ParameterGenerator
     {
+        $this->parameterGenerator->setName($this->name);
+        $this->parameterGenerator->setType($this->type);
         $this->parameterGenerator->setPassedByReference($this->passedByReference);
         $this->parameterGenerator->setTypeDocBlockHint($this->typeDocBlockHint);
         $this->parameterGenerator->setVariadic($this->variadic);
+
+        if ($this->isReadonly) {
+            $this->parameterGenerator->addFlag(AbstractMemberGenerator::FLAG_READONLY);
+        }
+        if ($this->visibility) {
+            $this->parameterGenerator->addFlag($this->visibility);
+        }
+
+        $this->parameterGenerator->setAttributes(
+            ...\array_map(static fn (AttributeBuilder $attribute) => new AttributeGenerator($parser, $attribute->getname(), ...$attribute->getArgs()), $this->attributes)
+        );
 
         return $this->parameterGenerator;
     }

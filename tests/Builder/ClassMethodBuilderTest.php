@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Builder;
 
+use OpenCodeModeling\CodeAst\Builder\AttributeBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassMethodBuilder;
 use OpenCodeModeling\CodeAst\Builder\ParameterBuilder;
@@ -506,5 +507,47 @@ EOF;
         $classBuilder->injectVisitors($nodeTraverser, $this->parser);
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse([])));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_constructor_method_with_readonly_properties(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $arg1 = ParameterBuilder::fromScratch('type', 'string');
+        $arg1->setIsReadonly(true);
+        $arg1->setPublic();
+        $arg1->addAttribute(AttributeBuilder::fromScratch('ListensTo', 'ProductCreated::class', "'string value'"));
+
+        $method = ClassMethodBuilder::fromScratch('__construct');
+        $method->setParameters(
+            $arg1
+        );
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory->setMethods($method);
+
+        $this->assertTrue($classFactory->hasMethod('__construct'));
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public function __construct(#[ListensTo(ProductCreated::class, 'string value')] public readonly string $type)
+    {
+    }
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
     }
 }

@@ -26,6 +26,11 @@ use PhpParser\PrettyPrinterAbstract;
 
 final class ClassMethodBuilder
 {
+    use VisibilityTrait;
+    use TypedTrait;
+    use FinalTrait;
+    use AbstractTrait;
+
     /** @var string */
     private string $name;
 
@@ -37,14 +42,6 @@ final class ClassMethodBuilder
 
     /** @var string|null */
     private ?string $returnType = null;
-
-    /**
-     * @var int
-     */
-    private int $visibility;
-
-    /** @var bool */
-    private bool $typed = true;
 
     /**
      * @var string|null
@@ -60,12 +57,6 @@ final class ClassMethodBuilder
      * @var DocBlock|null
      */
     private ?DocBlock $docBlock = null;
-
-    /** @var bool */
-    private bool $final = false;
-
-    /** @var bool */
-    private bool $abstract = false;
 
     /** @var bool */
     private bool $isStatic = false;
@@ -209,54 +200,6 @@ final class ClassMethodBuilder
         return $this->parameters;
     }
 
-    public function setTyped(bool $typed): self
-    {
-        $this->typed = $typed;
-
-        return $this;
-    }
-
-    public function isTyped(): bool
-    {
-        return $this->typed;
-    }
-
-    public function setPrivate(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PRIVATE;
-
-        return $this;
-    }
-
-    public function setProtected(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PROTECTED;
-
-        return $this;
-    }
-
-    public function setPublic(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PUBLIC;
-
-        return $this;
-    }
-
-    public function isPrivate(): bool
-    {
-        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PRIVATE);
-    }
-
-    public function isProtected(): bool
-    {
-        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PROTECTED);
-    }
-
-    public function isPublic(): bool
-    {
-        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PUBLIC);
-    }
-
     public function getDocBlockComment(): ?string
     {
         return $this->docBlockComment;
@@ -293,35 +236,11 @@ final class ClassMethodBuilder
         return $this;
     }
 
-    public function setFinal(bool $final): self
-    {
-        $this->final = $final;
-
-        return $this;
-    }
-
-    public function setAbstract(bool $abstract): self
-    {
-        $this->abstract = $abstract;
-
-        return $this;
-    }
-
     public function setStatic(bool $isStatic): self
     {
         $this->isStatic = $isStatic;
 
         return $this;
-    }
-
-    public function isFinal(): bool
-    {
-        return $this->final;
-    }
-
-    public function isAbstract(): bool
-    {
-        return $this->abstract;
     }
 
     public function isStatic(): bool
@@ -360,8 +279,8 @@ final class ClassMethodBuilder
 
         $methodGenerator = new MethodGenerator(
             $this->name,
-            \array_map(static function (ParameterBuilder $builder) {
-                return $builder->generate();
+            \array_map(static function (ParameterBuilder $builder) use ($parser) {
+                return $builder->generate($parser);
             }, $this->parameters),
             $flags,
             $body

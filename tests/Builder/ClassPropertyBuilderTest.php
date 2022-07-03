@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Builder;
 
+use OpenCodeModeling\CodeAst\Builder\AttributeBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassBuilder;
 use OpenCodeModeling\CodeAst\Builder\ClassPropertyBuilder;
 use OpenCodeModeling\CodeAst\Code\PropertyGenerator;
@@ -312,6 +313,143 @@ class TestClass
     private array $recordData = null;
 }
 EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_readonly_property(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory->setProperties(
+            ClassPropertyBuilder::fromScratch('aggregateId', 'string', true)
+                ->setIsReadonly(true)
+                ->setPublic()
+        );
+
+        $this->assertTrue($classFactory->hasProperty('aggregateId'));
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public readonly string $aggregateId;
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_readonly_property_from_template(): void
+    {
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    public readonly string $aggregateId;
+}
+EOF;
+
+        $ast = $this->parser->parse($expected);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $properties = $classFactory->getProperties();
+        $this->assertCount(1, $properties);
+        $this->assertTrue($properties['aggregateId']->isReadonly());
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_property_with_attributes(): void
+    {
+        $ast = $this->parser->parse('');
+
+        $classFactory = ClassBuilder::fromScratch('TestClass', 'My\\Awesome\\Service');
+        $classFactory->setProperties(
+            ClassPropertyBuilder::fromScratch('isDeleted', 'bool', true)
+                ->setIsReadonly(true)
+                ->setPublic()
+                ->addAttribute(AttributeBuilder::fromScratch('ListensTo', 'ProductCreated::class', 'false'))
+                ->addAttribute(AttributeBuilder::fromScratch('ListensTo', 'ProductDeleted::class', 'true'))
+        );
+
+        $this->assertTrue($classFactory->hasProperty('isDeleted'));
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
+
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    #[ListensTo(ProductCreated::class, false)]
+    #[ListensTo(ProductDeleted::class, true)]
+    public readonly bool $isDeleted;
+}
+EOF;
+
+        $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($ast)));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_property_with_attributes_from_template(): void
+    {
+        $expected = <<<'EOF'
+<?php
+
+declare (strict_types=1);
+namespace My\Awesome\Service;
+
+class TestClass
+{
+    #[ListensTo(ProductCreated::class, false)]
+    #[ListensTo(ProductDeleted::class, true)]
+    public readonly bool $isDeleted;
+}
+EOF;
+
+        $ast = $this->parser->parse($expected);
+
+        $classFactory = ClassBuilder::fromNodes(...$ast);
+        $properties = $classFactory->getProperties();
+        $this->assertCount(1, $properties);
+        $this->assertTrue($properties['isDeleted']->isReadonly());
+
+        $attributes = $properties['isDeleted']->getAttributes();
+        $this->assertCount(2, $attributes);
+
+        $nodeTraverser = new NodeTraverser();
+        $classFactory->injectVisitors($nodeTraverser, $this->parser);
 
         $this->assertSame($expected, $this->printer->prettyPrintFile($nodeTraverser->traverse($this->parser->parse(''))));
     }

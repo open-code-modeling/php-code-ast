@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace OpenCodeModelingTest\CodeAst\Code;
 
+use OpenCodeModeling\CodeAst\Code\AttributeGenerator;
 use OpenCodeModeling\CodeAst\Code\InterfaceGenerator;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -44,6 +45,38 @@ final class InterfaceGeneratorTest extends TestCase
         $expectedOutput = <<<'EOF'
 <?php
 
+interface MyInterface
+{
+}
+EOF;
+
+        $this->assertSame($expectedOutput, $this->printer->prettyPrintFile([$interface->generate()]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_interface_with_attributes(): void
+    {
+        $interface = new InterfaceGenerator('MyInterface');
+        $interface->addAttribute(new AttributeGenerator($this->parser, 'MyAttribute'));
+        $interface->addAttribute(new AttributeGenerator($this->parser, '\MyExample\MyAttribute'));
+        $interface->addAttribute(new AttributeGenerator($this->parser, 'MyAttribute', 1234));
+        $interface->addAttribute(new AttributeGenerator($this->parser, 'MyAttribute', 'value: 1234'));
+        $interface->addAttribute(new AttributeGenerator($this->parser, 'MyAttribute', 'MyAttribute::VALUE'));
+        $interface->addAttribute(new AttributeGenerator($this->parser, 'MyAttribute', 'array("key" => "value")'));
+        $interface->addAttribute(new AttributeGenerator($this->parser, 'MyAttribute', '100 + 200'));
+
+        $expectedOutput = <<<'EOF'
+<?php
+
+#[MyAttribute]
+#[\MyExample\MyAttribute]
+#[MyAttribute(1234)]
+#[MyAttribute(value: 1234)]
+#[MyAttribute(MyAttribute::VALUE)]
+#[MyAttribute(array("key" => "value"))]
+#[MyAttribute(100 + 200)]
 interface MyInterface
 {
 }

@@ -23,17 +23,14 @@ use PhpParser\Parser;
 
 final class InterfaceBuilder implements PhpFile
 {
+    use TypedTrait;
+    use StrictTrait;
+
     /** @var string|null */
     private ?string $namespace = null;
 
     /** @var string|null */
     private ?string $name = null;
-
-    /** @var bool */
-    private bool $strict = false;
-
-    /** @var bool */
-    private bool $typed = true;
 
     /** @var string[] */
     private array $extends = [];
@@ -327,23 +324,6 @@ final class InterfaceBuilder implements PhpFile
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function isStrict(): bool
-    {
-        return $this->strict;
-    }
-
-    public function setTyped(bool $typed): self
-    {
-        $this->typed = $typed;
-
-        return $this;
-    }
-
-    public function isTyped(): bool
-    {
-        return $this->typed;
     }
 
     public function getExtends(): array

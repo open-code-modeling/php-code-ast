@@ -7,15 +7,21 @@
  */
 
 declare(strict_types=1);
+namespace OpenCodeModeling\CodeAst\Builder;
 
-namespace OpenCodeModeling\CodeAst\Code;
-
-use PhpParser\NodeAbstract;
-
-interface StatementGenerator
+trait ReadonlyTrait
 {
-    /**
-     * @return NodeAbstract|NodeAbstract[]
-     */
-    public function generate();
+    private bool $isReadonly = false;
+
+    public function isReadonly(): bool
+    {
+        return $this->isReadonly;
+    }
+
+    public function setIsReadonly(bool $isReadonly): self
+    {
+        $this->isReadonly = $isReadonly;
+
+        return $this;
+    }
 }

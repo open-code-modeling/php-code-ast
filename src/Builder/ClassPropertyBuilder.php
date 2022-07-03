@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace OpenCodeModeling\CodeAst\Builder;
 
+use OpenCodeModeling\CodeAst\Code\AbstractMemberGenerator;
+use OpenCodeModeling\CodeAst\Code\AttributeGenerator;
 use OpenCodeModeling\CodeAst\Code\ClassConstGenerator;
 use OpenCodeModeling\CodeAst\Code\DocBlock\DocBlock;
 use OpenCodeModeling\CodeAst\Code\PropertyGenerator;
@@ -18,9 +20,15 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
+use PhpParser\Parser;
 
 final class ClassPropertyBuilder
 {
+    use AttributeTrait;
+    use ReadonlyTrait;
+    use TypedTrait;
+    use VisibilityTrait;
+
     /** @var string */
     private string $name;
 
@@ -29,14 +37,6 @@ final class ClassPropertyBuilder
 
     /** @var mixed */
     private $defaultValue = null;
-
-    /**
-     * @var int
-     */
-    private int $visibility;
-
-    /** @var bool */
-    private bool $typed = true;
 
     /**
      * @var string|null
@@ -80,6 +80,7 @@ final class ClassPropertyBuilder
         $self->type = $type;
         $self->visibility = $node->flags;
         $self->typed = $typed;
+        $self->isReadonly = $node->isReadonly();
         $self->propertyGenerator = new PropertyGenerator($self->name, $self->type, $typed);
 
         $defaultValue = $node->props[0]->default;
@@ -118,6 +119,16 @@ final class ClassPropertyBuilder
                 }
             }
         }
+
+        $attributes = [];
+
+        foreach ($node->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                $attributes[] = AttributeBuilder::fromNode($attr);
+            }
+        }
+
+        $self->attributes = $attributes;
 
         return $self;
     }
@@ -160,47 +171,6 @@ final class ClassPropertyBuilder
         $this->propertyGenerator->setTyped($typed);
 
         return $this;
-    }
-
-    public function isTyped(): bool
-    {
-        return $this->typed;
-    }
-
-    public function setPrivate(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PRIVATE;
-
-        return $this;
-    }
-
-    public function setProtected(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PROTECTED;
-
-        return $this;
-    }
-
-    public function setPublic(): self
-    {
-        $this->visibility = ClassConstGenerator::FLAG_PUBLIC;
-
-        return $this;
-    }
-
-    public function isPrivate(): bool
-    {
-        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PRIVATE);
-    }
-
-    public function isProtected(): bool
-    {
-        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PROTECTED);
-    }
-
-    public function isPublic(): bool
-    {
-        return (bool) ($this->visibility & ClassConstGenerator::FLAG_PUBLIC);
     }
 
     public function getDocBlockComment(): ?string
@@ -253,24 +223,32 @@ final class ClassPropertyBuilder
         return $this->defaultValue;
     }
 
-    public function generate(): NodeVisitor
+    public function generate(Parser $parser): NodeVisitor
     {
-        return new Property($this->propertyGenerator());
+        return new Property($this->propertyGenerator($parser));
     }
 
-    private function propertyGenerator(): PropertyGenerator
+    private function propertyGenerator(Parser $parser): PropertyGenerator
     {
         $flags = $this->visibility;
+
+        if ($this->isReadonly) {
+            $flags |= AbstractMemberGenerator::FLAG_READONLY;
+        }
+
         $this->propertyGenerator->setFlags($flags);
         $this->propertyGenerator->setDocBlockComment($this->docBlockComment);
         $this->propertyGenerator->setTypeDocBlockHint($this->typeDocBlockHint);
         $this->propertyGenerator->overrideDocBlock($this->docBlock);
+        $this->propertyGenerator->setAttributes(
+            ...\array_map(static fn (AttributeBuilder $attribute) => new AttributeGenerator($parser, $attribute->getname(), ...$attribute->getArgs()), $this->attributes)
+        );
 
         return $this->propertyGenerator;
     }
 
-    public function injectVisitors(NodeTraverser $nodeTraverser): void
+    public function injectVisitors(NodeTraverser $nodeTraverser, Parser $parser): void
     {
-        $nodeTraverser->addVisitor($this->generate());
+        $nodeTraverser->addVisitor($this->generate($parser));
     }
 }
